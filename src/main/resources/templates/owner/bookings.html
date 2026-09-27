@@ -1,0 +1,3209 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Booking Requests</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        :root {
+
+            --primary: #d9467a;
+            --primary-dark: #b83263;
+            --primary-soft: #fff0f5;
+            --primary-soft-2: #ffe3ed;
+
+            --text: #181416;
+            --text-soft: #665f63;
+            --text-muted: #969094;
+
+            --white: #ffffff;
+            --background: #fbf9fa;
+
+            --border: #ebe5e8;
+
+            --green: #2f8a59;
+            --green-soft: #edf8f1;
+
+            --red: #b9405d;
+            --red-soft: #fff0f3;
+
+            --orange: #b97420;
+            --orange-soft: #fff5e8;
+
+            --shadow-sm:
+                    0 8px 25px
+                    rgba(30,20,25,0.05);
+
+            --shadow-md:
+                    0 20px 50px
+                    rgba(30,20,25,0.08);
+
+            --shadow-lg:
+                    0 30px 75px
+                    rgba(30,20,25,0.10);
+
+            --container: 1180px;
+        }
+
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                    "DM Sans",
+                    Arial,
+                    sans-serif;
+
+            color: var(--text);
+
+            background: var(--background);
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+        }
+
+
+        button {
+
+            font: inherit;
+        }
+
+
+        .container {
+
+            width:
+                    min(
+                            calc(100% - 40px),
+                            var(--container)
+                    );
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-glow {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: -1;
+
+            overflow: hidden;
+
+            pointer-events: none;
+        }
+
+
+        .glow-one {
+
+            position: absolute;
+
+            width: 430px;
+
+            height: 430px;
+
+            top: -230px;
+
+            right: -140px;
+
+            border-radius: 50%;
+
+            background:
+                    radial-gradient(
+                            circle,
+                            rgba(217,70,122,0.12),
+                            transparent 70%
+                    );
+
+            animation:
+                    floatGlow
+                    12s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        .glow-two {
+
+            position: absolute;
+
+            width: 350px;
+
+            height: 350px;
+
+            left: -190px;
+
+            top: 55%;
+
+            border-radius: 50%;
+
+            background:
+                    radial-gradient(
+                            circle,
+                            rgba(115,84,184,0.08),
+                            transparent 70%
+                    );
+
+            animation:
+                    floatGlowTwo
+                    15s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        @keyframes floatGlow {
+
+            0%,
+            100% {
+
+                transform:
+                        translate(0,0)
+                        scale(1);
+            }
+
+            50% {
+
+                transform:
+                        translate(-35px,35px)
+                        scale(1.08);
+            }
+        }
+
+
+        @keyframes floatGlowTwo {
+
+            0%,
+            100% {
+
+                transform:
+                        translate(0,0)
+                        scale(1);
+            }
+
+            50% {
+
+                transform:
+                        translate(30px,-25px)
+                        scale(1.1);
+            }
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .site-nav {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            height: 76px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                    0 max(
+                            20px,
+                            calc(
+                                    (100vw - var(--container))
+                                    / 2
+                            )
+                    );
+
+            background:
+                    rgba(255,255,255,0.86);
+
+            border-bottom:
+                    1px solid
+                    rgba(235,229,232,0.8);
+
+            backdrop-filter:
+                    blur(20px);
+
+            -webkit-backdrop-filter:
+                    blur(20px);
+
+            transition:
+                    box-shadow 0.3s ease;
+
+            animation:
+                    navReveal
+                    0.7s
+                    ease
+                    both;
+        }
+
+
+        @keyframes navReveal {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(-18px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.6px;
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .brand-mark {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--primary),
+                            var(--primary-dark)
+                    );
+
+            color: white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size: 20px;
+
+            box-shadow:
+                    0 8px 22px
+                    rgba(217,70,122,0.22);
+
+            transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+        }
+
+
+        .brand:hover {
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .brand:hover .brand-mark {
+
+            transform:
+                    rotate(-7deg)
+                    scale(1.06);
+
+            box-shadow:
+                    0 13px 28px
+                    rgba(217,70,122,0.3);
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+        }
+
+
+        .nav-links a {
+
+            padding: 9px 13px;
+
+            border-radius: 10px;
+
+            color: #696267;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            transition:
+                    color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .nav-links a:hover {
+
+            color:
+                    var(--primary-dark);
+
+            background:
+                    var(--primary-soft);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        .nav-links a.active {
+
+            color:
+                    var(--primary-dark);
+
+            background:
+                    var(--primary-soft);
+        }
+
+
+        .nav-logout {
+
+            margin-left:
+                    5px;
+
+            background:
+                    #1c191a !important;
+
+            color:
+                    white !important;
+        }
+
+
+        .nav-logout:hover {
+
+            background:
+                    var(--primary) !important;
+
+            color:
+                    white !important;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .page {
+
+            padding:
+                    52px 0 90px;
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .page-header {
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-end;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    30px;
+
+            margin-bottom:
+                    32px;
+
+            animation:
+                    headerReveal
+                    0.8s
+                    0.1s
+                    ease
+                    both;
+        }
+
+
+        @keyframes headerReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(25px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .header-copy {
+
+            max-width:
+                    700px;
+        }
+
+
+        .eyebrow {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+
+            padding:
+                    7px 12px;
+
+            margin-bottom:
+                    14px;
+
+            border:
+                    1px solid
+                    #f0d5df;
+
+            border-radius:
+                    50px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    1.2px;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .eyebrow-dot {
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--primary);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(217,70,122,0.08);
+
+            animation:
+                    pulse
+                    2s
+                    infinite;
+        }
+
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+
+                opacity:
+                        1;
+
+                transform:
+                        scale(1);
+            }
+
+            50% {
+
+                opacity:
+                        0.5;
+
+                transform:
+                        scale(0.7);
+            }
+        }
+
+
+        .page-header h1 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(
+                            38px,
+                            5vw,
+                            55px
+                    );
+
+            line-height:
+                    1.05;
+
+            letter-spacing:
+                    -1.7px;
+
+            font-weight:
+                    600;
+        }
+
+
+        .page-header h1 span {
+
+            color:
+                    var(--primary);
+        }
+
+
+        .page-header p {
+
+            margin-top:
+                    11px;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    13px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           TOP SUMMARY
+        ========================================================= */
+
+        .summary-grid {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap:
+                    14px;
+
+            margin-bottom:
+                    24px;
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.2s
+                    ease
+                    both;
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(18px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .summary-card {
+
+            position:
+                    relative;
+
+            overflow:
+                    hidden;
+
+            min-height:
+                    110px;
+
+            padding:
+                    19px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    17px;
+
+            background:
+                    rgba(255,255,255,0.92);
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+        }
+
+
+        .summary-card:hover {
+
+            transform:
+                    translateY(-4px);
+
+            box-shadow:
+                    var(--shadow-md);
+        }
+
+
+        .summary-card::after {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    90px;
+
+            height:
+                    90px;
+
+            right:
+                    -45px;
+
+            bottom:
+                    -45px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--primary-soft);
+
+            transition:
+                    transform 0.4s ease;
+        }
+
+
+        .summary-card:hover::after {
+
+            transform:
+                    scale(1.35);
+        }
+
+
+        .summary-top {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    10px;
+        }
+
+
+        .summary-icon {
+
+            width:
+                    39px;
+
+            height:
+                    39px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    11px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    17px;
+        }
+
+
+        .summary-label {
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    0.8px;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .summary-value {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    10px;
+
+            font-size:
+                    22px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .summary-description {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    1px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+        }
+
+
+        /* =========================================================
+           ERROR
+        ========================================================= */
+
+        .alert-error {
+
+            position:
+                    relative;
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-start;
+
+            gap:
+                    10px;
+
+            margin-bottom:
+                    20px;
+
+            padding:
+                    14px 16px;
+
+            border:
+                    1px solid
+                    #f0cbd4;
+
+            border-radius:
+                    13px;
+
+            background:
+                    var(--danger-soft);
+
+            color:
+                    var(--red);
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    600;
+
+            animation:
+                    alertReveal
+                    0.5s
+                    ease
+                    both;
+        }
+
+
+        .alert-error::before {
+
+            content:
+                    "!";
+
+            width:
+                    20px;
+
+            height:
+                    20px;
+
+            flex-shrink:
+                    0;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--red);
+
+            color:
+                    white;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    800;
+        }
+
+
+        @keyframes alertReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(-8px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        /* =========================================================
+           TABLE CARD
+        ========================================================= */
+
+        .requests-card {
+
+            overflow:
+                    hidden;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    23px;
+
+            background:
+                    white;
+
+            box-shadow:
+                    var(--shadow-md);
+
+            animation:
+                    tableReveal
+                    0.8s
+                    0.25s
+                    ease
+                    both;
+        }
+
+
+        @keyframes tableReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(25px)
+                        scale(0.99);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        .table-top {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    20px;
+
+            padding:
+                    22px 24px;
+
+            border-bottom:
+                    1px solid
+                    var(--border);
+        }
+
+
+        .table-title {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    11px;
+        }
+
+
+        .table-title-icon {
+
+            width:
+                    42px;
+
+            height:
+                    42px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    12px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    18px;
+        }
+
+
+        .table-title h2 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    22px;
+
+            line-height:
+                    1.2;
+        }
+
+
+        .table-title p {
+
+            margin-top:
+                    2px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    10px;
+        }
+
+
+        .table-badge {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    50px;
+
+            background:
+                    var(--green-soft);
+
+            color:
+                    var(--green);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .table-badge::before {
+
+            content:
+                    "";
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    currentColor;
+
+            animation:
+                    badgePulse
+                    2s
+                    infinite;
+        }
+
+
+        @keyframes badgePulse {
+
+            0%,
+            100% {
+
+                opacity:
+                        1;
+            }
+
+            50% {
+
+                opacity:
+                        0.45;
+            }
+        }
+
+
+        /* =========================================================
+           TABLE WRAPPER
+        ========================================================= */
+
+        .table-wrapper {
+
+            width:
+                    100%;
+
+            overflow-x:
+                    auto;
+        }
+
+
+        .data-table {
+
+            width:
+                    100%;
+
+            border-collapse:
+                    collapse;
+
+            min-width:
+                    850px;
+        }
+
+
+        .data-table th {
+
+            padding:
+                    15px 22px;
+
+            background:
+                    #fcfafb;
+
+            border-bottom:
+                    1px solid
+                    var(--border);
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    0.9px;
+
+            text-align:
+                    left;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .data-table td {
+
+            padding:
+                    20px 22px;
+
+            border-bottom:
+                    1px solid
+                    #f1edef;
+
+            vertical-align:
+                    middle;
+
+            font-size:
+                    12px;
+        }
+
+
+        .data-table tbody tr {
+
+            transition:
+                    background 0.25s ease;
+        }
+
+
+        .data-table tbody tr:hover {
+
+            background:
+                    #fffafb;
+        }
+
+
+        .data-table tbody tr:last-child td {
+
+            border-bottom:
+                    none;
+        }
+
+
+        /* =========================================================
+           GUEST
+        ========================================================= */
+
+        .guest-cell {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    11px;
+        }
+
+
+        .guest-avatar {
+
+            width:
+                    42px;
+
+            height:
+                    42px;
+
+            flex-shrink:
+                    0;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    13px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    14px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .guest-info strong {
+
+            display:
+                    block;
+
+            color:
+                    var(--text);
+
+            font-size:
+                    12px;
+        }
+
+
+        .guest-info span {
+
+            display:
+                    block;
+
+            max-width:
+                    190px;
+
+            margin-top:
+                    2px;
+
+            overflow:
+                    hidden;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+
+            text-overflow:
+                    ellipsis;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        /* =========================================================
+           PROPERTY
+        ========================================================= */
+
+        .property-cell strong {
+
+            display:
+                    block;
+
+            max-width:
+                    190px;
+
+            overflow:
+                    hidden;
+
+            font-size:
+                    12px;
+
+            text-overflow:
+                    ellipsis;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        .room-badge {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            margin-top:
+                    5px;
+
+            padding:
+                    5px 8px;
+
+            border-radius:
+                    6px;
+
+            background:
+                    #f7f4f5;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    700;
+        }
+
+
+        /* =========================================================
+           DATE
+        ========================================================= */
+
+        .date-cell {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+        }
+
+
+        .date-icon {
+
+            width:
+                    32px;
+
+            height:
+                    32px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    9px;
+
+            background:
+                    #f8f5f6;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    13px;
+        }
+
+
+        .date-text {
+
+            color:
+                    var(--text);
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    700;
+        }
+
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
+
+        .status {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    50px;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    0.2px;
+        }
+
+
+        .status::before {
+
+            content:
+                    "";
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    currentColor;
+        }
+
+
+        .status-REQUESTED {
+
+            background:
+                    var(--orange-soft);
+
+            color:
+                    var(--orange);
+        }
+
+
+        .status-APPROVED {
+
+            background:
+                    var(--green-soft);
+
+            color:
+                    var(--green);
+        }
+
+
+        .status-REJECTED {
+
+            background:
+                    var(--red-soft);
+
+            color:
+                    var(--red);
+        }
+
+
+        .status-CANCELLED {
+
+            background:
+                    #f2f0f1;
+
+            color:
+                    #777074;
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .actions-inline {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    7px;
+        }
+
+
+        .action-form {
+
+            margin:
+                    0;
+        }
+
+
+        .action-button {
+
+            min-height:
+                    35px;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    5px;
+
+            padding:
+                    0 11px;
+
+            border:
+                    none;
+
+            border-radius:
+                    8px;
+
+            cursor:
+                    pointer;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            transition:
+                    transform 0.2s ease,
+                    box-shadow 0.2s ease,
+                    background 0.2s ease;
+        }
+
+
+        .approve-button {
+
+            background:
+                    var(--green-soft);
+
+            color:
+                    var(--green);
+        }
+
+
+        .approve-button:hover {
+
+            background:
+                    var(--green);
+
+            color:
+                    white;
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 7px 16px
+                    rgba(47,138,89,0.18);
+        }
+
+
+        .reject-button {
+
+            background:
+                    var(--red-soft);
+
+            color:
+                    var(--red);
+        }
+
+
+        .reject-button:hover {
+
+            background:
+                    var(--red);
+
+            color:
+                    white;
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 7px 16px
+                    rgba(185,64,93,0.18);
+        }
+
+
+        .processed {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    5px;
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    8px;
+
+            background:
+                    #f7f5f6;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    700;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+
+            position:
+                    relative;
+
+            overflow:
+                    hidden;
+
+            max-width:
+                    650px;
+
+            margin:
+                    35px auto 0;
+
+            padding:
+                    62px 30px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    25px;
+
+            background:
+                    white;
+
+            text-align:
+                    center;
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            animation:
+                    emptyReveal
+                    0.8s
+                    ease
+                    both;
+        }
+
+
+        @keyframes emptyReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(25px)
+                        scale(0.98);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        .empty-circle-one {
+
+            position:
+                    absolute;
+
+            width:
+                    180px;
+
+            height:
+                    180px;
+
+            top:
+                    -105px;
+
+            right:
+                    -70px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--primary-soft);
+        }
+
+
+        .empty-circle-two {
+
+            position:
+                    absolute;
+
+            width:
+                    130px;
+
+            height:
+                    130px;
+
+            bottom:
+                    -80px;
+
+            left:
+                    -50px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    #f5effc;
+        }
+
+
+        .empty-icon {
+
+            position:
+                    relative;
+
+            width:
+                    80px;
+
+            height:
+                    80px;
+
+            margin:
+                    0 auto 20px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    24px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    32px;
+
+            animation:
+                    emptyFloat
+                    4s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        @keyframes emptyFloat {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-7px);
+            }
+        }
+
+
+        .empty-state h3 {
+
+            position:
+                    relative;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    27px;
+        }
+
+
+        .empty-state p {
+
+            position:
+                    relative;
+
+            max-width:
+                    430px;
+
+            margin:
+                    8px auto 0;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    12px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           SCROLL TOP
+        ========================================================= */
+
+        .scroll-top {
+
+            position:
+                    fixed;
+
+            right:
+                    24px;
+
+            bottom:
+                    24px;
+
+            z-index:
+                    90;
+
+            width:
+                    43px;
+
+            height:
+                    43px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    50%;
+
+            background:
+                    rgba(255,255,255,0.94);
+
+            color:
+                    var(--text);
+
+            font-size:
+                    17px;
+
+            cursor:
+                    pointer;
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            opacity:
+                    0;
+
+            visibility:
+                    hidden;
+
+            transform:
+                    translateY(15px);
+
+            transition:
+                    opacity 0.25s ease,
+                    visibility 0.25s ease,
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    color 0.25s ease;
+        }
+
+
+        .scroll-top.show {
+
+            opacity:
+                    1;
+
+            visibility:
+                    visible;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .scroll-top:hover {
+
+            background:
+                    var(--primary);
+
+            border-color:
+                    var(--primary);
+
+            color:
+                    white;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 850px) {
+
+            .summary-grid {
+
+                grid-template-columns:
+                        repeat(3, 1fr);
+            }
+
+
+            .summary-card {
+
+                padding:
+                        15px;
+            }
+
+
+            .summary-description {
+
+                display:
+                        none;
+            }
+        }
+
+
+        @media (max-width: 760px) {
+
+            .site-nav {
+
+                height:
+                        70px;
+
+                padding:
+                        0 15px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        8px;
+
+                font-size:
+                        10px;
+            }
+
+
+            .nav-links a:first-child {
+
+                display:
+                        none;
+            }
+
+
+            .page-header {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .summary-card {
+
+                min-height:
+                        auto;
+            }
+
+
+            .summary-description {
+
+                display:
+                        block;
+            }
+
+
+            .table-top {
+
+                padding:
+                        18px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+
+                width:
+                        min(
+                                calc(100% - 28px),
+                                var(--container)
+                        );
+            }
+
+
+            .page {
+
+                padding:
+                        35px 0 65px;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        40px;
+            }
+
+
+            .table-title p {
+
+                display:
+                        none;
+            }
+
+
+            .table-badge {
+
+                font-size:
+                        8px;
+            }
+
+
+            .requests-card {
+
+                border-radius:
+                        18px;
+            }
+        }
+
+
+        @media (max-width: 400px) {
+
+            .brand {
+
+                font-size:
+                        18px;
+            }
+
+
+            .brand-mark {
+
+                width:
+                        34px;
+
+                height:
+                        34px;
+
+                border-radius:
+                        10px;
+
+                font-size:
+                        18px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        7px 5px;
+
+                font-size:
+                        9px;
+            }
+
+
+            .nav-logout {
+
+                padding:
+                        7px 8px !important;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        34px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        0.01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        0.01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
+
+<div class="background-glow">
+
+    <div class="glow-one"></div>
+
+    <div class="glow-two"></div>
+
+</div>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="site-nav">
+
+
+    <a
+            class="brand"
+            th:href="@{/owner/dashboard}">
+
+        <span class="brand-mark">
+            S
+        </span>
+
+        SheStay
+
+    </a>
+
+
+    <div class="nav-links">
+
+
+        <a
+                th:href="@{/owner/dashboard}">
+
+            Dashboard
+
+        </a>
+
+
+        <a
+                th:href="@{/owner/properties}">
+
+            Properties
+
+        </a>
+
+
+        <a
+                class="active"
+                th:href="@{/owner/bookings}">
+
+            Requests
+
+        </a>
+
+
+        <a
+                class="nav-logout"
+                th:href="@{/logout}">
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="page">
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+
+            <div class="header-copy">
+
+
+                <div class="eyebrow">
+
+                    <span class="eyebrow-dot"></span>
+
+                    Booking management
+
+                </div>
+
+
+                <h1>
+
+                    Booking
+
+                    <span>
+                        requests.
+                    </span>
+
+                </h1>
+
+
+                <p>
+
+                    Review guest applications,
+                    manage approvals and keep your
+                    room availability accurate.
+
+                </p>
+
+
+            </div>
+
+
+        </header>
+
+
+        <!-- =================================================
+             ERROR
+        ================================================== -->
+
+        <div
+                class="alert-error"
+                th:if="${error}"
+                th:text="${error}">
+
+            Something went wrong.
+
+        </div>
+
+
+        <!-- =================================================
+             SUMMARY
+        ================================================== -->
+
+        <section
+                class="summary-grid"
+                th:if="${bookings != null && !bookings.isEmpty()}">
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-top">
+
+
+                    <div class="summary-icon">
+                        📋
+                    </div>
+
+
+                    <div class="summary-label">
+                        Total requests
+                    </div>
+
+
+                </div>
+
+
+                <div
+                        class="summary-value"
+                        th:text="${bookings.size()}">
+
+                    0
+
+                </div>
+
+
+                <div class="summary-description">
+
+                    Requests across your properties
+
+                </div>
+
+
+            </div>
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-top">
+
+
+                    <div class="summary-icon">
+                        ⏳
+                    </div>
+
+
+                    <div class="summary-label">
+                        Awaiting review
+                    </div>
+
+
+                </div>
+
+
+                <div
+                        class="summary-value"
+                        th:text="${#lists.size(bookings.?[status == 'REQUESTED'])}">
+
+                    0
+
+                </div>
+
+
+                <div class="summary-description">
+
+                    Requests that need your attention
+
+                </div>
+
+
+            </div>
+
+
+            <div class="summary-card">
+
+
+                <div class="summary-top">
+
+
+                    <div class="summary-icon">
+                        ✓
+                    </div>
+
+
+                    <div class="summary-label">
+                        Approved
+                    </div>
+
+
+                </div>
+
+
+                <div
+                        class="summary-value"
+                        th:text="${#lists.size(bookings.?[status == 'APPROVED'])}">
+
+                    0
+
+                </div>
+
+
+                <div class="summary-description">
+
+                    Successfully approved bookings
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             REQUEST TABLE
+        ================================================== -->
+
+        <section
+                class="requests-card"
+                th:if="${bookings != null && !bookings.isEmpty()}">
+
+
+            <!-- TABLE HEADER -->
+
+            <div class="table-top">
+
+
+                <div class="table-title">
+
+
+                    <div class="table-title-icon">
+                        📋
+                    </div>
+
+
+                    <div>
+
+                        <h2>
+                            Guest applications
+                        </h2>
+
+                        <p>
+                            Review each request before confirming.
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="table-badge">
+
+                    Live requests
+
+                </div>
+
+
+            </div>
+
+
+            <!-- TABLE -->
+
+            <div class="table-wrapper">
+
+
+                <table class="data-table">
+
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            Guest
+                        </th>
+
+                        <th>
+                            Property / Room
+                        </th>
+
+                        <th>
+                            Check-in
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Action
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <tr
+                            th:each="booking : ${bookings}">
+
+
+                        <!-- =================================
+                             GUEST
+                        ================================== -->
+
+                        <td>
+
+
+                            <div class="guest-cell">
+
+
+                                <div
+                                        class="guest-avatar"
+                                        th:text="${booking.user != null && booking.user.name != null && !booking.user.name.isBlank()
+                                                ? #strings.substring(booking.user.name, 0, 1).toUpperCase()
+                                                : 'G'}">
+
+                                    G
+
+                                </div>
+
+
+                                <div class="guest-info">
+
+
+                                    <strong
+                                            th:text="${booking.user != null ? booking.user.name : 'N/A'}">
+
+                                        Guest
+
+                                    </strong>
+
+
+                                    <span
+                                            th:text="${booking.user != null ? booking.user.email : ''}">
+
+                                        email
+
+                                    </span>
+
+
+                                </div>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                        <!-- =================================
+                             PROPERTY
+                        ================================== -->
+
+                        <td>
+
+
+                            <div class="property-cell">
+
+
+                                <strong
+                                        th:text="${booking.property != null ? booking.property.name : 'N/A'}">
+
+                                    Property
+
+                                </strong>
+
+
+                                <span class="room-badge">
+
+
+                                    🛏
+
+
+                                    <span
+                                            th:text="${booking.room != null ? booking.room.roomType : 'N/A'}">
+
+                                        DOUBLE
+
+                                    </span>
+
+
+                                </span>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                        <!-- =================================
+                             CHECK-IN
+                        ================================== -->
+
+                        <td>
+
+
+                            <div class="date-cell">
+
+
+                                <div class="date-icon">
+                                    📅
+                                </div>
+
+
+                                <div class="date-text"
+                                     th:text="${booking.checkInDate}">
+
+                                    date
+
+                                </div>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                        <!-- =================================
+                             STATUS
+                        ================================== -->
+
+                        <td>
+
+
+                            <span
+                                    class="status"
+                                    th:classappend="${'status-' + booking.status}"
+                                    th:text="${booking.status}">
+
+                                REQUESTED
+
+                            </span>
+
+
+                        </td>
+
+
+                        <!-- =================================
+                             ACTION
+                        ================================== -->
+
+                        <td>
+
+
+                            <div
+                                    class="actions-inline"
+                                    th:if="${booking.status == 'REQUESTED'}">
+
+
+                                <!-- APPROVE -->
+
+                                <form
+                                        class="action-form"
+                                        th:action="@{/owner/booking/{id}/approve(id=${booking.id})}"
+                                        method="post">
+
+
+                                    <button
+                                            class="action-button approve-button"
+                                            type="submit">
+
+                                        ✓
+
+                                        Approve
+
+                                    </button>
+
+
+                                </form>
+
+
+                                <!-- REJECT -->
+
+                                <form
+                                        class="action-form"
+                                        th:action="@{/owner/booking/{id}/reject(id=${booking.id})}"
+                                        method="post"
+                                        data-confirm="Reject this booking request?">
+
+
+                                    <button
+                                            class="action-button reject-button"
+                                            type="submit">
+
+                                        ×
+
+                                        Reject
+
+                                    </button>
+
+
+                                </form>
+
+
+                            </div>
+
+
+                            <span
+                                    class="processed"
+                                    th:if="${booking.status != 'REQUESTED'}">
+
+                                ✓
+
+                                Processed
+
+                            </span>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <section
+                class="empty-state"
+                th:if="${bookings == null || bookings.isEmpty()}">
+
+
+            <span class="empty-circle-one"></span>
+
+            <span class="empty-circle-two"></span>
+
+
+            <div class="empty-icon">
+                📋
+            </div>
+
+
+            <h3>
+                No booking requests
+            </h3>
+
+
+            <p>
+
+                New guest booking requests will appear
+                here when someone requests an available
+                room from one of your properties.
+
+            </p>
+
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================================================
+     SCROLL TOP
+========================================================= -->
+
+<button
+        class="scroll-top"
+        id="scrollTop"
+        aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =====================================================
+       NAVBAR SHADOW
+    ===================================================== */
+
+    const nav =
+        document.querySelector(".site-nav");
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (window.scrollY > 15) {
+
+                nav.style.boxShadow =
+                    "0 10px 35px rgba(30,20,25,0.07)";
+
+            } else {
+
+                nav.style.boxShadow =
+                    "none";
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       SCROLL TOP
+    ===================================================== */
+
+    const scrollTop =
+        document.getElementById(
+            "scrollTop"
+        );
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (window.scrollY > 300) {
+
+                scrollTop.classList.add(
+                    "show"
+                );
+
+            } else {
+
+                scrollTop.classList.remove(
+                    "show"
+                );
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    scrollTop.addEventListener(
+        "click",
+        function () {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+    );
+
+
+    /* =====================================================
+       CONFIRM REJECT
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            "form[data-confirm]"
+        )
+        .forEach(
+            function (form) {
+
+                form.addEventListener(
+                    "submit",
+                    function (event) {
+
+                        const message =
+                            this.dataset.confirm;
+
+
+                        if (
+                            !window.confirm(
+                                message
+                            )
+                        ) {
+
+                            event.preventDefault();
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       APPROVE / REJECT BUTTON FEEDBACK
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".action-button"
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "click",
+                    function () {
+
+                        const form =
+                            this.closest("form");
+
+
+                        if (!form) {
+                            return;
+                        }
+
+
+                        setTimeout(
+                            function () {
+
+                                button.disabled =
+                                    true;
+
+                                button.style.opacity =
+                                    "0.65";
+
+                                button.style.pointerEvents =
+                                    "none";
+
+                            },
+                            50
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       ROW HOVER ACCENT
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".data-table tbody tr"
+        )
+        .forEach(
+            function (row) {
+
+                row.addEventListener(
+                    "mouseenter",
+                    function () {
+
+                        this.style.boxShadow =
+                            "inset 3px 0 0 #d9467a";
+
+                    }
+                );
+
+
+                row.addEventListener(
+                    "mouseleave",
+                    function () {
+
+                        this.style.boxShadow =
+                            "";
+
+                    }
+                );
+
+            }
+        );
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,3410 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Manage Owners</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+
+            --pink: #ff4f8b;
+            --pink-dark: #e83c78;
+            --pink-light: #fff1f6;
+
+            --green: #22c55e;
+            --green-dark: #15803d;
+
+            --red: #ef4444;
+            --red-dark: #dc2626;
+
+            --blue: #3b82f6;
+            --blue-light: #eff6ff;
+
+            --bg: #f7f7f9;
+            --sidebar: #111113;
+
+            --text: #18181b;
+            --muted: #71717a;
+
+            --border: rgba(24,24,27,.08);
+
+            --card: rgba(255,255,255,.9);
+
+            --shadow:
+                    0 18px 55px rgba(0,0,0,.055);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background:
+                    radial-gradient(
+                            circle at 10% 8%,
+                            rgba(255,79,139,.07),
+                            transparent 25%
+                    ),
+                    radial-gradient(
+                            circle at 90% 15%,
+                            rgba(139,92,246,.05),
+                            transparent 25%
+                    ),
+                    var(--bg);
+
+            color: var(--text);
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .admin-sidebar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            z-index: 1200;
+
+            width: 255px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #151517,
+                            #101012
+                    );
+
+            color: white;
+
+            box-shadow:
+                    15px 0 45px rgba(0,0,0,.08);
+
+            transition:
+                    transform .35s ease;
+        }
+
+
+        /* =========================================================
+           BRAND
+        ========================================================= */
+
+        .admin-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    5px 10px 25px;
+
+            color: white;
+
+            text-decoration: none;
+        }
+
+
+        .admin-brand-icon {
+
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff82aa
+                    );
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(255,79,139,.25);
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-brand-text {
+
+            font-size: 19px;
+
+            font-weight: 850;
+
+            letter-spacing:
+                    -.045em;
+        }
+
+
+        .admin-brand-sub {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .12em;
+        }
+
+
+        /* =========================================================
+           SIDEBAR NAV
+        ========================================================= */
+
+        .sidebar-section-title {
+
+            padding:
+                    12px 12px 8px;
+
+            color:
+                    rgba(255,255,255,.3);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .13em;
+        }
+
+
+        .sidebar-nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+
+        .sidebar-link {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                    11px 12px;
+
+            border-radius: 11px;
+
+            color:
+                    rgba(255,255,255,.62);
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                    color .25s ease,
+                    background .25s ease,
+                    transform .25s ease;
+        }
+
+
+        .sidebar-link:hover {
+
+            color: white;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            transform:
+                    translateX(3px);
+        }
+
+
+        .sidebar-link.active {
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            rgba(255,79,139,.18),
+                            rgba(255,79,139,.06)
+                    );
+        }
+
+
+        .sidebar-link.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 50%;
+
+            width: 3px;
+
+            height: 21px;
+
+            border-radius:
+                    0 5px 5px 0;
+
+            background:
+                    var(--pink);
+
+            transform:
+                    translateY(-50%);
+        }
+
+
+        .sidebar-icon {
+
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background:
+                    rgba(255,255,255,.05);
+
+            font-size: 12px;
+        }
+
+
+        .sidebar-link.active
+        .sidebar-icon {
+
+            background:
+                    rgba(255,79,139,.15);
+        }
+
+
+        .sidebar-label {
+
+            flex: 1;
+        }
+
+
+        /* =========================================================
+           SIDEBAR BOTTOM
+        ========================================================= */
+
+        .sidebar-bottom {
+
+            margin-top: auto;
+        }
+
+
+        .admin-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                    13px 10px;
+
+            margin-bottom: 8px;
+
+            border-radius: 13px;
+
+            background:
+                    rgba(255,255,255,.045);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.05);
+        }
+
+
+        .admin-avatar {
+
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff9abc
+                    );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-profile-name {
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        .admin-profile-role {
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+        }
+
+
+        .logout-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    10px 12px;
+
+            border-radius: 10px;
+
+            color:
+                    rgba(255,255,255,.45);
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition:
+                    background .2s ease,
+                    color .2s ease;
+        }
+
+
+        .logout-link:hover {
+
+            color:
+                    #ff7fa4;
+
+            background:
+                    rgba(255,79,139,.08);
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .admin-main {
+
+            min-height: 100vh;
+
+            margin-left: 255px;
+
+            padding:
+                    28px 32px 70px;
+        }
+
+
+        .admin-container {
+
+            max-width: 1450px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TOPBAR
+        ========================================================= */
+
+        .topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+
+            animation:
+                    fadeDown .6s ease both;
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: white;
+
+            box-shadow:
+                    0 8px 25px rgba(0,0,0,.06);
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+        .topbar-title {
+
+            color:
+                    #71717a;
+
+            font-size: 10px;
+
+            font-weight: 750;
+        }
+
+
+        .system-pill {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    8px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    rgba(255,255,255,.8);
+
+            border:
+                    1px solid var(--border);
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .online-dot {
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--green);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(34,197,94,.1);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        /* =========================================================
+           PAGE HERO
+        ========================================================= */
+
+        .page-hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            padding:
+                    30px 32px;
+
+            margin-bottom: 20px;
+
+            border-radius:
+                    24px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #18181b,
+                            #252529 65%,
+                            #351724
+                    );
+
+            color: white;
+
+            box-shadow:
+                    0 20px 55px rgba(0,0,0,.11);
+
+            animation:
+                    heroReveal .7s ease both;
+        }
+
+
+        .page-hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 310px;
+            height: 310px;
+
+            right: -90px;
+            top: -180px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,79,139,.2);
+
+            filter:
+                    blur(8px);
+
+            animation:
+                    orbFloat 8s ease-in-out infinite;
+        }
+
+
+        .page-hero-copy {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .page-eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 11px;
+
+            color:
+                    #ff86a9;
+
+            font-size: 9px;
+
+            font-weight: 850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .13em;
+        }
+
+
+        .page-eyebrow::before {
+
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--pink);
+        }
+
+
+        .page-hero h1 {
+
+            margin:
+                    0 0 8px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(36px, 4vw, 51px);
+
+            line-height: 1;
+
+            letter-spacing:
+                    -.055em;
+        }
+
+
+        .page-hero p {
+
+            margin: 0;
+
+            color:
+                    rgba(255,255,255,.55);
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        .hero-count {
+
+            position: relative;
+
+            z-index: 2;
+
+            min-width:
+                    125px;
+
+            padding:
+                    16px;
+
+            border-radius:
+                    15px;
+
+            background:
+                    rgba(255,255,255,.08);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.1);
+
+            backdrop-filter:
+                    blur(12px);
+
+            text-align:
+                    center;
+        }
+
+
+        .hero-count strong {
+
+            display: block;
+
+            margin-bottom:
+                    4px;
+
+            font-size:
+                    26px;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .hero-count span {
+
+            color:
+                    rgba(255,255,255,.4);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    750;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .08em;
+        }
+
+
+        /* =========================================================
+           SUMMARY CARDS
+        ========================================================= */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .summary-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height:
+                    115px;
+
+            padding:
+                    18px;
+
+            border-radius:
+                    18px;
+
+            background:
+                    var(--card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    statReveal .6s ease both;
+
+            transition:
+                    transform .3s ease,
+                    box-shadow .3s ease;
+        }
+
+
+        .summary-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            box-shadow:
+                    0 25px 55px
+                    rgba(0,0,0,.09);
+        }
+
+
+        .summary-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -40px;
+            bottom: -45px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--glow);
+        }
+
+
+        .summary-card.total {
+
+            --glow:
+                    rgba(255,79,139,.1);
+        }
+
+
+        .summary-card.active {
+
+            --glow:
+                    rgba(34,197,94,.1);
+        }
+
+
+        .summary-card.inactive {
+
+            --glow:
+                    rgba(239,68,68,.09);
+        }
+
+
+        .summary-icon {
+
+            width:
+                    35px;
+
+            height:
+                    35px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    12px;
+
+            border-radius:
+                    10px;
+
+            background:
+                    var(--icon-bg);
+
+            color:
+                    var(--icon-color);
+
+            font-size:
+                    13px;
+        }
+
+
+        .total .summary-icon {
+
+            --icon-bg:
+                    #fff0f5;
+
+            --icon-color:
+                    #e83c78;
+        }
+
+
+        .active .summary-icon {
+
+            --icon-bg:
+                    #ecfdf3;
+
+            --icon-color:
+                    #16a34a;
+        }
+
+
+        .inactive .summary-icon {
+
+            --icon-bg:
+                    #fef2f2;
+
+            --icon-color:
+                    #dc2626;
+        }
+
+
+        .summary-label {
+
+            display:
+                    block;
+
+            margin-bottom:
+                    4px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .1em;
+        }
+
+
+        .summary-number {
+
+            display:
+                    block;
+
+            color:
+                    #18181b;
+
+            font-size:
+                    25px;
+
+            line-height:
+                    1;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.045em;
+        }
+
+
+        .summary-description {
+
+            display:
+                    block;
+
+            margin-top:
+                    6px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           OWNER LIST PANEL
+        ========================================================= */
+
+        .owner-panel {
+
+            overflow:
+                    hidden;
+
+            border-radius:
+                    21px;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    panelReveal .75s .15s ease both;
+        }
+
+
+        .panel-header {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    20px;
+
+            padding:
+                    20px 21px;
+
+            border-bottom:
+                    1px solid #eeeeef;
+        }
+
+
+        .panel-title h2 {
+
+            margin:
+                    0 0 4px;
+
+            font-size:
+                    15px;
+
+            letter-spacing:
+                    -.025em;
+        }
+
+
+        .panel-title p {
+
+            margin: 0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           SEARCH
+        ========================================================= */
+
+        .owner-search {
+
+            position:
+                    relative;
+
+            width:
+                    250px;
+        }
+
+
+        .owner-search-icon {
+
+            position:
+                    absolute;
+
+            left:
+                    12px;
+
+            top:
+                    50%;
+
+            transform:
+                    translateY(-50%);
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    11px;
+
+            pointer-events:
+                    none;
+        }
+
+
+        .owner-search input {
+
+            width:
+                    100%;
+
+            height:
+                    38px;
+
+            padding:
+                    0 12px 0 33px;
+
+            border:
+                    1px solid #e7e7e9;
+
+            border-radius:
+                    10px;
+
+            background:
+                    #fafafa;
+
+            color:
+                    #3f3f46;
+
+            font-family:
+                    inherit;
+
+            font-size:
+                    9px;
+
+            outline:
+                    none;
+
+            transition:
+                    background .2s ease,
+                    border .2s ease,
+                    box-shadow .2s ease;
+        }
+
+
+        .owner-search input:focus {
+
+            background:
+                    white;
+
+            border-color:
+                    rgba(255,79,139,.45);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(255,79,139,.08);
+        }
+
+
+        /* =========================================================
+           TABLE
+        ========================================================= */
+
+        .table-scroll {
+
+            overflow-x:
+                    auto;
+        }
+
+
+        .owner-table {
+
+            width:
+                    100%;
+
+            min-width:
+                    850px;
+
+            border-collapse:
+                    collapse;
+        }
+
+
+        .owner-table th {
+
+            padding:
+                    13px 20px;
+
+            background:
+                    #fafafa;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-align:
+                    left;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .09em;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        .owner-table td {
+
+            padding:
+                    15px 20px;
+
+            border-top:
+                    1px solid #f1f1f2;
+
+            color:
+                    #52525b;
+
+            font-size:
+                    10px;
+
+            vertical-align:
+                    middle;
+        }
+
+
+        .owner-row {
+
+            opacity:
+                    0;
+
+            transform:
+                    translateY(12px);
+
+            transition:
+                    background .25s ease,
+                    opacity .45s ease,
+                    transform .45s ease;
+        }
+
+
+        .owner-row.visible {
+
+            opacity:
+                    1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .owner-row:hover {
+
+            background:
+                    #fff9fb;
+        }
+
+
+        /* =========================================================
+           OWNER PROFILE
+        ========================================================= */
+
+        .owner-profile {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    10px;
+        }
+
+
+        .owner-avatar {
+
+            width:
+                    38px;
+
+            height:
+                    38px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            flex-shrink:
+                    0;
+
+            border-radius:
+                    11px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #ffe0ea
+                    );
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    12px;
+
+            font-weight:
+                    900;
+
+            transition:
+                    transform .25s ease;
+        }
+
+
+        .owner-row:hover
+        .owner-avatar {
+
+            transform:
+                    scale(1.08)
+                    rotate(-3deg);
+        }
+
+
+        .owner-name {
+
+            display:
+                    block;
+
+            margin-bottom:
+                    3px;
+
+            color:
+                    #27272a;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .owner-id {
+
+            display:
+                    block;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           EMAIL
+        ========================================================= */
+
+        .email-cell {
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    650;
+
+            word-break:
+                    break-word;
+        }
+
+
+        /* =========================================================
+           PHONE
+        ========================================================= */
+
+        .phone-cell {
+
+            color:
+                    #71717a;
+
+            font-size:
+                    9px;
+        }
+
+
+        .not-available {
+
+            color:
+                    #b4b4ba;
+
+            font-size:
+                    9px;
+        }
+
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
+
+        .owner-status {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    999px;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        .owner-status::before {
+
+            content: "";
+
+            width:
+                    5px;
+
+            height:
+                    5px;
+
+            border-radius:
+                    50%;
+        }
+
+
+        .owner-status.active {
+
+            background:
+                    #ecfdf3;
+
+            color:
+                    var(--green-dark);
+        }
+
+
+        .owner-status.active::before {
+
+            background:
+                    var(--green);
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(34,197,94,.1);
+        }
+
+
+        .owner-status.inactive {
+
+            background:
+                    #fef2f2;
+
+            color:
+                    var(--red-dark);
+        }
+
+
+        .owner-status.inactive::before {
+
+            background:
+                    var(--red);
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .actions {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    7px;
+
+            flex-wrap:
+                    wrap;
+        }
+
+
+        .action-btn {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    5px;
+
+            min-height:
+                    32px;
+
+            padding:
+                    0 10px;
+
+            border:
+                    1px solid transparent;
+
+            border-radius:
+                    8px;
+
+            font-family:
+                    inherit;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-decoration:
+                    none;
+
+            cursor:
+                    pointer;
+
+            transition:
+                    transform .2s ease,
+                    background .2s ease,
+                    border .2s ease,
+                    box-shadow .2s ease;
+        }
+
+
+        .action-btn:hover {
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .properties-btn {
+
+            background:
+                    #f5f3ff;
+
+            color:
+                    #7c3aed;
+
+            border-color:
+                    #ede9fe;
+        }
+
+
+        .properties-btn:hover {
+
+            background:
+                    #ede9fe;
+
+            box-shadow:
+                    0 8px 18px
+                    rgba(124,58,237,.1);
+        }
+
+
+        .activate-btn {
+
+            background:
+                    #ecfdf3;
+
+            color:
+                    var(--green-dark);
+
+            border-color:
+                    #dcfce7;
+        }
+
+
+        .activate-btn:hover {
+
+            background:
+                    #dcfce7;
+
+            box-shadow:
+                    0 8px 18px
+                    rgba(34,197,94,.1);
+        }
+
+
+        .deactivate-btn {
+
+            background:
+                    #fef2f2;
+
+            color:
+                    var(--red-dark);
+
+            border-color:
+                    #fee2e2;
+        }
+
+
+        .deactivate-btn:hover {
+
+            background:
+                    #fee2e2;
+
+            box-shadow:
+                    0 8px 18px
+                    rgba(239,68,68,.1);
+        }
+
+
+        .action-btn.loading {
+
+            opacity:
+                    .6;
+
+            pointer-events:
+                    none;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+
+            min-height:
+                    380px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            padding:
+                    45px 20px;
+
+            text-align:
+                    center;
+        }
+
+
+        .empty-icon {
+
+            width:
+                    76px;
+
+            height:
+                    76px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    18px;
+
+            border-radius:
+                    23px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #ffe4ed
+                    );
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    27px;
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(255,79,139,.12);
+
+            animation:
+                    emptyFloat 4s ease-in-out infinite;
+        }
+
+
+        .empty-state h3 {
+
+            margin:
+                    0 0 7px;
+
+            font-size:
+                    18px;
+        }
+
+
+        .empty-state p {
+
+            max-width:
+                    440px;
+
+            margin:
+                    0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    10px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           NO SEARCH RESULTS
+        ========================================================= */
+
+        .no-search-result {
+
+            display:
+                    none;
+
+            padding:
+                    50px 20px;
+
+            text-align:
+                    center;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    10px;
+        }
+
+
+        .no-search-result strong {
+
+            display:
+                    block;
+
+            margin-bottom:
+                    5px;
+
+            color:
+                    #52525b;
+
+            font-size:
+                    13px;
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeDown {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(-12px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes heroReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(20px)
+                        scale(.99);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        @keyframes statReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(18px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes panelReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes orbFloat {
+
+            0%,100% {
+
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+
+                transform:
+                        translate(-35px,30px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,100% {
+
+                transform:
+                        scale(1);
+
+                opacity:
+                        1;
+            }
+
+            50% {
+
+                transform:
+                        scale(.7);
+
+                opacity:
+                        .6;
+            }
+        }
+
+
+        @keyframes emptyFloat {
+
+            0%,100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-8px);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .owner-search {
+
+                width:
+                        210px;
+            }
+        }
+
+
+        @media (max-width: 950px) {
+
+            .admin-sidebar {
+
+                transform:
+                        translateX(-100%);
+            }
+
+
+            .admin-sidebar.open {
+
+                transform:
+                        translateX(0);
+            }
+
+
+            .sidebar-overlay {
+
+                display:
+                        none;
+
+                position:
+                        fixed;
+
+                inset:
+                        0;
+
+                z-index:
+                        1100;
+
+                background:
+                        rgba(0,0,0,.4);
+
+                backdrop-filter:
+                        blur(3px);
+            }
+
+
+            .sidebar-overlay.open {
+
+                display:
+                        block;
+            }
+
+
+            .admin-main {
+
+                margin-left:
+                        0;
+
+                padding:
+                        22px 20px 60px;
+            }
+
+
+            .mobile-menu {
+
+                display:
+                        grid;
+
+                place-items:
+                        center;
+            }
+
+
+            .page-hero {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .hero-count {
+
+                width:
+                        100%;
+            }
+
+
+            .panel-header {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .owner-search {
+
+                width:
+                        100%;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .admin-main {
+
+                padding:
+                        18px 14px 50px;
+            }
+
+
+            .system-pill {
+
+                display:
+                        none;
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .page-hero {
+
+                padding:
+                        25px 21px;
+
+                border-radius:
+                        19px;
+            }
+
+
+            .page-hero h1 {
+
+                font-size:
+                        38px;
+            }
+
+
+            .panel-header {
+
+                padding:
+                        17px;
+            }
+
+
+            .owner-table {
+
+                min-width:
+                        780px;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .page-hero h1 {
+
+                font-size:
+                        34px;
+            }
+
+
+            .admin-main {
+
+                padding:
+                        16px 11px 45px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
+
+<div
+        id="sidebarOverlay"
+        class="sidebar-overlay">
+</div>
+
+
+<!-- =========================================================
+     ADMIN SIDEBAR
+========================================================= -->
+
+<aside
+        id="adminSidebar"
+        class="admin-sidebar">
+
+
+    <!-- BRAND -->
+
+    <a
+            class="admin-brand"
+            th:href="@{/admin/dashboard}">
+
+        <div class="admin-brand-icon">
+            ✦
+        </div>
+
+        <div>
+
+            <div class="admin-brand-text">
+                SheStay
+            </div>
+
+            <span class="admin-brand-sub">
+                Admin Console
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- MAIN -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/dashboard}">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span class="sidebar-label">
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/users}">
+
+            <span class="sidebar-icon">
+                👩
+            </span>
+
+            <span class="sidebar-label">
+                Women Users
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link active"
+                th:href="@{/admin/owners}">
+
+            <span class="sidebar-icon">
+                ♙
+            </span>
+
+            <span class="sidebar-label">
+                Owners
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/properties}">
+
+            <span class="sidebar-icon">
+                ▦
+            </span>
+
+            <span class="sidebar-label">
+                Properties
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/rooms}">
+
+            <span class="sidebar-icon">
+                🛏
+            </span>
+
+            <span class="sidebar-label">
+                Rooms
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings}">
+
+            <span class="sidebar-icon">
+                ▣
+            </span>
+
+            <span class="sidebar-label">
+                Bookings
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- ACCOUNT -->
+
+    <div class="sidebar-section-title">
+        Account
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/owner/register}">
+
+            <span class="sidebar-icon">
+                +
+            </span>
+
+            <span class="sidebar-label">
+                Owner registration
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- PROFILE -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+                A
+            </div>
+
+            <div>
+
+                <div class="admin-profile-name">
+                    SheStay Admin
+                </div>
+
+                <div class="admin-profile-role">
+                    Platform Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <a
+                class="logout-link"
+                th:href="@{/logout}">
+
+            <span>
+                ↪
+            </span>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+
+        <!-- =====================================================
+             TOPBAR
+        ===================================================== -->
+
+        <div class="topbar">
+
+
+            <div class="topbar-left">
+
+                <button
+                        id="menuButton"
+                        class="mobile-menu"
+                        aria-label="Open admin menu">
+
+                    ☰
+
+                </button>
+
+
+                <span class="topbar-title">
+                    Owner account management
+                </span>
+
+            </div>
+
+
+            <span class="system-pill">
+
+                <span class="online-dot"></span>
+
+                System active
+
+            </span>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             HERO
+        ===================================================== -->
+
+        <section class="page-hero">
+
+
+            <div class="page-hero-copy">
+
+
+                <div class="page-eyebrow">
+                    Admin / Owners
+                </div>
+
+
+                <h1>
+                    Owners.
+                </h1>
+
+
+                <p>
+                    Manage property owner accounts,
+                    account status and their listings.
+                </p>
+
+
+            </div>
+
+
+            <div class="hero-count">
+
+
+                <strong
+                        th:text="${owners != null
+                        ? #lists.size(owners)
+                        : 0}">
+
+                    0
+
+                </strong>
+
+
+                <span>
+                    Registered owners
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             SUMMARY
+        ===================================================== -->
+
+        <section class="summary-grid">
+
+
+            <!-- TOTAL -->
+
+            <div class="summary-card total">
+
+
+                <div class="summary-icon">
+                    ♙
+                </div>
+
+
+                <span class="summary-label">
+                    Total owners
+                </span>
+
+
+                <span
+                        id="totalOwners"
+                        class="summary-number"
+                        th:text="${owners != null
+                        ? #lists.size(owners)
+                        : 0}">
+
+                    0
+
+                </span>
+
+
+                <span class="summary-description">
+                    Registered property owners
+                </span>
+
+
+            </div>
+
+
+            <!-- ACTIVE -->
+
+            <div class="summary-card active">
+
+
+                <div class="summary-icon">
+                    ✓
+                </div>
+
+
+                <span class="summary-label">
+                    Active owners
+                </span>
+
+
+                <span
+                        id="activeOwners"
+                        class="summary-number">
+
+                    0
+
+                </span>
+
+
+                <span class="summary-description">
+                    Currently active accounts
+                </span>
+
+
+            </div>
+
+
+            <!-- INACTIVE -->
+
+            <div class="summary-card inactive">
+
+
+                <div class="summary-icon">
+                    ×
+                </div>
+
+
+                <span class="summary-label">
+                    Inactive owners
+                </span>
+
+
+                <span
+                        id="inactiveOwners"
+                        class="summary-number">
+
+                    0
+
+                </span>
+
+
+                <span class="summary-description">
+                    Deactivated accounts
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             OWNER PANEL
+        ===================================================== -->
+
+        <section class="owner-panel">
+
+
+            <!-- HEADER -->
+
+            <div class="panel-header">
+
+
+                <div class="panel-title">
+
+                    <h2>
+                        Owner accounts
+                    </h2>
+
+                    <p>
+                        Review and manage registered property owners.
+                    </p>
+
+                </div>
+
+
+                <div class="owner-search">
+
+
+                    <span class="owner-search-icon">
+                        ⌕
+                    </span>
+
+
+                    <input
+                            id="ownerSearch"
+                            type="search"
+                            placeholder="Search owner, email or phone..."
+                            autocomplete="off">
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 TABLE
+            ================================================= -->
+
+            <div
+                    class="table-scroll"
+                    th:if="${owners != null
+                    && !owners.isEmpty()}">
+
+
+                <table class="owner-table">
+
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            Owner
+                        </th>
+
+                        <th>
+                            Email
+                        </th>
+
+                        <th>
+                            Phone
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="ownersTable">
+
+
+                    <tr
+                            class="owner-row"
+                            th:each="owner : ${owners}">
+
+
+                        <!-- OWNER -->
+
+                        <td>
+
+                            <div class="owner-profile">
+
+
+                                <div class="owner-avatar">
+
+                                    <span
+                                            th:text="${owner.name != null
+                                            && !owner.name.isEmpty()
+                                            ? #strings.substring(
+                                                owner.name,
+                                                0,
+                                                1
+                                              ).toUpperCase()
+                                            : 'O'}">
+
+                                        O
+
+                                    </span>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span
+                                            class="owner-name"
+                                            th:text="${owner.name}">
+
+                                        Owner
+
+                                    </span>
+
+
+                                    <span class="owner-id">
+
+                                        Owner account
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- EMAIL -->
+
+                        <td>
+
+                            <span
+                                    class="email-cell"
+                                    th:text="${owner.email}">
+
+                                email
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- PHONE -->
+
+                        <td>
+
+                            <span
+                                    class="phone-cell"
+                                    th:if="${owner.phone != null
+                                    && !owner.phone.isEmpty()}"
+                                    th:text="${owner.phone}">
+
+                                phone
+
+                            </span>
+
+
+                            <span
+                                    class="not-available"
+                                    th:if="${owner.phone == null
+                                    || owner.phone.isEmpty()}">
+
+                                Not provided
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+
+                            <span
+                                    class="owner-status"
+                                    th:classappend="${owner.status == 'ACTIVE'
+                                    ? ' active'
+                                    : ' inactive'}"
+                                    th:text="${owner.status}">
+
+                                ACTIVE
+
+                            </span>
+
+
+                        </td>
+
+
+                        <!-- ACTIONS -->
+
+                        <td>
+
+
+                            <div class="actions">
+
+
+                                <!-- PROPERTIES -->
+
+                                <a
+                                        class="action-btn properties-btn"
+                                        th:href="@{/admin/owner/{id}/properties(id=${owner.id})}">
+
+                                    <span>
+                                        ▦
+                                    </span>
+
+                                    Properties
+
+                                </a>
+
+
+                                <!-- ACTIVATE -->
+
+                                <form
+                                        th:if="${owner.status != 'ACTIVE'}"
+                                        th:action="@{/admin/owner/{id}/activate(id=${owner.id})}"
+                                        method="post"
+                                        class="action-form">
+
+
+                                    <button
+                                            class="action-btn activate-btn"
+                                            type="submit">
+
+                                        <span>
+                                            ✓
+                                        </span>
+
+                                        Activate
+
+                                    </button>
+
+
+                                </form>
+
+
+                                <!-- DEACTIVATE -->
+
+                                <form
+                                        th:if="${owner.status == 'ACTIVE'}"
+                                        th:action="@{/admin/owner/{id}/deactivate(id=${owner.id})}"
+                                        method="post"
+                                        class="action-form"
+                                        data-confirm="Deactivate this owner account?">
+
+
+                                    <button
+                                            class="action-btn deactivate-btn"
+                                            type="submit">
+
+                                        <span>
+                                            ×
+                                        </span>
+
+                                        Deactivate
+
+                                    </button>
+
+
+                                </form>
+
+
+                            </div>
+
+
+                        </td>
+
+
+                    </tr>
+
+
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 SEARCH EMPTY
+            ================================================= -->
+
+            <div
+                    id="noSearchResult"
+                    class="no-search-result">
+
+                <strong>
+                    No matching owners
+                </strong>
+
+                Try a different name, email or phone number.
+
+            </div>
+
+
+            <!-- =================================================
+                 EMPTY DATABASE
+            ================================================= -->
+
+            <div
+                    class="empty-state"
+                    th:if="${owners == null
+                    || owners.isEmpty()}">
+
+
+                <div class="empty-icon">
+                    ♙
+                </div>
+
+
+                <h3>
+                    No owners registered
+                </h3>
+
+
+                <p>
+                    Property owner accounts will appear here
+                    when they register with SheStay.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            /* =================================================
+               SIDEBAR
+            ================================================= */
+
+            const sidebar =
+                document.getElementById(
+                    "adminSidebar"
+                );
+
+
+            const overlay =
+                document.getElementById(
+                    "sidebarOverlay"
+                );
+
+
+            const menuButton =
+                document.getElementById(
+                    "menuButton"
+                );
+
+
+            function openSidebar() {
+
+                sidebar.classList.add(
+                    "open"
+                );
+
+                overlay.classList.add(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+            }
+
+
+            function closeSidebar() {
+
+                sidebar.classList.remove(
+                    "open"
+                );
+
+                overlay.classList.remove(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "";
+            }
+
+
+            if (menuButton) {
+
+                menuButton.addEventListener(
+                    "click",
+                    openSidebar
+                );
+
+            }
+
+
+            if (overlay) {
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+
+
+            /* =================================================
+               MOBILE NAV CLOSE
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".sidebar-link, .logout-link"
+                )
+                .forEach(
+                    function (link) {
+
+                        link.addEventListener(
+                            "click",
+                            function () {
+
+                                if (
+                                    window.innerWidth <= 950
+                                ) {
+
+                                    closeSidebar();
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            /* =================================================
+               OWNER ROW ANIMATION
+            ================================================= */
+
+            const rows =
+                document.querySelectorAll(
+                    ".owner-row"
+                );
+
+
+            rows.forEach(
+                function (row, index) {
+
+                    setTimeout(
+                        function () {
+
+                            row.classList.add(
+                                "visible"
+                            );
+
+                        },
+                        80 + (index * 60)
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               ACTIVE / INACTIVE COUNTS
+            ================================================= */
+
+            let activeCount = 0;
+            let inactiveCount = 0;
+
+
+            rows.forEach(
+                function (row) {
+
+                    const status =
+                        row
+                            .querySelector(
+                                ".owner-status"
+                            );
+
+
+                    if (!status) {
+                        return;
+                    }
+
+
+                    const value =
+                        status.textContent
+                            .trim()
+                            .toUpperCase();
+
+
+                    if (value === "ACTIVE") {
+
+                        activeCount++;
+
+                    } else {
+
+                        inactiveCount++;
+
+                    }
+
+                }
+            );
+
+
+            const activeElement =
+                document.getElementById(
+                    "activeOwners"
+                );
+
+
+            const inactiveElement =
+                document.getElementById(
+                    "inactiveOwners"
+                );
+
+
+            if (activeElement) {
+
+                activeElement.textContent =
+                    activeCount;
+
+            }
+
+
+            if (inactiveElement) {
+
+                inactiveElement.textContent =
+                    inactiveCount;
+
+            }
+
+
+            /* =================================================
+               SEARCH
+            ================================================= */
+
+            const searchInput =
+                document.getElementById(
+                    "ownerSearch"
+                );
+
+
+            const noSearchResult =
+                document.getElementById(
+                    "noSearchResult"
+                );
+
+
+            if (searchInput) {
+
+
+                searchInput.addEventListener(
+                    "input",
+                    function () {
+
+
+                        const search =
+                            this.value
+                                .trim()
+                                .toLowerCase();
+
+
+                        let visibleRows = 0;
+
+
+                        rows.forEach(
+                            function (row) {
+
+
+                                const text =
+                                    row.textContent
+                                        .toLowerCase();
+
+
+                                if (
+                                    text.includes(
+                                        search
+                                    )
+                                ) {
+
+                                    row.style.display =
+                                        "";
+
+                                    visibleRows++;
+
+                                } else {
+
+                                    row.style.display =
+                                        "none";
+
+                                }
+
+                            }
+                        );
+
+
+                        if (
+                            noSearchResult
+                        ) {
+
+                            noSearchResult.style.display =
+                                search !== "" &&
+                                visibleRows === 0
+                                    ? "block"
+                                    : "none";
+
+                        }
+
+
+                    }
+                );
+
+            }
+
+
+            /* =================================================
+               ACTION CONFIRMATION
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    "form[data-confirm]"
+                )
+                .forEach(
+                    function (form) {
+
+
+                        form.addEventListener(
+                            "submit",
+                            function (event) {
+
+
+                                const message =
+                                    form.dataset.confirm;
+
+
+                                if (
+                                    !confirm(
+                                        message
+                                    )
+                                ) {
+
+                                    event.preventDefault();
+
+                                    return;
+
+                                }
+
+
+                                const button =
+                                    form.querySelector(
+                                        "button"
+                                    );
+
+
+                                if (button) {
+
+                                    button.classList.add(
+                                        "loading"
+                                    );
+
+                                    button.textContent =
+                                        "Processing...";
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            /* =================================================
+               BUTTON LOADING
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".action-form"
+                )
+                .forEach(
+                    function (form) {
+
+
+                        form.addEventListener(
+                            "submit",
+                            function () {
+
+
+                                const button =
+                                    form.querySelector(
+                                        "button"
+                                    );
+
+
+                                if (!button) {
+                                    return;
+                                }
+
+
+                                setTimeout(
+                                    function () {
+
+                                        button.disabled =
+                                            true;
+
+                                    },
+                                    0
+                                );
+
+                            }
+                        );
+
+                    }
+                );
+
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

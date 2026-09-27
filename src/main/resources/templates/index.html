@@ -1,0 +1,3475 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay | Find Your Perfect Stay</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================================
+           VARIABLES
+        ===================================================== */
+
+        :root {
+
+            --primary: #d9467a;
+            --primary-dark: #b83263;
+            --primary-light: #fff0f5;
+
+            --text: #181416;
+            --text-soft: #5f5a5c;
+            --text-muted: #888184;
+
+            --white: #ffffff;
+            --background: #fffafb;
+
+            --border: #ece7e9;
+
+            --shadow-sm:
+                    0 8px 25px rgba(20, 20, 20, 0.05);
+
+            --shadow-md:
+                    0 20px 50px rgba(20, 20, 20, 0.08);
+
+            --shadow-lg:
+                    0 30px 80px rgba(20, 20, 20, 0.12);
+
+            --container: 1180px;
+        }
+
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            font-family:
+                    "DM Sans",
+                    Arial,
+                    sans-serif;
+
+            color: var(--text);
+
+            background: var(--background);
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+
+            text-decoration: none;
+
+            color: inherit;
+        }
+
+
+        button,
+        input,
+        select {
+
+            font: inherit;
+        }
+
+
+        .container {
+
+            width: min(
+                    calc(100% - 40px),
+                    var(--container)
+            );
+
+            margin: 0 auto;
+        }
+
+
+        /* =====================================================
+           ANIMATION KEYFRAMES
+        ===================================================== */
+
+        @keyframes fadeDown {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(-25px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(35px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes fadeLeft {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateX(-40px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateX(0);
+            }
+        }
+
+
+        @keyframes fadeRight {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateX(40px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateX(0);
+            }
+        }
+
+
+        @keyframes scaleIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        scale(0.92);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        scale(1);
+            }
+        }
+
+
+        @keyframes float {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-10px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217, 70, 122, 0.35);
+            }
+
+            70% {
+
+                box-shadow:
+                        0 0 0 10px
+                        rgba(217, 70, 122, 0);
+            }
+
+            100% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217, 70, 122, 0);
+            }
+        }
+
+
+        @keyframes shimmer {
+
+            0% {
+
+                transform:
+                        translateX(-100%);
+            }
+
+            100% {
+
+                transform:
+                        translateX(100%);
+            }
+        }
+
+
+        @keyframes rotateSlow {
+
+            from {
+
+                transform:
+                        rotate(0deg);
+            }
+
+            to {
+
+                transform:
+                        rotate(360deg);
+            }
+        }
+
+
+        /* =====================================================
+           SCROLL REVEAL
+        ===================================================== */
+
+        .reveal {
+
+            opacity: 0;
+
+            transform:
+                    translateY(35px);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    );
+        }
+
+
+        .reveal.show {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .reveal-left {
+
+            opacity: 0;
+
+            transform:
+                    translateX(-45px);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    );
+        }
+
+
+        .reveal-left.show {
+
+            opacity: 1;
+
+            transform:
+                    translateX(0);
+        }
+
+
+        .reveal-right {
+
+            opacity: 0;
+
+            transform:
+                    translateX(45px);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    );
+        }
+
+
+        .reveal-right.show {
+
+            opacity: 1;
+
+            transform:
+                    translateX(0);
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .navbar {
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+
+            z-index: 100;
+
+            animation:
+                    fadeDown 0.8s ease both;
+        }
+
+
+        .navbar-inner {
+
+            height: 82px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+
+        .logo {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 21px;
+
+            font-weight: 700;
+
+            letter-spacing: -0.5px;
+        }
+
+
+        .logo-icon {
+
+            width: 37px;
+            height: 37px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background: var(--primary);
+
+            color: white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size: 21px;
+
+            transition:
+                    transform 0.35s ease;
+        }
+
+
+        .logo:hover .logo-icon {
+
+            transform:
+                    rotate(-8deg)
+                    scale(1.08);
+        }
+
+
+        .nav-menu {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 31px;
+        }
+
+
+        .nav-menu > a {
+
+            color: #555;
+
+            font-size: 14px;
+
+            font-weight: 500;
+
+            transition:
+                    color 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .nav-menu > a:hover {
+
+            color: var(--primary);
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .nav-menu .nav-button {
+
+            padding: 11px 20px;
+
+            border-radius: 10px;
+
+            background: var(--text);
+
+            color: white;
+        }
+
+
+        .nav-menu .nav-button:hover {
+
+            background: var(--primary);
+
+            color: white;
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+
+            position: relative;
+
+            padding-top: 150px;
+
+            padding-bottom: 110px;
+
+            overflow: hidden;
+
+            background:
+
+                    radial-gradient(
+                            circle at 80% 20%,
+                            rgba(244, 163, 192, 0.27),
+                            transparent 30%
+                    ),
+
+                    radial-gradient(
+                            circle at 15% 60%,
+                            rgba(255, 215, 229, 0.50),
+                            transparent 30%
+                    ),
+
+                    linear-gradient(
+                            135deg,
+                            #fff8fb,
+                            #ffffff 55%,
+                            #fff5f8
+                    );
+        }
+
+
+        /* animated background */
+
+        .hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 400px;
+
+            height: 400px;
+
+            top: 80px;
+
+            right: -180px;
+
+            border-radius: 50%;
+
+            border:
+                    1px solid
+                    rgba(217, 70, 122, 0.12);
+
+            animation:
+                    rotateSlow 30s linear infinite;
+
+            pointer-events: none;
+        }
+
+
+        .hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 280px;
+
+            height: 280px;
+
+            bottom: 80px;
+
+            left: -160px;
+
+            border-radius: 50%;
+
+            border:
+                    1px solid
+                    rgba(217, 70, 122, 0.10);
+
+            animation:
+                    float 7s ease-in-out infinite;
+
+            pointer-events: none;
+        }
+
+
+        .hero-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 800px;
+
+            margin: 0 auto;
+
+            text-align: center;
+
+            animation:
+                    fadeUp 0.9s 0.15s ease both;
+        }
+
+
+        .hero-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding: 8px 14px;
+
+            border:
+                    1px solid
+                    #f0d7df;
+
+            border-radius: 50px;
+
+            background:
+                    rgba(255,255,255,0.8);
+
+            color: var(--primary-dark);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.6px;
+
+            animation:
+                    scaleIn 0.7s 0.3s ease both;
+        }
+
+
+        .badge-dot {
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: var(--primary);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        .hero h1 {
+
+            margin-top: 24px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(48px, 7vw, 82px);
+
+            line-height: 1.03;
+
+            letter-spacing: -3px;
+
+            font-weight: 600;
+
+            animation:
+                    fadeUp 0.9s 0.35s ease both;
+        }
+
+
+        .hero h1 span {
+
+            color: var(--primary);
+
+            font-style: italic;
+
+            display: inline-block;
+
+            animation:
+                    fadeUp 0.8s 0.55s ease both;
+        }
+
+
+        .hero-description {
+
+            max-width: 630px;
+
+            margin: 27px auto 0;
+
+            color: var(--text-soft);
+
+            font-size: 17px;
+
+            line-height: 1.8;
+
+            animation:
+                    fadeUp 0.8s 0.65s ease both;
+        }
+
+
+        .hero-buttons {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 32px;
+
+            animation:
+                    fadeUp 0.8s 0.8s ease both;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .primary-button {
+
+            position: relative;
+
+            min-height: 50px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            padding: 0 23px;
+
+            border-radius: 12px;
+
+            background: var(--primary);
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            overflow: hidden;
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(217, 70, 122, 0.18);
+
+            transition:
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .primary-button::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 40%;
+
+            height: 100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,0.25),
+                            transparent
+                    );
+
+            transform:
+                    translateX(-150%);
+        }
+
+
+        .primary-button:hover::before {
+
+            animation:
+                    shimmer 0.7s ease;
+        }
+
+
+        .primary-button:hover {
+
+            background: var(--primary-dark);
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    0 15px 30px
+                    rgba(217, 70, 122, 0.25);
+        }
+
+
+        .primary-button span {
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .primary-button:hover span {
+
+            transform:
+                    translateX(4px);
+        }
+
+
+        .secondary-button {
+
+            min-height: 50px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 0 23px;
+
+            border:
+                    1px solid
+                    #ded9db;
+
+            border-radius: 12px;
+
+            background: white;
+
+            color: #333;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+            transition:
+                    transform 0.25s ease,
+                    border-color 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .secondary-button:hover {
+
+            border-color: var(--primary);
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    var(--shadow-sm);
+        }
+
+
+        /* =====================================================
+           SEARCH BOX
+        ===================================================== */
+
+        .search-box {
+
+            position: relative;
+
+            z-index: 5;
+
+            max-width: 1080px;
+
+            margin: 78px auto 0;
+
+            padding: 25px;
+
+            border:
+                    1px solid
+                    rgba(230,230,230,0.9);
+
+            border-radius: 22px;
+
+            background:
+                    rgba(255,255,255,0.95);
+
+            box-shadow:
+                    var(--shadow-lg);
+
+            backdrop-filter:
+                    blur(15px);
+
+            animation:
+                    fadeUp 1s 0.9s ease both;
+
+            transition:
+                    transform 0.35s ease,
+                    box-shadow 0.35s ease;
+        }
+
+
+        .search-box:hover {
+
+            transform:
+                    translateY(-4px);
+
+            box-shadow:
+                    0 35px 90px
+                    rgba(20,20,20,0.14);
+        }
+
+
+        .search-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 13px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .search-title-icon {
+
+            width: 42px;
+            height: 42px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                    var(--primary-light);
+
+            color: var(--primary);
+
+            font-size: 23px;
+
+            animation:
+                    float 4s ease-in-out infinite;
+        }
+
+
+        .search-title strong {
+
+            display: block;
+
+            font-size: 15px;
+        }
+
+
+        .search-title small {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color: var(--text-muted);
+
+            font-size: 12px;
+        }
+
+
+        .search-fields {
+
+            display: grid;
+
+            grid-template-columns:
+                    1.4fr
+                    1fr
+                    1fr
+                    auto;
+
+            gap: 12px;
+
+            align-items: end;
+        }
+
+
+        .search-field label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #777;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+        }
+
+
+        .field-input {
+
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 0 14px;
+
+            border:
+                    1px solid
+                    #e8e5e6;
+
+            border-radius: 11px;
+
+            background: #fafafa;
+
+            transition:
+                    border-color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .field-input:hover {
+
+            transform:
+                    translateY(-2px);
+
+            background: white;
+        }
+
+
+        .field-input:focus-within {
+
+            border-color:
+                    var(--primary);
+
+            background: white;
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 8px 20px
+                    rgba(217,70,122,0.08);
+        }
+
+
+        .field-input > span {
+
+            color: var(--primary);
+
+            font-size: 17px;
+        }
+
+
+        .field-input input,
+        .field-input select {
+
+            width: 100%;
+
+            border: 0;
+
+            outline: 0;
+
+            background: transparent;
+
+            color: #333;
+
+            font-size: 13px;
+        }
+
+
+        .search-button {
+
+            height: 52px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 12px;
+
+            padding: 0 23px;
+
+            border: 0;
+
+            border-radius: 11px;
+
+            background: var(--text);
+
+            color: white;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition:
+                    background 0.25s ease,
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .search-button:hover {
+
+            background:
+                    var(--primary);
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    0 12px 25px
+                    rgba(217,70,122,0.20);
+        }
+
+
+        .search-button span {
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .search-button:hover span {
+
+            transform:
+                    translateX(4px);
+        }
+
+
+        /* =====================================================
+           TRUST
+        ===================================================== */
+
+        .trust-section {
+
+            padding: 32px 0;
+
+            border-bottom:
+                    1px solid
+                    var(--border);
+
+            background: white;
+        }
+
+
+        .trust-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(4,1fr);
+        }
+
+
+        .trust-item {
+
+            text-align: center;
+
+            padding: 5px 20px;
+
+            border-right:
+                    1px solid
+                    var(--border);
+
+            opacity: 0;
+
+            transform:
+                    translateY(15px);
+
+            animation:
+                    fadeUp 0.6s ease forwards;
+        }
+
+
+        .trust-item:nth-child(1) {
+
+            animation-delay:
+                    0.2s;
+        }
+
+
+        .trust-item:nth-child(2) {
+
+            animation-delay:
+                    0.3s;
+        }
+
+
+        .trust-item:nth-child(3) {
+
+            animation-delay:
+                    0.4s;
+        }
+
+
+        .trust-item:nth-child(4) {
+
+            animation-delay:
+                    0.5s;
+        }
+
+
+        .trust-item:last-child {
+
+            border-right: 0;
+        }
+
+
+        .trust-item strong {
+
+            display: block;
+
+            font-size: 15px;
+        }
+
+
+        .trust-item span {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color: var(--text-muted);
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           SECTIONS
+        ===================================================== */
+
+        .section {
+
+            padding: 110px 0;
+        }
+
+
+        .section-heading {
+
+            max-width: 680px;
+
+            margin-bottom: 50px;
+        }
+
+
+        .section-label {
+
+            display: block;
+
+            margin-bottom: 13px;
+
+            color:
+                    var(--primary-dark);
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            letter-spacing: 1.8px;
+        }
+
+
+        .section-heading h2,
+        .how-intro h2,
+        .about-content h2 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(38px,5vw,56px);
+
+            line-height: 1.12;
+
+            letter-spacing: -1.8px;
+
+            font-weight: 600;
+        }
+
+
+        .section-heading p {
+
+            margin-top: 15px;
+
+            color: var(--text-soft);
+
+            font-size: 16px;
+        }
+
+
+        /* =====================================================
+           FEATURE CARDS
+        ===================================================== */
+
+        .feature-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(3,1fr);
+
+            gap: 20px;
+        }
+
+
+        .feature-card {
+
+            position: relative;
+
+            min-height: 325px;
+
+            padding: 32px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius: 22px;
+
+            background: white;
+
+            overflow: hidden;
+
+            opacity: 0;
+
+            transform:
+                    translateY(40px);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s
+                    cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    ),
+                    box-shadow 0.3s ease,
+                    border-color 0.3s ease;
+        }
+
+
+        .feature-card.show {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .feature-card:nth-child(1) {
+
+            transition-delay:
+                    0.05s;
+        }
+
+
+        .feature-card:nth-child(2) {
+
+            transition-delay:
+                    0.15s;
+        }
+
+
+        .feature-card:nth-child(3) {
+
+            transition-delay:
+                    0.25s;
+        }
+
+
+        .feature-card:hover {
+
+            transform:
+                    translateY(-8px);
+
+            border-color:
+                    #f1d4df;
+
+            box-shadow:
+                    var(--shadow-md);
+        }
+
+
+        .feature-icon {
+
+            width: 50px;
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                    var(--primary-light);
+
+            color:
+                    var(--primary);
+
+            font-size: 21px;
+
+            transition:
+                    transform 0.3s ease,
+                    background 0.3s ease;
+        }
+
+
+        .feature-card:hover .feature-icon {
+
+            transform:
+                    rotate(-6deg)
+                    scale(1.08);
+
+            background:
+                    #ffdce8;
+        }
+
+
+        .feature-number {
+
+            position: absolute;
+
+            top: 34px;
+
+            right: 32px;
+
+            color: #d1cdcf;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+
+        .feature-card h3 {
+
+            margin-top: 43px;
+
+            font-size: 21px;
+
+            letter-spacing: -0.4px;
+        }
+
+
+        .feature-card p {
+
+            max-width: 300px;
+
+            margin-top: 11px;
+
+            color: var(--text-muted);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        .feature-card a {
+
+            position: absolute;
+
+            left: 32px;
+
+            bottom: 28px;
+
+            color:
+                    var(--primary-dark);
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .feature-card a:hover {
+
+            transform:
+                    translateX(4px);
+        }
+
+
+        /* =====================================================
+           HOW IT WORKS
+        ===================================================== */
+
+        .how-section {
+
+            padding: 110px 0;
+
+            background:
+                    #191718;
+
+            color: white;
+
+            overflow: hidden;
+        }
+
+
+        .how-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    0.9fr
+                    1.1fr;
+
+            gap: 100px;
+
+            align-items: center;
+        }
+
+
+        .how-intro h2 span {
+
+            color:
+                    #ef78a0;
+
+            font-style: italic;
+        }
+
+
+        .how-intro p {
+
+            max-width: 430px;
+
+            margin: 22px 0 30px;
+
+            color: #aaa;
+
+            line-height: 1.8;
+        }
+
+
+        .step {
+
+            display: grid;
+
+            grid-template-columns:
+                    65px 1fr;
+
+            gap: 22px;
+
+            padding: 22px 0;
+
+            opacity: 0;
+
+            transform:
+                    translateX(35px);
+
+            transition:
+                    opacity 0.7s ease,
+                    transform 0.7s ease;
+        }
+
+
+        .step.show {
+
+            opacity: 1;
+
+            transform:
+                    translateX(0);
+        }
+
+
+        .step:nth-child(1) {
+
+            transition-delay:
+                    0.05s;
+        }
+
+
+        .step:nth-child(2) {
+
+            transition-delay:
+                    0.15s;
+        }
+
+
+        .step:nth-child(3) {
+
+            transition-delay:
+                    0.25s;
+        }
+
+
+        .step-number {
+
+            width: 50px;
+            height: 50px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border:
+                    1px solid
+                    #4b4548;
+
+            border-radius: 50%;
+
+            color:
+                    #ef78a0;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            transition:
+                    background 0.3s ease,
+                    border-color 0.3s ease,
+                    transform 0.3s ease;
+        }
+
+
+        .step:hover .step-number {
+
+            background:
+                    #ef78a0;
+
+            border-color:
+                    #ef78a0;
+
+            color:
+                    white;
+
+            transform:
+                    scale(1.08);
+        }
+
+
+        .step h3 {
+
+            margin-bottom: 6px;
+
+            font-size: 19px;
+        }
+
+
+        .step p {
+
+            max-width: 450px;
+
+            color: #999;
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =====================================================
+           ABOUT
+        ===================================================== */
+
+        .about-box {
+
+            display: grid;
+
+            grid-template-columns:
+                    1.1fr
+                    0.9fr;
+
+            min-height: 470px;
+
+            border-radius: 28px;
+
+            overflow: hidden;
+
+            background:
+                    #fff0f5;
+
+            opacity: 0;
+
+            transform:
+                    translateY(35px);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+        }
+
+
+        .about-box.show {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .about-content {
+
+            padding: 65px;
+        }
+
+
+        .about-content h2 span {
+
+            display: block;
+
+            color:
+                    var(--primary);
+
+            font-style: italic;
+        }
+
+
+        .about-content p {
+
+            max-width: 520px;
+
+            margin-top: 18px;
+
+            color:
+                    var(--text-soft);
+
+            font-size: 15px;
+
+            line-height: 1.8;
+        }
+
+
+        .about-buttons {
+
+            display: flex;
+
+            gap: 12px;
+
+            margin-top: 30px;
+        }
+
+
+        .about-art {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            overflow: hidden;
+
+            background:
+                    radial-gradient(
+                            circle,
+                            #f5b3ca,
+                            #e987a8
+                    );
+        }
+
+
+        .about-art::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 310px;
+            height: 310px;
+
+            border:
+                    1px solid
+                    rgba(255,255,255,0.35);
+
+            border-radius: 50%;
+
+            animation:
+                    rotateSlow 25s linear infinite;
+        }
+
+
+        .about-art::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 430px;
+            height: 430px;
+
+            border:
+                    1px solid
+                    rgba(255,255,255,0.22);
+
+            border-radius: 50%;
+
+            animation:
+                    rotateSlow 35s linear reverse infinite;
+        }
+
+
+        .art-card {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 220px;
+
+            padding: 34px 25px;
+
+            border-radius: 22px;
+
+            background:
+                    rgba(255,255,255,0.94);
+
+            text-align: center;
+
+            box-shadow:
+                    var(--shadow-lg);
+
+            animation:
+                    float 5s ease-in-out infinite;
+        }
+
+
+        .art-logo {
+
+            width: 55px;
+            height: 55px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            margin:
+                    0 auto 15px;
+
+            border-radius: 16px;
+
+            background:
+                    var(--primary);
+
+            color: white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size: 30px;
+        }
+
+
+        .art-card h3 {
+
+            font-size: 20px;
+        }
+
+
+        .art-card p {
+
+            margin-top: 4px;
+
+            color:
+                    var(--text-muted);
+
+            font-size: 12px;
+        }
+
+
+        /* =====================================================
+           CTA
+        ===================================================== */
+
+        .final-cta {
+
+            padding: 90px 0;
+
+            background: white;
+        }
+
+
+        .cta-content {
+
+            padding: 75px 40px;
+
+            border-radius: 28px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #d9467a,
+                            #b83263
+                    );
+
+            color: white;
+
+            text-align: center;
+
+            box-shadow:
+                    0 25px 70px
+                    rgba(184, 50, 99, 0.22);
+
+            opacity: 0;
+
+            transform:
+                    scale(0.96);
+
+            transition:
+                    opacity 0.8s ease,
+                    transform 0.8s ease;
+        }
+
+
+        .cta-content.show {
+
+            opacity: 1;
+
+            transform:
+                    scale(1);
+        }
+
+
+        .cta-content h2 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(40px,5vw,58px);
+
+            line-height: 1.1;
+
+            letter-spacing: -1.8px;
+        }
+
+
+        .cta-content p {
+
+            max-width: 530px;
+
+            margin: 16px auto 0;
+
+            color:
+                    #f9dfe8;
+
+            font-size: 15px;
+        }
+
+
+        .cta-buttons {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 17px;
+
+            margin-top: 30px;
+        }
+
+
+        .white-button {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding: 14px 23px;
+
+            border-radius: 11px;
+
+            background: white;
+
+            color:
+                    var(--primary-dark);
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            transition:
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .white-button:hover {
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    0 12px 25px
+                    rgba(0,0,0,0.15);
+        }
+
+
+        .cta-login {
+
+            color:
+                    #ffe1eb;
+
+            font-size: 12px;
+        }
+
+
+        .cta-login strong {
+
+            color: white;
+
+            text-decoration: underline;
+        }
+
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        .footer {
+
+            padding-top: 75px;
+
+            background:
+                    #171516;
+
+            color: white;
+        }
+
+
+        .footer-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    1.6fr
+                    1fr
+                    1fr
+                    1.2fr;
+
+            gap: 60px;
+
+            padding-bottom: 60px;
+        }
+
+
+        .footer-brand p {
+
+            max-width: 330px;
+
+            margin-top: 18px;
+
+            color:
+                    #999;
+
+            font-size: 13px;
+
+            line-height: 1.8;
+        }
+
+
+        .footer .logo-text {
+
+            color: white;
+        }
+
+
+        .footer-column {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+        }
+
+
+        .footer-column h4 {
+
+            margin-bottom: 7px;
+
+            font-size: 13px;
+        }
+
+
+        .footer-column a {
+
+            color:
+                    #999;
+
+            font-size: 13px;
+
+            transition:
+                    color 0.2s ease,
+                    transform 0.2s ease;
+        }
+
+
+        .footer-column a:hover {
+
+            color:
+                    #ef78a0;
+
+            transform:
+                    translateX(3px);
+        }
+
+
+        .footer-bottom {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding: 23px 0;
+
+            border-top:
+                    1px solid
+                    #302d2e;
+
+            color:
+                    #777;
+
+            font-size: 11px;
+        }
+
+
+        .footer-bottom-links {
+
+            display: flex;
+
+            gap: 22px;
+        }
+
+
+        .footer-bottom-links a:hover {
+
+            color: white;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 950px) {
+
+            .nav-menu {
+
+                gap: 18px;
+            }
+
+
+            .search-fields {
+
+                grid-template-columns:
+                        1fr 1fr;
+            }
+
+
+            .search-button {
+
+                width: 100%;
+            }
+
+
+            .feature-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .how-grid {
+
+                grid-template-columns:
+                        1fr;
+
+                gap: 55px;
+            }
+
+
+            .about-box {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .about-art {
+
+                min-height: 360px;
+            }
+
+
+            .footer-grid {
+
+                grid-template-columns:
+                        1fr 1fr;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .container {
+
+                width:
+                        min(
+                                calc(100% - 28px),
+                                var(--container)
+                        );
+            }
+
+
+            .navbar-inner {
+
+                height: 70px;
+            }
+
+
+            .nav-menu {
+
+                gap: 12px;
+            }
+
+
+            .nav-menu > a:not(.nav-button) {
+
+                display: none;
+            }
+
+
+            .nav-button {
+
+                padding:
+                        9px 14px !important;
+
+                font-size:
+                        12px !important;
+            }
+
+
+            .hero {
+
+                padding-top: 120px;
+
+                padding-bottom: 80px;
+            }
+
+
+            .hero h1 {
+
+                font-size: 48px;
+
+                letter-spacing: -2px;
+            }
+
+
+            .hero-description {
+
+                font-size: 15px;
+            }
+
+
+            .hero-buttons {
+
+                flex-direction: column;
+            }
+
+
+            .primary-button,
+            .secondary-button {
+
+                width: 100%;
+            }
+
+
+            .search-box {
+
+                margin-top: 55px;
+
+                padding: 18px;
+            }
+
+
+            .search-fields {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .trust-grid {
+
+                grid-template-columns:
+                        1fr 1fr;
+
+                row-gap: 20px;
+            }
+
+
+            .trust-item {
+
+                border-right: 0;
+            }
+
+
+            .section {
+
+                padding: 80px 0;
+            }
+
+
+            .section-heading h2,
+            .how-intro h2,
+            .about-content h2 {
+
+                font-size: 39px;
+            }
+
+
+            .how-section {
+
+                padding: 80px 0;
+            }
+
+
+            .step {
+
+                grid-template-columns:
+                        52px 1fr;
+
+                gap: 14px;
+            }
+
+
+            .about-content {
+
+                padding: 40px 25px;
+            }
+
+
+            .about-buttons {
+
+                flex-direction: column;
+            }
+
+
+            .footer {
+
+                padding-top: 55px;
+            }
+
+
+            .footer-grid {
+
+                grid-template-columns:
+                        1fr 1fr;
+
+                gap: 40px 25px;
+            }
+
+
+            .footer-brand {
+
+                grid-column:
+                        1 / -1;
+            }
+
+
+            .footer-bottom {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .hero h1 {
+
+                font-size: 42px;
+            }
+
+
+            .trust-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .trust-item {
+
+                padding:
+                        4px 0;
+            }
+
+
+            .footer-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .footer-brand {
+
+                grid-column:
+                        auto;
+            }
+
+
+            .footer-bottom-links {
+
+                flex-wrap: wrap;
+
+                gap: 15px;
+            }
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        0.01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                scroll-behavior:
+                        auto !important;
+
+                transition-duration:
+                        0.01ms !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+===================================================== -->
+
+<header class="navbar">
+
+    <div class="container navbar-inner">
+
+        <a class="logo"
+           th:href="@{/}">
+
+            <span class="logo-icon">
+                S
+            </span>
+
+            <span class="logo-text">
+                SheStay
+            </span>
+
+        </a>
+
+
+        <nav class="nav-menu">
+
+            <a href="#features">
+                Features
+            </a>
+
+            <a href="#how-it-works">
+                How it works
+            </a>
+
+            <a href="#about">
+                About
+            </a>
+
+            <a th:href="@{/login}">
+                Login
+            </a>
+
+            <a class="nav-button"
+               th:href="@{/register}">
+                Get Started
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     HERO
+===================================================== -->
+
+<main>
+
+    <section class="hero">
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="hero-badge">
+
+                    <span class="badge-dot"></span>
+
+                    WOMEN-FIRST ACCOMMODATION
+
+                </div>
+
+
+                <h1>
+
+                    Find a place
+                    <br>
+
+                    that feels like
+                    <span>home.</span>
+
+                </h1>
+
+
+                <p class="hero-description">
+
+                    Discover comfortable hostels and PGs,
+                    compare rooms, check availability and
+                    request your stay with confidence.
+
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    <a class="primary-button"
+                       th:href="@{/properties}">
+
+                        Explore stays
+
+                        <span>→</span>
+
+                    </a>
+
+
+                    <a class="secondary-button"
+                       href="#how-it-works">
+
+                        How it works
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <!-- SEARCH -->
+
+            <div class="search-box">
+
+                <div class="search-title">
+
+                <span class="search-title-icon">
+                    ⌕
+                </span>
+
+                    <div>
+
+                        <strong>
+                            Find your next stay
+                        </strong>
+
+                        <small>
+                            Search by location, type or budget
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <form th:action="@{/properties}"
+                      method="get">
+
+                    <div class="search-fields">
+
+
+                        <div class="search-field">
+
+                            <label for="location">
+                                LOCATION
+                            </label>
+
+                            <div class="field-input">
+
+                                <span>⌖</span>
+
+                                <input
+                                        id="location"
+                                        name="location"
+                                        type="text"
+                                        placeholder="Where do you want to stay?">
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="search-field">
+
+                            <label for="propertyType">
+                                PROPERTY TYPE
+                            </label>
+
+                            <div class="field-input">
+
+                                <span>⌂</span>
+
+                                <select
+                                        id="propertyType"
+                                        name="propertyType">
+
+                                    <option value="">
+                                        Any type
+                                    </option>
+
+                                    <option value="HOSTEL">
+                                        Hostel
+                                    </option>
+
+                                    <option value="PG">
+                                        PG
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="search-field">
+
+                            <label for="maxRent">
+                                MONTHLY BUDGET
+                            </label>
+
+                            <div class="field-input">
+
+                                <span>₹</span>
+
+                                <select
+                                        id="maxRent"
+                                        name="maxRent">
+
+                                    <option value="">
+                                        Any budget
+                                    </option>
+
+                                    <option value="5000">
+                                        Up to ₹5,000
+                                    </option>
+
+                                    <option value="8000">
+                                        Up to ₹8,000
+                                    </option>
+
+                                    <option value="12000">
+                                        Up to ₹12,000
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                                class="search-button"
+                                type="submit">
+
+                            Search
+
+                            <span>→</span>
+
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         TRUST
+    ===================================================== -->
+
+    <section class="trust-section">
+
+        <div class="container trust-grid">
+
+            <div class="trust-item">
+
+                <strong>
+                    Simple
+                </strong>
+
+                <span>
+                Search & compare
+            </span>
+
+            </div>
+
+
+            <div class="trust-item">
+
+                <strong>
+                    Transparent
+                </strong>
+
+                <span>
+                Clear pricing
+            </span>
+
+            </div>
+
+
+            <div class="trust-item">
+
+                <strong>
+                    Flexible
+                </strong>
+
+                <span>
+                Different room types
+            </span>
+
+            </div>
+
+
+            <div class="trust-item">
+
+                <strong>
+                    Convenient
+                </strong>
+
+                <span>
+                Easy booking requests
+            </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         FEATURES
+    ===================================================== -->
+
+    <section class="section"
+             id="features">
+
+        <div class="container">
+
+            <div class="section-heading reveal">
+
+            <span class="section-label">
+                WHY SHESTAY
+            </span>
+
+                <h2>
+                    Everything you need
+                    <br>
+                    to find your stay.
+                </h2>
+
+                <p>
+                    A straightforward accommodation experience
+                    without unnecessary complexity.
+                </p>
+
+            </div>
+
+
+            <div class="feature-grid">
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ⌕
+                    </div>
+
+                    <span class="feature-number">
+                    01
+                </span>
+
+                    <h3>
+                        Search easily
+                    </h3>
+
+                    <p>
+                        Find hostels and PGs by location,
+                        property type and monthly budget.
+                    </p>
+
+                    <a th:href="@{/properties}">
+                        Explore stays →
+                    </a>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ♡
+                    </div>
+
+                    <span class="feature-number">
+                    02
+                </span>
+
+                    <h3>
+                        Compare clearly
+                    </h3>
+
+                    <p>
+                        View pricing, room capacity,
+                        facilities and availability before
+                        making a request.
+                    </p>
+
+                    <a th:href="@{/properties}">
+                        View properties →
+                    </a>
+
+                </div>
+
+
+                <div class="feature-card">
+
+                    <div class="feature-icon">
+                        ✓
+                    </div>
+
+                    <span class="feature-number">
+                    03
+                </span>
+
+                    <h3>
+                        Request confidently
+                    </h3>
+
+                    <p>
+                        Select a room, choose your check-in
+                        date and submit your booking request.
+                    </p>
+
+                    <a th:href="@{/register}">
+                        Get started →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         HOW IT WORKS
+    ===================================================== -->
+
+    <section class="how-section"
+             id="how-it-works">
+
+        <div class="container">
+
+            <div class="how-grid">
+
+                <div class="how-intro reveal-left">
+
+                <span class="section-label">
+                    HOW IT WORKS
+                </span>
+
+                    <h2>
+                        Finding your stay
+                        <span>made simple.</span>
+                    </h2>
+
+                    <p>
+                        From discovering a property to
+                        submitting a booking request,
+                        SheStay keeps every step clear.
+                    </p>
+
+                    <a class="primary-button"
+                       th:href="@{/properties}">
+
+                        Start exploring
+
+                        <span>→</span>
+
+                    </a>
+
+                </div>
+
+
+                <div class="steps">
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            01
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Discover
+                            </h3>
+
+                            <p>
+                                Search properties based on
+                                your location and preferences.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            02
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Compare
+                            </h3>
+
+                            <p>
+                                Check rooms, pricing,
+                                facilities and availability.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="step">
+
+                        <div class="step-number">
+                            03
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Request
+                            </h3>
+
+                            <p>
+                                Select your room and send
+                                a booking request to the owner.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABOUT
+    ===================================================== -->
+
+    <section class="section"
+             id="about">
+
+        <div class="container">
+
+            <div class="about-box">
+
+                <div class="about-content">
+
+                <span class="section-label">
+                    ABOUT SHESTAY
+                </span>
+
+                    <h2>
+                        More than a room.
+                        <span>A place to belong.</span>
+                    </h2>
+
+                    <p>
+                        SheStay connects women looking for
+                        accommodation with property owners
+                        through one simple platform.
+                    </p>
+
+                    <p>
+                        Browse properties, compare rooms,
+                        check availability and manage your
+                        booking requests from one place.
+                    </p>
+
+                    <div class="about-buttons">
+
+                        <a class="primary-button"
+                           th:href="@{/register}">
+
+                            Create account
+
+                        </a>
+
+                        <a class="secondary-button"
+                           th:href="@{/owner/register}">
+
+                            List your property
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <div class="about-art">
+
+                    <div class="art-card">
+
+                        <div class="art-logo">
+                            S
+                        </div>
+
+                        <h3>
+                            SheStay
+                        </h3>
+
+                        <p>
+                            Safe stays,
+                            made simpler.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         CTA
+    ===================================================== -->
+
+    <section class="final-cta">
+
+        <div class="container">
+
+            <div class="cta-content">
+
+            <span class="section-label">
+                YOUR NEXT CHAPTER
+            </span>
+
+                <h2>
+                    Ready to find
+                    your place?
+                </h2>
+
+                <p>
+                    Explore hostels and PGs and discover
+                    a stay that fits your lifestyle.
+                </p>
+
+                <div class="cta-buttons">
+
+                    <a class="white-button"
+                       th:href="@{/properties}">
+
+                        Explore stays
+
+                        <span>→</span>
+
+                    </a>
+
+                    <a class="cta-login"
+                       th:href="@{/login}">
+
+                        Already have an account?
+                        <strong>Login</strong>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-grid">
+
+
+            <div class="footer-brand">
+
+                <a class="logo"
+                   th:href="@{/}">
+
+                    <span class="logo-icon">
+                        S
+                    </span>
+
+                    <span class="logo-text">
+                        SheStay
+                    </span>
+
+                </a>
+
+                <p>
+                    A simpler way for women to
+                    discover comfortable hostels
+                    and PGs.
+                </p>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>
+                    Explore
+                </h4>
+
+                <a th:href="@{/}">
+                    Home
+                </a>
+
+                <a th:href="@{/properties}">
+                    Find a stay
+                </a>
+
+                <a href="#features">
+                    Features
+                </a>
+
+                <a href="#how-it-works">
+                    How it works
+                </a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>
+                    Account
+                </h4>
+
+                <a th:href="@{/login}">
+                    Login
+                </a>
+
+                <a th:href="@{/register}">
+                    Register
+                </a>
+
+                <a th:href="@{/bookings/my-bookings}">
+                    My bookings
+                </a>
+
+            </div>
+
+
+            <div class="footer-column">
+
+                <h4>
+                    Property owners
+                </h4>
+
+                <a th:href="@{/owner/register}">
+                    Become an owner
+                </a>
+
+                <a th:href="@{/owner/dashboard}">
+                    Owner dashboard
+                </a>
+
+                <a th:href="@{/owner/properties}">
+                    Properties
+                </a>
+
+                <a th:href="@{/owner/bookings}">
+                    Booking requests
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            <span>
+                © 2026 SheStay. All rights reserved.
+            </span>
+
+            <div class="footer-bottom-links">
+
+                <a href="#">
+                    Privacy
+                </a>
+
+                <a href="#">
+                    Terms
+                </a>
+
+                <a href="#">
+                    Contact
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+===================================================== -->
+
+<script>
+
+    /* =====================================================
+       SCROLL REVEAL
+    ===================================================== */
+
+    const revealElements =
+        document.querySelectorAll(
+            ".reveal, .reveal-left, .reveal-right, " +
+            ".feature-card, .step, .about-box, .cta-content"
+        );
+
+
+    const observer =
+        new IntersectionObserver(
+            (entries) => {
+
+                entries.forEach(
+                    (entry) => {
+
+                        if (entry.isIntersecting) {
+
+                            entry.target.classList.add("show");
+
+                            observer.unobserve(
+                                entry.target
+                            );
+                        }
+
+                    }
+                );
+
+            },
+            {
+                threshold: 0.15,
+
+                rootMargin:
+                    "0px 0px -50px 0px"
+            }
+        );
+
+
+    revealElements.forEach(
+        (element) => {
+
+            observer.observe(element);
+
+        }
+    );
+
+
+    /* =====================================================
+       NAVBAR SCROLL EFFECT
+    ===================================================== */
+
+    const navbar =
+        document.querySelector(".navbar");
+
+
+    window.addEventListener(
+        "scroll",
+        () => {
+
+            if (window.scrollY > 30) {
+
+                navbar.style.background =
+                    "rgba(255,255,255,0.88)";
+
+                navbar.style.backdropFilter =
+                    "blur(14px)";
+
+                navbar.style.boxShadow =
+                    "0 5px 25px rgba(0,0,0,0.06)";
+
+            } else {
+
+                navbar.style.background =
+                    "transparent";
+
+                navbar.style.backdropFilter =
+                    "none";
+
+                navbar.style.boxShadow =
+                    "none";
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       SEARCH INPUT ENTER
+    ===================================================== */
+
+    const locationInput =
+        document.getElementById("location");
+
+
+    if (locationInput) {
+
+        locationInput.addEventListener(
+            "focus",
+            () => {
+
+                locationInput.parentElement
+                    .style.transform =
+                    "translateY(-2px)";
+            }
+        );
+
+    }
+
+</script>
+
+</body>
+
+</html>

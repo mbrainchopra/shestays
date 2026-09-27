@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — My Properties</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        :root {
+
+            --primary: #d9467a;
+            --primary-dark: #b83263;
+            --primary-soft: #fff0f5;
+            --primary-soft-2: #ffe3ed;
+
+            --text: #181416;
+            --text-soft: #665f63;
+            --text-muted: #969094;
+
+            --white: #ffffff;
+            --background: #fbf9fa;
+
+            --border: #ebe5e8;
+
+            --success: #2f8a59;
+            --success-soft: #edf8f1;
+
+            --danger: #bb405d;
+            --danger-soft: #fff0f3;
+
+            --shadow-sm:
+                    0 8px 25px
+                    rgba(30,20,25,0.05);
+
+            --shadow-md:
+                    0 20px 50px
+                    rgba(30,20,25,0.08);
+
+            --shadow-lg:
+                    0 30px 75px
+                    rgba(30,20,25,0.10);
+
+            --container: 1180px;
+        }
+
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                    "DM Sans",
+                    Arial,
+                    sans-serif;
+
+            color: var(--text);
+
+            background: var(--background);
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+        }
+
+
+        button {
+
+            font: inherit;
+        }
+
+
+        .container {
+
+            width:
+                    min(
+                            calc(100% - 40px),
+                            var(--container)
+                    );
+
+            margin:
+                    0 auto;
+        }
+
+
+        /* =========================================================
+           BACKGROUND
+        ========================================================= */
+
+        .background-glow {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: -1;
+
+            overflow: hidden;
+
+            pointer-events: none;
+        }
+
+
+        .glow-one {
+
+            position: absolute;
+
+            width: 430px;
+
+            height: 430px;
+
+            top: -230px;
+
+            right: -140px;
+
+            border-radius: 50%;
+
+            background:
+                    radial-gradient(
+                            circle,
+                            rgba(217,70,122,0.12),
+                            transparent 70%
+                    );
+
+            animation:
+                    floatGlow
+                    12s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        .glow-two {
+
+            position: absolute;
+
+            width: 350px;
+
+            height: 350px;
+
+            left: -190px;
+
+            top: 55%;
+
+            border-radius: 50%;
+
+            background:
+                    radial-gradient(
+                            circle,
+                            rgba(135,91,185,0.08),
+                            transparent 70%
+                    );
+
+            animation:
+                    floatGlowTwo
+                    15s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        @keyframes floatGlow {
+
+            0%,
+            100% {
+
+                transform:
+                        translate(0,0)
+                        scale(1);
+            }
+
+            50% {
+
+                transform:
+                        translate(-35px,35px)
+                        scale(1.08);
+            }
+        }
+
+
+        @keyframes floatGlowTwo {
+
+            0%,
+            100% {
+
+                transform:
+                        translate(0,0)
+                        scale(1);
+            }
+
+            50% {
+
+                transform:
+                        translate(30px,-25px)
+                        scale(1.1);
+            }
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .site-nav {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            height: 76px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                    0 max(
+                            20px,
+                            calc(
+                                    (100vw - var(--container))
+                                    / 2
+                            )
+                    );
+
+            background:
+                    rgba(255,255,255,0.86);
+
+            border-bottom:
+                    1px solid
+                    rgba(235,229,232,0.8);
+
+            backdrop-filter:
+                    blur(20px);
+
+            -webkit-backdrop-filter:
+                    blur(20px);
+
+            transition:
+                    box-shadow 0.3s ease;
+
+            animation:
+                    navReveal
+                    0.7s
+                    ease
+                    both;
+        }
+
+
+        @keyframes navReveal {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(-18px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 21px;
+
+            font-weight: 800;
+
+            letter-spacing: -0.6px;
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .brand-mark {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--primary),
+                            var(--primary-dark)
+                    );
+
+            color: white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size: 20px;
+
+            box-shadow:
+                    0 8px 22px
+                    rgba(217,70,122,0.22);
+
+            transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+        }
+
+
+        .brand:hover {
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .brand:hover .brand-mark {
+
+            transform:
+                    rotate(-7deg)
+                    scale(1.06);
+
+            box-shadow:
+                    0 13px 28px
+                    rgba(217,70,122,0.3);
+        }
+
+
+        .nav-links {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+        }
+
+
+        .nav-links a {
+
+            position: relative;
+
+            padding: 9px 13px;
+
+            border-radius: 10px;
+
+            color: #696267;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            transition:
+                    color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .nav-links a:hover {
+
+            color:
+                    var(--primary-dark);
+
+            background:
+                    var(--primary-soft);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        .nav-links a.active {
+
+            color:
+                    var(--primary-dark);
+
+            background:
+                    var(--primary-soft);
+        }
+
+
+        .nav-logout {
+
+            margin-left:
+                    5px;
+
+            background:
+                    #1c191a !important;
+
+            color:
+                    white !important;
+        }
+
+
+        .nav-logout:hover {
+
+            background:
+                    var(--primary) !important;
+
+            color:
+                    white !important;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .page {
+
+            padding:
+                    52px 0 90px;
+        }
+
+
+        .page-header {
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-end;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    30px;
+
+            margin-bottom:
+                    35px;
+
+            animation:
+                    headerReveal
+                    0.8s
+                    0.1s
+                    ease
+                    both;
+        }
+
+
+        @keyframes headerReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(25px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .header-copy {
+
+            max-width:
+                    700px;
+        }
+
+
+        .eyebrow {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+
+            padding:
+                    7px 12px;
+
+            margin-bottom:
+                    14px;
+
+            border:
+                    1px solid
+                    #f0d5df;
+
+            border-radius:
+                    50px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    1.2px;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .eyebrow-dot {
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--primary);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(217,70,122,0.08);
+
+            animation:
+                    pulse
+                    2s
+                    infinite;
+        }
+
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+
+                opacity:
+                        1;
+
+                transform:
+                        scale(1);
+            }
+
+            50% {
+
+                opacity:
+                        0.5;
+
+                transform:
+                        scale(0.7);
+            }
+        }
+
+
+        .page-header h1 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(
+                            38px,
+                            5vw,
+                            55px
+                    );
+
+            line-height:
+                    1.05;
+
+            letter-spacing:
+                    -1.7px;
+
+            font-weight:
+                    600;
+        }
+
+
+        .page-header h1 span {
+
+            color:
+                    var(--primary);
+        }
+
+
+        .page-header p {
+
+            margin-top:
+                    11px;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    13px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           ADD PROPERTY BUTTON
+        ========================================================= */
+
+        .add-property {
+
+            position:
+                    relative;
+
+            flex-shrink:
+                    0;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    8px;
+
+            min-height:
+                    46px;
+
+            padding:
+                    0 18px;
+
+            border-radius:
+                    11px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--primary),
+                            var(--primary-dark)
+                    );
+
+            color:
+                    white;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    800;
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(217,70,122,0.18);
+
+            overflow:
+                    hidden;
+
+            transition:
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .add-property::before {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            left:
+                    -100%;
+
+            top:
+                    0;
+
+            width:
+                    70%;
+
+            height:
+                    100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,0.25),
+                            transparent
+                    );
+        }
+
+
+        .add-property:hover::before {
+
+            animation:
+                    shimmer
+                    0.75s
+                    ease;
+        }
+
+
+        @keyframes shimmer {
+
+            from {
+
+                left:
+                        -100%;
+            }
+
+            to {
+
+                left:
+                        140%;
+            }
+        }
+
+
+        .add-property:hover {
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    0 15px 32px
+                    rgba(217,70,122,0.25);
+        }
+
+
+        .add-property .plus {
+
+            font-size:
+                    17px;
+
+            line-height:
+                    1;
+        }
+
+
+        /* =========================================================
+           RESULTS BAR
+        ========================================================= */
+
+        .results-bar {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            margin-bottom:
+                    18px;
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.2s
+                    ease
+                    both;
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(18px);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        .results-title {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    9px;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    12px;
+
+            font-weight:
+                    600;
+        }
+
+
+        .results-count {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            min-width:
+                    27px;
+
+            height:
+                    27px;
+
+            padding:
+                    0 7px;
+
+            border-radius:
+                    8px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    800;
+        }
+
+
+        /* =========================================================
+           PROPERTY GRID
+        ========================================================= */
+
+        .property-grid {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap:
+                    20px;
+        }
+
+
+        /* =========================================================
+           PROPERTY CARD
+        ========================================================= */
+
+        .property-card {
+
+            position:
+                    relative;
+
+            overflow:
+                    hidden;
+
+            min-width:
+                    0;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    22px;
+
+            background:
+                    white;
+
+            box-shadow:
+                    0 5px 20px
+                    rgba(30,20,25,0.025);
+
+            animation:
+                    cardReveal
+                    0.75s
+                    ease
+                    both;
+
+            transition:
+                    transform 0.4s
+                    cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    ),
+                    box-shadow 0.4s ease,
+                    border-color 0.4s ease;
+        }
+
+
+        .property-card:nth-child(1) {
+            animation-delay:
+                    0.18s;
+        }
+
+
+        .property-card:nth-child(2) {
+            animation-delay:
+                    0.25s;
+        }
+
+
+        .property-card:nth-child(3) {
+            animation-delay:
+                    0.32s;
+        }
+
+
+        .property-card:nth-child(4) {
+            animation-delay:
+                    0.39s;
+        }
+
+
+        .property-card:nth-child(5) {
+            animation-delay:
+                    0.46s;
+        }
+
+
+        .property-card:nth-child(6) {
+            animation-delay:
+                    0.53s;
+        }
+
+
+        @keyframes cardReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(28px)
+                        scale(0.97);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        .property-card:hover {
+
+            transform:
+                    translateY(-8px);
+
+            border-color:
+                    #edc6d4;
+
+            box-shadow:
+                    var(--shadow-lg);
+        }
+
+
+        /* =========================================================
+           PROPERTY IMAGE
+        ========================================================= */
+
+        .property-image {
+
+            position:
+                    relative;
+
+            height:
+                    235px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            overflow:
+                    hidden;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #f8d8e3
+                    );
+        }
+
+
+        .property-image::after {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            inset:
+                    0;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            transparent 55%,
+                            rgba(0,0,0,0.18)
+                    );
+
+            pointer-events:
+                    none;
+        }
+
+
+        .property-image img {
+
+            width:
+                    100%;
+
+            height:
+                    100%;
+
+            object-fit:
+                    cover;
+
+            display:
+                    block;
+
+            transition:
+                    transform 0.65s
+                    cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    );
+        }
+
+
+        .property-card:hover
+        .property-image img {
+
+            transform:
+                    scale(1.07);
+        }
+
+
+        .image-placeholder {
+
+            width:
+                    76px;
+
+            height:
+                    76px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    23px;
+
+            background:
+                    rgba(255,255,255,0.8);
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    32px;
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(50,25,40,0.08);
+
+            animation:
+                    floatPlaceholder
+                    4s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        @keyframes floatPlaceholder {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-7px);
+            }
+        }
+
+
+        /* =========================================================
+           IMAGE STATUS
+        ========================================================= */
+
+        .image-status {
+
+            position:
+                    absolute;
+
+            z-index:
+                    3;
+
+            top:
+                    16px;
+
+            left:
+                    16px;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            padding:
+                    7px 10px;
+
+            border:
+                    1px solid
+                    rgba(255,255,255,0.55);
+
+            border-radius:
+                    50px;
+
+            background:
+                    rgba(255,255,255,0.92);
+
+            backdrop-filter:
+                    blur(10px);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    0.7px;
+        }
+
+
+        .image-status::before {
+
+            content:
+                    "";
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    currentColor;
+        }
+
+
+        .status-ACTIVE {
+
+            color:
+                    var(--success);
+        }
+
+
+        .status-INACTIVE {
+
+            color:
+                    var(--danger);
+        }
+
+
+        .status-SUSPENDED {
+
+            color:
+                    #aa731f;
+        }
+
+
+        /* =========================================================
+           CARD BODY
+        ========================================================= */
+
+        .property-body {
+
+            padding:
+                    22px;
+        }
+
+
+        .property-type {
+
+            display:
+                    inline-flex;
+
+            padding:
+                    6px 9px;
+
+            border-radius:
+                    7px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    800;
+
+            letter-spacing:
+                    1px;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .property-body h3 {
+
+            margin-top:
+                    10px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    24px;
+
+            line-height:
+                    1.2;
+
+            letter-spacing:
+                    -0.5px;
+
+            white-space:
+                    nowrap;
+
+            overflow:
+                    hidden;
+
+            text-overflow:
+                    ellipsis;
+        }
+
+
+        .property-meta {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            margin-top:
+                    8px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    11px;
+        }
+
+
+        .location-icon {
+
+            color:
+                    var(--primary);
+        }
+
+
+        .property-price-row {
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-end;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    10px;
+
+            margin-top:
+                    18px;
+
+            padding-top:
+                    16px;
+
+            border-top:
+                    1px solid
+                    #f0ebed;
+        }
+
+
+        .price-label {
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    700;
+
+            letter-spacing:
+                    0.7px;
+
+            text-transform:
+                    uppercase;
+        }
+
+
+        .price {
+
+            margin-top:
+                    2px;
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    22px;
+
+            font-weight:
+                    800;
+
+            line-height:
+                    1.2;
+        }
+
+
+        .price small {
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    500;
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .property-actions {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    1fr 1fr;
+
+            gap:
+                    8px;
+
+            margin-top:
+                    18px;
+        }
+
+
+        .card-button {
+
+            position:
+                    relative;
+
+            min-height:
+                    40px;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    6px;
+
+            padding:
+                    0 12px;
+
+            border-radius:
+                    9px;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    800;
+
+            transition:
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    border-color 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .rooms-button {
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+
+            box-shadow:
+                    0 7px 17px
+                    rgba(217,70,122,0.15);
+        }
+
+
+        .rooms-button:hover {
+
+            background:
+                    var(--primary-dark);
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 11px 23px
+                    rgba(217,70,122,0.22);
+        }
+
+
+        .preview-button {
+
+            border:
+                    1px solid
+                    var(--border);
+
+            background:
+                    white;
+
+            color:
+                    var(--text-soft);
+        }
+
+
+        .preview-button:hover {
+
+            border-color:
+                    #edc5d4;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary-dark);
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+
+            position:
+                    relative;
+
+            overflow:
+                    hidden;
+
+            max-width:
+                    650px;
+
+            margin:
+                    30px auto 0;
+
+            padding:
+                    60px 30px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    25px;
+
+            background:
+                    white;
+
+            text-align:
+                    center;
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            animation:
+                    emptyReveal
+                    0.8s
+                    ease
+                    both;
+        }
+
+
+        @keyframes emptyReveal {
+
+            from {
+
+                opacity:
+                        0;
+
+                transform:
+                        translateY(25px)
+                        scale(0.98);
+            }
+
+            to {
+
+                opacity:
+                        1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        .empty-circle {
+
+            position:
+                    absolute;
+
+            width:
+                    170px;
+
+            height:
+                    170px;
+
+            top:
+                    -100px;
+
+            right:
+                    -70px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    var(--primary-soft);
+        }
+
+
+        .empty-icon {
+
+            position:
+                    relative;
+
+            width:
+                    78px;
+
+            height:
+                    78px;
+
+            margin:
+                    0 auto 20px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    24px;
+
+            background:
+                    var(--primary-soft);
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    32px;
+
+            animation:
+                    emptyFloat
+                    4s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        @keyframes emptyFloat {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-7px);
+            }
+        }
+
+
+        .empty-state h3 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    27px;
+        }
+
+
+        .empty-state p {
+
+            max-width:
+                    430px;
+
+            margin:
+                    8px auto 22px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    12px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        .empty-button {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    7px;
+
+            min-height:
+                    43px;
+
+            padding:
+                    0 17px;
+
+            border-radius:
+                    10px;
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    800;
+
+            transition:
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .empty-button:hover {
+
+            background:
+                    var(--primary-dark);
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(217,70,122,0.2);
+        }
+
+
+        /* =========================================================
+           SCROLL TOP
+        ========================================================= */
+
+        .scroll-top {
+
+            position:
+                    fixed;
+
+            right:
+                    24px;
+
+            bottom:
+                    24px;
+
+            z-index:
+                    90;
+
+            width:
+                    43px;
+
+            height:
+                    43px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    50%;
+
+            background:
+                    rgba(255,255,255,0.94);
+
+            color:
+                    var(--text);
+
+            font-size:
+                    17px;
+
+            cursor:
+                    pointer;
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            opacity:
+                    0;
+
+            visibility:
+                    hidden;
+
+            transform:
+                    translateY(15px);
+
+            transition:
+                    opacity 0.25s ease,
+                    visibility 0.25s ease,
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    color 0.25s ease;
+        }
+
+
+        .scroll-top.show {
+
+            opacity:
+                    1;
+
+            visibility:
+                    visible;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .scroll-top:hover {
+
+            background:
+                    var(--primary);
+
+            border-color:
+                    var(--primary);
+
+            color:
+                    white;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1050px) {
+
+            .property-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 760px) {
+
+            .site-nav {
+
+                height:
+                        70px;
+
+                padding:
+                        0 15px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        8px;
+
+                font-size:
+                        10px;
+            }
+
+
+            .nav-links a:first-child {
+
+                display:
+                        none;
+            }
+
+
+            .page-header {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .add-property {
+
+                width:
+                        100%;
+            }
+        }
+
+
+        @media (max-width: 620px) {
+
+            .container {
+
+                width:
+                        min(
+                                calc(100% - 28px),
+                                var(--container)
+                        );
+            }
+
+
+            .page {
+
+                padding:
+                        35px 0 65px;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        40px;
+            }
+
+
+            .property-grid {
+
+                grid-template-columns:
+                    1fr;
+
+                gap:
+                        15px;
+            }
+
+
+            .property-image {
+
+                height:
+                        245px;
+            }
+
+
+            .results-bar {
+
+                margin-bottom:
+                        13px;
+            }
+
+
+            .property-body {
+
+                padding:
+                        20px;
+            }
+        }
+
+
+        @media (max-width: 400px) {
+
+            .brand {
+
+                font-size:
+                        18px;
+            }
+
+
+            .brand-mark {
+
+                width:
+                        34px;
+
+                height:
+                        34px;
+
+                border-radius:
+                        10px;
+
+                font-size:
+                        18px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        7px 5px;
+
+                font-size:
+                        9px;
+            }
+
+
+            .nav-logout {
+
+                padding:
+                        7px 8px !important;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        34px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        0.01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        0.01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     BACKGROUND
+========================================================= -->
+
+<div class="background-glow">
+
+    <div class="glow-one"></div>
+
+    <div class="glow-two"></div>
+
+</div>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="site-nav">
+
+
+    <a
+            class="brand"
+            th:href="@{/owner/dashboard}">
+
+        <span class="brand-mark">
+            S
+        </span>
+
+        SheStay
+
+    </a>
+
+
+    <div class="nav-links">
+
+
+        <a
+                th:href="@{/owner/dashboard}">
+
+            Dashboard
+
+        </a>
+
+
+        <a
+                class="active"
+                th:href="@{/owner/properties}">
+
+            Properties
+
+        </a>
+
+
+        <a
+                th:href="@{/owner/bookings}">
+
+            Requests
+
+        </a>
+
+
+        <a
+                class="nav-logout"
+                th:href="@{/logout}">
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="page">
+
+
+    <div class="container">
+
+
+        <!-- =================================================
+             HEADER
+        ================================================== -->
+
+        <header class="page-header">
+
+
+            <div class="header-copy">
+
+
+                <div class="eyebrow">
+
+                    <span class="eyebrow-dot"></span>
+
+                    Property management
+
+                </div>
+
+
+                <h1>
+
+                    Your
+
+                    <span>
+                        properties.
+                    </span>
+
+                </h1>
+
+
+                <p>
+
+                    Manage your accommodation listings,
+                    room inventory and guest-facing
+                    property information.
+
+                </p>
+
+
+            </div>
+
+
+            <a
+                    class="add-property"
+                    th:href="@{/owner/add-property}">
+
+                <span class="plus">
+                    ＋
+                </span>
+
+                Add property
+
+            </a>
+
+
+        </header>
+
+
+        <!-- =================================================
+             RESULTS
+        ================================================== -->
+
+        <div
+                class="results-bar"
+                th:if="${!properties.isEmpty()}">
+
+
+            <div class="results-title">
+
+                <span class="results-count"
+                      th:text="${properties.size()}">
+
+                    0
+
+                </span>
+
+                <span>
+
+                    properties in your account
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             PROPERTY GRID
+        ================================================== -->
+
+        <section
+                class="property-grid"
+                th:if="${!properties.isEmpty()}">
+
+
+            <article
+                    class="property-card"
+                    th:each="property : ${properties}">
+
+
+                <!-- =========================================
+                     IMAGE
+                ========================================== -->
+
+                <div class="property-image">
+
+
+                    <!-- STATUS -->
+
+                    <span
+                            class="image-status"
+                            th:classappend="${'status-' + property.status}"
+                            th:text="${property.status}">
+
+                        ACTIVE
+
+                    </span>
+
+
+                    <!-- IMAGE -->
+
+                    <img
+                            th:if="${property.image != null && !property.image.isEmpty()}"
+                            th:src="${property.image}"
+                            th:alt="${property.name}">
+
+
+                    <!-- FALLBACK -->
+
+                    <span
+                            class="image-placeholder"
+                            th:if="${property.image == null || property.image.isEmpty()}">
+
+                        ⌂
+
+                    </span>
+
+
+                </div>
+
+
+                <!-- =========================================
+                     BODY
+                ========================================== -->
+
+                <div class="property-body">
+
+
+                    <span
+                            class="property-type"
+                            th:text="${property.propertyType}">
+
+                        HOSTEL
+
+                    </span>
+
+
+                    <h3
+                            th:text="${property.name}"
+                            th:title="${property.name}">
+
+                        Property
+
+                    </h3>
+
+
+                    <div class="property-meta">
+
+                        <span class="location-icon">
+                            📍
+                        </span>
+
+                        <span
+                                th:text="${property.location}">
+
+                            Location
+
+                        </span>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+
+                    <div class="property-price-row">
+
+
+                        <div>
+
+                            <div class="price-label">
+                                Monthly rent
+                            </div>
+
+
+                            <div class="price">
+
+                                ₹<span
+                                    th:text="${property.rent}">
+                                    7500
+                                </span>
+
+                                <small>
+                                    / month
+                                </small>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="property-actions">
+
+
+                        <a
+                                class="card-button rooms-button"
+                                th:href="@{/owner/property/{id}/rooms(id=${property.id})}">
+
+                            Manage rooms
+
+                            <span>
+                                →
+                            </span>
+
+                        </a>
+
+
+                        <a
+                                class="card-button preview-button"
+                                th:href="@{/properties/{id}(id=${property.id})}">
+
+                            Preview
+
+                            <span>
+                                ↗
+                            </span>
+
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </article>
+
+
+        </section>
+
+
+        <!-- =================================================
+             EMPTY STATE
+        ================================================== -->
+
+        <section
+                class="empty-state"
+                th:if="${properties.isEmpty()}">
+
+
+            <span class="empty-circle"></span>
+
+
+            <div class="empty-icon">
+                🏠
+            </div>
+
+
+            <h3>
+                No properties yet
+            </h3>
+
+
+            <p>
+
+                You haven't created an accommodation
+                listing yet. Add your first hostel or
+                PG and start managing your rooms.
+
+            </p>
+
+
+            <a
+                    class="empty-button"
+                    th:href="@{/owner/add-property}">
+
+                ＋ Add your first property
+
+            </a>
+
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================================================
+     SCROLL TOP
+========================================================= -->
+
+<button
+        class="scroll-top"
+        id="scrollTop"
+        aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script>
+
+    /* =====================================================
+       NAVBAR SHADOW
+    ===================================================== */
+
+    const nav =
+        document.querySelector(".site-nav");
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (window.scrollY > 15) {
+
+                nav.style.boxShadow =
+                    "0 10px 35px rgba(30,20,25,0.07)";
+
+            } else {
+
+                nav.style.boxShadow =
+                    "none";
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    /* =====================================================
+       SCROLL TOP
+    ===================================================== */
+
+    const scrollTop =
+        document.getElementById(
+            "scrollTop"
+        );
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (window.scrollY > 300) {
+
+                scrollTop.classList.add(
+                    "show"
+                );
+
+            } else {
+
+                scrollTop.classList.remove(
+                    "show"
+                );
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    scrollTop.addEventListener(
+        "click",
+        function () {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+    );
+
+
+    /* =====================================================
+       PROPERTY CARD TILT
+    ===================================================== */
+
+    const propertyCards =
+        document.querySelectorAll(
+            ".property-card"
+        );
+
+
+    propertyCards.forEach(
+        function (card) {
+
+            card.addEventListener(
+                "mousemove",
+                function (event) {
+
+                    if (
+                        window.innerWidth < 950
+                    ) {
+                        return;
+                    }
+
+
+                    const rect =
+                        card.getBoundingClientRect();
+
+
+                    const x =
+                        event.clientX -
+                        rect.left;
+
+
+                    const y =
+                        event.clientY -
+                        rect.top;
+
+
+                    const centerX =
+                        rect.width / 2;
+
+
+                    const centerY =
+                        rect.height / 2;
+
+
+                    const rotateX =
+                        (
+                            (y - centerY)
+                            / centerY
+                        ) * -1.2;
+
+
+                    const rotateY =
+                        (
+                            (x - centerX)
+                            / centerX
+                        ) * 1.2;
+
+
+                    card.style.transform =
+                        `
+                        translateY(-8px)
+                        perspective(900px)
+                        rotateX(${rotateX}deg)
+                        rotateY(${rotateY}deg)
+                        `;
+                }
+            );
+
+
+            card.addEventListener(
+                "mouseleave",
+                function () {
+
+                    card.style.transform =
+                        "";
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =====================================================
+       IMAGE FALLBACK
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".property-image img"
+        )
+        .forEach(
+            function (image) {
+
+                image.addEventListener(
+                    "error",
+                    function () {
+
+                        this.style.display =
+                            "none";
+
+
+                        const placeholder =
+                            document.createElement(
+                                "span"
+                            );
+
+
+                        placeholder.className =
+                            "image-placeholder";
+
+
+                        placeholder.textContent =
+                            "⌂";
+
+
+                        this.parentElement
+                            .appendChild(
+                                placeholder
+                            );
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       BUTTON PRESS EFFECT
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".card-button, .add-property, .empty-button"
+        )
+        .forEach(
+            function (button) {
+
+                button.addEventListener(
+                    "mousedown",
+                    function () {
+
+                        this.style.transform =
+                            "scale(0.97)";
+
+                    }
+                );
+
+
+                button.addEventListener(
+                    "mouseup",
+                    function () {
+
+                        this.style.transform =
+                            "";
+
+                    }
+                );
+
+
+                button.addEventListener(
+                    "mouseleave",
+                    function () {
+
+                        this.style.transform =
+                            "";
+
+                    }
+                );
+
+            }
+        );
+
+</script>
+
+
+</body>
+
+</html>

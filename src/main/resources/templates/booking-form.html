@@ -1,0 +1,2726 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay | Request a Room</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================================
+           VARIABLES
+        ===================================================== */
+
+        :root {
+
+            --primary: #d9467a;
+            --primary-dark: #b83263;
+            --primary-light: #fff0f5;
+
+            --text: #181416;
+            --text-soft: #686164;
+            --text-muted: #929093;
+
+            --white: #ffffff;
+
+            --background: #fff9fb;
+
+            --border: #ebe5e8;
+
+            --success-bg: #effaf3;
+            --success-text: #287346;
+
+            --shadow-sm:
+                    0 8px 25px
+                    rgba(30,20,25,0.05);
+
+            --shadow-md:
+                    0 20px 50px
+                    rgba(30,20,25,0.08);
+
+            --shadow-lg:
+                    0 30px 80px
+                    rgba(30,20,25,0.11);
+
+            --container: 1180px;
+        }
+
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                    "DM Sans",
+                    Arial,
+                    sans-serif;
+
+            color:
+                    var(--text);
+
+            background:
+                    var(--background);
+
+            line-height: 1.6;
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+
+            color: inherit;
+
+            text-decoration: none;
+        }
+
+
+        input,
+        textarea,
+        button {
+
+            font: inherit;
+        }
+
+
+        .container {
+
+            width:
+                    min(
+                            calc(100% - 40px),
+                            var(--container)
+                    );
+
+            margin:
+                    0 auto;
+        }
+
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
+
+        @keyframes fadeDown {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(-20px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(30px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes fadeLeft {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateX(-30px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateX(0);
+            }
+        }
+
+
+        @keyframes scaleIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        scale(0.95);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        scale(1);
+            }
+        }
+
+
+        @keyframes float {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-8px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217,70,122,0.25);
+            }
+
+            70% {
+
+                box-shadow:
+                        0 0 0 10px
+                        rgba(217,70,122,0);
+            }
+
+            100% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217,70,122,0);
+            }
+        }
+
+
+        @keyframes shimmer {
+
+            from {
+
+                left: -100%;
+            }
+
+            to {
+
+                left: 140%;
+            }
+        }
+
+
+        /* =====================================================
+           NAVBAR
+        ===================================================== */
+
+        .site-nav {
+
+            position:
+                    sticky;
+
+            top: 0;
+
+            z-index: 100;
+
+            height: 78px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            padding:
+                    0 max(
+                            20px,
+                            calc(
+                                    (100vw - var(--container))
+                                    / 2
+                            )
+                    );
+
+            border-bottom:
+                    1px solid
+                    rgba(235,229,232,0.8);
+
+            background:
+                    rgba(255,255,255,0.88);
+
+            backdrop-filter:
+                    blur(18px);
+
+            -webkit-backdrop-filter:
+                    blur(18px);
+
+            animation:
+                    fadeDown
+                    0.7s
+                    ease
+                    both;
+        }
+
+
+        .brand {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    10px;
+
+            font-size:
+                    21px;
+
+            font-weight:
+                    700;
+
+            letter-spacing:
+                    -0.5px;
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .brand::before {
+
+            content:
+                    "S";
+
+            width:
+                    37px;
+
+            height:
+                    37px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border-radius:
+                    11px;
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size:
+                    21px;
+
+            box-shadow:
+                    0 8px 20px
+                    rgba(217,70,122,0.18);
+
+            animation:
+                    pulse
+                    2.5s
+                    0.8s
+                    infinite;
+        }
+
+
+        .brand:hover {
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .nav-links {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+        }
+
+
+        .nav-links a {
+
+            padding:
+                    9px 14px;
+
+            border-radius:
+                    9px;
+
+            color:
+                    #625d60;
+
+            font-size:
+                    13px;
+
+            font-weight:
+                    600;
+
+            transition:
+                    color 0.25s ease,
+                    background 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .nav-links a:hover {
+
+            color:
+                    var(--primary-dark);
+
+            background:
+                    var(--primary-light);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        .nav-links a:last-child {
+
+            margin-left:
+                    6px;
+
+            background:
+                    #1c191a;
+
+            color:
+                    white;
+        }
+
+
+        .nav-links a:last-child:hover {
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+        }
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .booking-page {
+
+            position:
+                    relative;
+
+            min-height:
+                    calc(100vh - 78px);
+
+            padding:
+                    60px 0 90px;
+
+            overflow:
+                    hidden;
+        }
+
+
+        .booking-page::before {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    420px;
+
+            height:
+                    420px;
+
+            top:
+                    -220px;
+
+            right:
+                    -130px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    rgba(245,164,194,0.18);
+
+            pointer-events:
+                    none;
+        }
+
+
+        .booking-page::after {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    300px;
+
+            height:
+                    300px;
+
+            bottom:
+                    -180px;
+
+            left:
+                    -140px;
+
+            border-radius:
+                    50%;
+
+            border:
+                    1px solid
+                    rgba(217,70,122,0.10);
+
+            animation:
+                    float
+                    7s
+                    ease-in-out
+                    infinite;
+
+            pointer-events:
+                    none;
+        }
+
+
+        /* =====================================================
+           BOOKING LAYOUT
+        ===================================================== */
+
+        .booking-layout {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    minmax(0, 0.85fr)
+                    minmax(0, 1.15fr);
+
+            gap:
+                    25px;
+
+            align-items:
+                    start;
+        }
+
+
+        /* =====================================================
+           LEFT INFO PANEL
+        ===================================================== */
+
+        .booking-intro {
+
+            padding:
+                    35px;
+
+            border-radius:
+                    25px;
+
+            background:
+                    #1b1819;
+
+            color:
+                    white;
+
+            overflow:
+                    hidden;
+
+            position:
+                    relative;
+
+            animation:
+                    fadeLeft
+                    0.8s
+                    0.1s
+                    ease
+                    both;
+        }
+
+
+        .booking-intro::before {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    260px;
+
+            height:
+                    260px;
+
+            right:
+                    -130px;
+
+            top:
+                    -100px;
+
+            border:
+                    1px solid
+                    rgba(239,120,160,0.25);
+
+            border-radius:
+                    50%;
+
+            animation:
+                    float
+                    6s
+                    ease-in-out
+                    infinite;
+        }
+
+
+        .booking-intro::after {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    180px;
+
+            height:
+                    180px;
+
+            left:
+                    -100px;
+
+            bottom:
+                    -100px;
+
+            border:
+                    1px solid
+                    rgba(255,255,255,0.08);
+
+            border-radius:
+                    50%;
+        }
+
+
+        .intro-label {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+
+            color:
+                    #ef78a0;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    700;
+
+            letter-spacing:
+                    1.7px;
+        }
+
+
+        .intro-dot {
+
+            width:
+                    7px;
+
+            height:
+                    7px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    #ef78a0;
+
+            animation:
+                    pulse
+                    2s
+                    infinite;
+        }
+
+
+        .booking-intro h1 {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    20px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(
+                            38px,
+                            4vw,
+                            52px
+                    );
+
+            line-height:
+                    1.08;
+
+            letter-spacing:
+                    -1.5px;
+
+            font-weight:
+                    600;
+        }
+
+
+        .booking-intro h1 span {
+
+            color:
+                    #ef78a0;
+
+            font-style:
+                    italic;
+        }
+
+
+        .booking-intro > p {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    16px;
+
+            color:
+                    #aaa;
+
+            font-size:
+                    14px;
+
+            line-height:
+                    1.8;
+        }
+
+
+        .booking-steps {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    35px;
+        }
+
+
+        .booking-step {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    40px 1fr;
+
+            gap:
+                    13px;
+
+            padding:
+                    17px 0;
+
+            border-top:
+                    1px solid
+                    rgba(255,255,255,0.09);
+        }
+
+
+        .step-number {
+
+            width:
+                    34px;
+
+            height:
+                    34px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border:
+                    1px solid
+                    #4b4548;
+
+            border-radius:
+                    50%;
+
+            color:
+                    #ef78a0;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .booking-step h3 {
+
+            font-size:
+                    14px;
+        }
+
+
+        .booking-step p {
+
+            margin-top:
+                    3px;
+
+            color:
+                    #999;
+
+            font-size:
+                    12px;
+
+            line-height:
+                    1.6;
+        }
+
+
+        /* =====================================================
+           FORM CARD
+        ===================================================== */
+
+        .form-card {
+
+            padding:
+                    35px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    25px;
+
+            background:
+                    white;
+
+            box-shadow:
+                    var(--shadow-lg);
+
+            animation:
+                    fadeUp
+                    0.8s
+                    0.2s
+                    ease
+                    both;
+        }
+
+
+        .back-link {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    7px;
+
+            color:
+                    #777;
+
+            font-size:
+                    12px;
+
+            font-weight:
+                    600;
+
+            transition:
+                    color 0.2s ease,
+                    transform 0.2s ease;
+        }
+
+
+        .back-link:hover {
+
+            color:
+                    var(--primary);
+
+            transform:
+                    translateX(-3px);
+        }
+
+
+        .form-heading {
+
+            margin-top:
+                    27px;
+        }
+
+
+        .form-heading h2 {
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    38px;
+
+            line-height:
+                    1.1;
+
+            letter-spacing:
+                    -1.2px;
+        }
+
+
+        .form-heading p {
+
+            margin-top:
+                    9px;
+
+            color:
+                    var(--text-soft);
+
+            font-size:
+                    14px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =====================================================
+           ALERT
+        ===================================================== */
+
+        .alert {
+
+            margin-top:
+                    23px;
+
+            padding:
+                    13px 15px;
+
+            border-radius:
+                    11px;
+
+            font-size:
+                    13px;
+
+            line-height:
+                    1.5;
+        }
+
+
+        .alert-error {
+
+            border:
+                    1px solid
+                    #f4c9d6;
+
+            background:
+                    #fff2f6;
+
+            color:
+                    #a52f58;
+        }
+
+
+        /* =====================================================
+           PROPERTY SUMMARY
+        ===================================================== */
+
+        .property-summary {
+
+            position:
+                    relative;
+
+            margin:
+                    25px 0 30px;
+
+            padding:
+                    23px;
+
+            border:
+                    1px solid
+                    #f0d9e1;
+
+            border-radius:
+                    19px;
+
+            background:
+                    var(--primary-light);
+
+            overflow:
+                    hidden;
+
+            transition:
+                    transform 0.3s ease,
+                    box-shadow 0.3s ease;
+        }
+
+
+        .property-summary::after {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            width:
+                    150px;
+
+            height:
+                    150px;
+
+            right:
+                    -80px;
+
+            top:
+                    -80px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    rgba(217,70,122,0.08);
+        }
+
+
+        .property-summary:hover {
+
+            transform:
+                    translateY(-3px);
+
+            box-shadow:
+                    var(--shadow-sm);
+        }
+
+
+        .property-top {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-start;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    15px;
+        }
+
+
+        .property-type {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            padding:
+                    6px 10px;
+
+            border-radius:
+                    50px;
+
+            background:
+                    white;
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    700;
+
+            letter-spacing:
+                    1px;
+        }
+
+
+        .availability {
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    6px;
+
+            color:
+                    var(--success-text);
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .availability-dot {
+
+            width:
+                    6px;
+
+            height:
+                    6px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    #4caf72;
+        }
+
+
+        .property-summary h3 {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    17px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    25px;
+
+            line-height:
+                    1.2;
+        }
+
+
+        .property-location {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    7px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    12px;
+        }
+
+
+        .room-details {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            display:
+                    flex;
+
+            flex-wrap:
+                    wrap;
+
+            gap:
+                    8px;
+
+            margin-top:
+                    17px;
+        }
+
+
+        .detail-chip {
+
+            padding:
+                    7px 10px;
+
+            border:
+                    1px solid
+                    #efdde3;
+
+            border-radius:
+                    8px;
+
+            background:
+                    rgba(255,255,255,0.7);
+
+            color:
+                    #625d60;
+
+            font-size:
+                    11px;
+        }
+
+
+        .room-price {
+
+            position:
+                    relative;
+
+            z-index:
+                    2;
+
+            margin-top:
+                    19px;
+
+            color:
+                    var(--primary-dark);
+
+            font-size:
+                    26px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .room-price small {
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    500;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .booking-form {
+
+            margin-top:
+                    5px;
+        }
+
+
+        .field {
+
+            margin-bottom:
+                    20px;
+        }
+
+
+        .field label {
+
+            display:
+                    block;
+
+            margin-bottom:
+                    8px;
+
+            color:
+                    #484245;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    700;
+
+            letter-spacing:
+                    0.8px;
+        }
+
+
+        .optional {
+
+            color:
+                    #aaa;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    500;
+
+            letter-spacing:
+                    0;
+        }
+
+
+        .input-control {
+
+            width:
+                    100%;
+
+            min-height:
+                    53px;
+
+            padding:
+                    0 15px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    12px;
+
+            outline:
+                    none;
+
+            background:
+                    #fbfafb;
+
+            color:
+                    var(--text);
+
+            font-size:
+                    14px;
+
+            transition:
+                    border-color 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .input-control:hover {
+
+            background:
+                    white;
+        }
+
+
+        .input-control:focus {
+
+            border-color:
+                    var(--primary);
+
+            background:
+                    white;
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(217,70,122,0.08);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        textarea.input-control {
+
+            min-height:
+                    125px;
+
+            padding:
+                    14px 15px;
+
+            resize:
+                    vertical;
+
+            line-height:
+                    1.6;
+        }
+
+
+        textarea.input-control::placeholder {
+
+            color:
+                    #aaa;
+        }
+
+
+        /* =====================================================
+           DATE INFO
+        ===================================================== */
+
+        .date-info {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    7px;
+
+            margin-top:
+                    8px;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    11px;
+        }
+
+
+        .date-info span {
+
+            color:
+                    var(--primary);
+        }
+
+
+        /* =====================================================
+           FORM ACTIONS
+        ===================================================== */
+
+        .form-actions {
+
+            display:
+                    flex;
+
+            gap:
+                    10px;
+
+            margin-top:
+                    27px;
+        }
+
+
+        .btn {
+
+            min-height:
+                    51px;
+
+            display:
+                    inline-flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            gap:
+                    9px;
+
+            padding:
+                    0 20px;
+
+            border-radius:
+                    11px;
+
+            font-size:
+                    13px;
+
+            font-weight:
+                    700;
+
+            cursor:
+                    pointer;
+
+            transition:
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    border-color 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .btn-outline {
+
+            border:
+                    1px solid
+                    #ddd7da;
+
+            background:
+                    white;
+
+            color:
+                    #555054;
+        }
+
+
+        .btn-outline:hover {
+
+            border-color:
+                    var(--primary);
+
+            color:
+                    var(--primary);
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    var(--shadow-sm);
+        }
+
+
+        .btn-primary {
+
+            position:
+                    relative;
+
+            flex: 1;
+
+            border:
+                    0;
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+
+            overflow:
+                    hidden;
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(217,70,122,0.18);
+        }
+
+
+        .btn-primary::before {
+
+            content:
+                    "";
+
+            position:
+                    absolute;
+
+            left:
+                    -100%;
+
+            top:
+                    0;
+
+            width:
+                    70%;
+
+            height:
+                    100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,0.25),
+                            transparent
+                    );
+        }
+
+
+        .btn-primary:hover::before {
+
+            animation:
+                    shimmer
+                    0.7s
+                    ease;
+        }
+
+
+        .btn-primary:hover {
+
+            background:
+                    var(--primary-dark);
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 15px 30px
+                    rgba(217,70,122,0.25);
+        }
+
+
+        .btn-primary span {
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .btn-primary:hover span {
+
+            transform:
+                    translateX(4px);
+        }
+
+
+        /* =====================================================
+           BOOKING NOTE
+        ===================================================== */
+
+        .booking-note {
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-start;
+
+            gap:
+                    9px;
+
+            margin-top:
+                    16px;
+
+            padding:
+                    12px 13px;
+
+            border-radius:
+                    10px;
+
+            background:
+                    #faf8f9;
+
+            color:
+                    var(--text-muted);
+
+            font-size:
+                    11px;
+
+            line-height:
+                    1.6;
+        }
+
+
+        .booking-note strong {
+
+            color:
+                    #5d575a;
+        }
+
+
+        .note-icon {
+
+            flex-shrink:
+                    0;
+
+            color:
+                    var(--primary);
+
+            font-size:
+                    14px;
+        }
+
+
+        /* =====================================================
+           SCROLL TOP
+        ===================================================== */
+
+        .scroll-top {
+
+            position:
+                    fixed;
+
+            right:
+                    25px;
+
+            bottom:
+                    25px;
+
+            z-index:
+                    90;
+
+            width:
+                    42px;
+
+            height:
+                    42px;
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius:
+                    50%;
+
+            background:
+                    white;
+
+            color:
+                    var(--text);
+
+            font-size:
+                    17px;
+
+            cursor:
+                    pointer;
+
+            box-shadow:
+                    var(--shadow-sm);
+
+            opacity:
+                    0;
+
+            visibility:
+                    hidden;
+
+            transform:
+                    translateY(10px);
+
+            transition:
+                    opacity 0.25s ease,
+                    visibility 0.25s ease,
+                    transform 0.25s ease,
+                    background 0.25s ease,
+                    color 0.25s ease;
+        }
+
+
+        .scroll-top.show {
+
+            opacity:
+                    1;
+
+            visibility:
+                    visible;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .scroll-top:hover {
+
+            background:
+                    var(--primary);
+
+            color:
+                    white;
+
+            border-color:
+                    var(--primary);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 900px) {
+
+            .booking-layout {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .booking-intro {
+
+                padding:
+                        30px;
+            }
+
+
+            .booking-intro h1 {
+
+                font-size:
+                        42px;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .site-nav {
+
+                height:
+                        70px;
+
+                padding:
+                        0 15px;
+            }
+
+
+            .nav-links {
+
+                gap:
+                        2px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        8px 8px;
+
+                font-size:
+                        10px;
+            }
+
+
+            .nav-links a:nth-child(1) {
+
+                display:
+                        none;
+            }
+
+
+            .nav-links a:last-child {
+
+                margin-left:
+                        2px;
+            }
+
+
+            .container {
+
+                width:
+                        min(
+                                calc(100% - 28px),
+                                var(--container)
+                        );
+            }
+
+
+            .booking-page {
+
+                padding:
+                        35px 0 65px;
+            }
+
+
+            .booking-intro,
+            .form-card {
+
+                border-radius:
+                        20px;
+            }
+
+
+            .booking-intro {
+
+                padding:
+                        27px;
+            }
+
+
+            .booking-intro h1 {
+
+                font-size:
+                        38px;
+            }
+
+
+            .form-card {
+
+                padding:
+                        25px 20px;
+            }
+
+
+            .form-heading h2 {
+
+                font-size:
+                        34px;
+            }
+
+
+            .form-actions {
+
+                flex-direction:
+                        column-reverse;
+            }
+
+
+            .form-actions .btn {
+
+                width:
+                        100%;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .brand {
+
+                font-size:
+                        18px;
+            }
+
+
+            .brand::before {
+
+                width:
+                        33px;
+
+                height:
+                        33px;
+
+                font-size:
+                        18px;
+
+                border-radius:
+                        9px;
+            }
+
+
+            .nav-links a {
+
+                padding:
+                        7px;
+
+                font-size:
+                        9px;
+            }
+
+
+            .booking-intro h1 {
+
+                font-size:
+                        34px;
+            }
+
+
+            .property-top {
+
+                flex-direction:
+                        column;
+            }
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        0.01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        0.01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="site-nav">
+
+
+    <a class="brand"
+       th:href="@{/dashboard}">
+
+        SheStay
+
+    </a>
+
+
+    <div class="nav-links">
+
+        <a th:href="@{/dashboard}">
+            Dashboard
+        </a>
+
+        <a th:href="@{/properties}">
+            Find Stay
+        </a>
+
+        <a th:href="@{/bookings/my-bookings}">
+            My Bookings
+        </a>
+
+        <a th:href="@{/logout}">
+            Logout
+        </a>
+
+    </div>
+
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="booking-page">
+
+
+    <div class="container booking-layout">
+
+
+        <!-- =================================================
+             LEFT INTRO
+        ================================================== -->
+
+        <section class="booking-intro">
+
+
+            <div class="intro-label">
+
+                <span class="intro-dot"></span>
+
+                BOOKING REQUEST
+
+            </div>
+
+
+            <h1>
+
+                Almost there.
+
+                <br>
+
+                <span>Make it yours.</span>
+
+            </h1>
+
+
+            <p>
+
+                Send your preferred check-in date
+                and a note to the property owner.
+                Your request will be reviewed before
+                the room is confirmed.
+
+            </p>
+
+
+            <div class="booking-steps">
+
+
+                <div class="booking-step">
+
+                    <div class="step-number">
+                        01
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Choose your date
+                        </h3>
+
+                        <p>
+                            Select when you would like
+                            to move in.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="booking-step">
+
+                    <div class="step-number">
+                        02
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Send your request
+                        </h3>
+
+                        <p>
+                            Add an optional note and
+                            submit your request.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="booking-step">
+
+                    <div class="step-number">
+                        03
+                    </div>
+
+                    <div>
+
+                        <h3>
+                            Wait for approval
+                        </h3>
+
+                        <p>
+                            The property owner will
+                            approve or reject your request.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =================================================
+             RIGHT FORM
+        ================================================== -->
+
+        <section class="form-card">
+
+
+            <!-- BACK -->
+
+            <a class="back-link"
+               th:href="@{/properties/{id}(id=${property.id})}">
+
+                ← Back to property
+
+            </a>
+
+
+            <!-- HEADING -->
+
+            <div class="form-heading">
+
+                <h2>
+                    Request this room.
+                </h2>
+
+                <p>
+                    Tell the owner when you would
+                    like to check in.
+                </p>
+
+            </div>
+
+
+            <!-- ERROR -->
+
+            <div class="alert alert-error"
+                 th:if="${error}"
+                 th:text="${error}">
+            </div>
+
+
+            <!-- =================================================
+                 PROPERTY SUMMARY
+            ================================================== -->
+
+            <div class="property-summary">
+
+
+                <div class="property-top">
+
+
+                    <span class="property-type"
+                          th:text="${property.propertyType}">
+
+                        HOSTEL
+
+                    </span>
+
+
+                    <span class="availability">
+
+                        <span class="availability-dot"></span>
+
+                        Available
+
+                    </span>
+
+
+                </div>
+
+
+                <h3 th:text="${property.name}">
+                    Property
+                </h3>
+
+
+                <p class="property-location">
+
+                    📍
+
+                    <span th:text="${property.location}">
+                        Location
+                    </span>
+
+                </p>
+
+
+                <div class="room-details">
+
+
+                    <span class="detail-chip">
+
+                        Room:
+                        <strong
+                                th:text="${room.roomType}">
+                            DOUBLE
+                        </strong>
+
+                    </span>
+
+
+                    <span class="detail-chip">
+
+                        Capacity:
+                        <strong
+                                th:text="${room.capacity}">
+                            2
+                        </strong>
+
+                    </span>
+
+
+                    <span class="detail-chip">
+
+                        Available:
+                        <strong
+                                th:text="${room.availableRooms}">
+                            1
+                        </strong>
+
+                    </span>
+
+
+                </div>
+
+
+                <div class="room-price">
+
+                    ₹<span th:text="${room.price}">
+                        7500
+                    </span>
+
+                    <small>
+                        / month
+                    </small>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 BOOKING FORM
+            ================================================== -->
+
+            <form
+                    class="booking-form"
+                    th:action="@{/bookings/property/{propertyId}/room/{roomId}(propertyId=${property.id},roomId=${room.id})}"
+                    method="post">
+
+
+                <!-- CHECK-IN -->
+
+                <div class="field">
+
+                    <label for="checkInDate">
+                        CHECK-IN DATE
+                    </label>
+
+
+                    <input
+                            class="input-control"
+                            id="checkInDate"
+                            type="date"
+                            name="checkInDate"
+                            data-min-today
+                            required>
+
+
+                    <div class="date-info">
+
+                        <span>●</span>
+
+                        Select today or a future date.
+
+                    </div>
+
+                </div>
+
+
+                <!-- REMARKS -->
+
+                <div class="field">
+
+                    <label for="remarks">
+
+                        REMARKS
+
+                        <span class="optional">
+                            (OPTIONAL)
+                        </span>
+
+                    </label>
+
+
+                    <textarea
+                            class="input-control"
+                            id="remarks"
+                            name="remarks"
+                            maxlength="500"
+                            placeholder="Anything the owner should know?"></textarea>
+
+
+                    <div class="date-info">
+
+                        <span>i</span>
+
+                        Maximum 500 characters.
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+
+                <div class="form-actions">
+
+
+                    <a
+                            class="btn btn-outline"
+                            th:href="@{/properties/{id}(id=${property.id})}">
+
+                        Cancel
+
+                    </a>
+
+
+                    <button
+                            class="btn btn-primary"
+                            type="submit">
+
+                        <span>
+                            Submit request
+                        </span>
+
+                        <span>
+                            →
+                        </span>
+
+                    </button>
+
+
+                </div>
+
+
+                <!-- NOTE -->
+
+                <div class="booking-note">
+
+                    <span class="note-icon">
+                        ✓
+                    </span>
+
+                    <span>
+
+                        Your request will be marked
+                        <strong>REQUESTED</strong>.
+                        The room is confirmed only after
+                        the property owner approves it.
+
+                    </span>
+
+                </div>
+
+
+            </form>
+
+
+        </section>
+
+
+    </div>
+
+
+</main>
+
+
+<!-- =========================================================
+     SCROLL TOP
+========================================================= -->
+
+<button
+        class="scroll-top"
+        id="scrollTop"
+        aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<script>
+
+    /* =====================================================
+       MINIMUM CHECK-IN DATE
+    ===================================================== */
+
+    const checkInDate =
+        document.getElementById(
+            "checkInDate"
+        );
+
+
+    if (checkInDate) {
+
+        const today =
+            new Date();
+
+
+        const year =
+            today.getFullYear();
+
+
+        const month =
+            String(
+                today.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const day =
+            String(
+                today.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        checkInDate.min =
+            `${year}-${month}-${day}`;
+
+    }
+
+
+    /* =====================================================
+       REMARKS CHARACTER LIMIT
+    ===================================================== */
+
+    const remarks =
+        document.getElementById(
+            "remarks"
+        );
+
+
+    if (remarks) {
+
+        const counter =
+            document.createElement(
+                "div"
+            );
+
+
+        counter.style.cssText = `
+            text-align:right;
+            margin-top:5px;
+            color:#aaa;
+            font-size:10px;
+        `;
+
+
+        counter.textContent =
+            "0 / 500";
+
+
+        remarks.parentElement
+            .appendChild(
+                counter
+            );
+
+
+        remarks.addEventListener(
+            "input",
+            function () {
+
+                counter.textContent =
+                    `${this.value.length} / 500`;
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       FORM SUBMIT FEEDBACK
+    ===================================================== */
+
+    const bookingForm =
+        document.querySelector(
+            ".booking-form"
+        );
+
+
+    const submitButton =
+        document.querySelector(
+            ".btn-primary"
+        );
+
+
+    if (
+        bookingForm &&
+        submitButton
+    ) {
+
+        bookingForm.addEventListener(
+            "submit",
+            function () {
+
+                if (
+                    checkInDate &&
+                    !checkInDate.value
+                ) {
+
+                    return;
+
+                }
+
+
+                submitButton.style.opacity =
+                    "0.85";
+
+                submitButton.style.pointerEvents =
+                    "none";
+
+                submitButton.innerHTML =
+                    `
+                    <span>Submitting...</span>
+                    <span>...</span>
+                    `;
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       SCROLL TOP
+    ===================================================== */
+
+    const scrollTop =
+        document.getElementById(
+            "scrollTop"
+        );
+
+
+    window.addEventListener(
+        "scroll",
+        function () {
+
+            if (
+                window.scrollY > 300
+            ) {
+
+                scrollTop.classList.add(
+                    "show"
+                );
+
+            } else {
+
+                scrollTop.classList.remove(
+                    "show"
+                );
+
+            }
+
+        },
+        {
+            passive: true
+        }
+    );
+
+
+    scrollTop.addEventListener(
+        "click",
+        function () {
+
+            window.scrollTo({
+
+                top: 0,
+
+                behavior: "smooth"
+
+            });
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

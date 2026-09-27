@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Owner registration</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+            --pink: #ff4f8b;
+            --pink-dark: #e83c78;
+            --pink-soft: #fff1f6;
+
+            --text: #18181b;
+            --muted: #71717a;
+
+            --border: rgba(24, 24, 27, .09);
+
+            --shadow:
+                    0 30px 90px rgba(0, 0, 0, .09);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            background:
+                    radial-gradient(
+                            circle at 10% 10%,
+                            rgba(255,79,139,.13),
+                            transparent 30%
+                    ),
+                    radial-gradient(
+                            circle at 90% 90%,
+                            rgba(255,166,196,.13),
+                            transparent 30%
+                    ),
+                    #fafafa;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .owner-register-page {
+
+            min-height: 100vh;
+
+            display: grid;
+
+            grid-template-columns:
+                    minmax(0, 1.05fr)
+                    minmax(420px, .95fr);
+
+            overflow: hidden;
+        }
+
+
+        /* =========================================================
+           LEFT SIDE
+        ========================================================= */
+
+        .owner-visual {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            min-height: 100vh;
+
+            padding: 70px;
+
+            overflow: hidden;
+
+            background:
+                    linear-gradient(
+                            145deg,
+                            #ff4f8b 0%,
+                            #ff709f 45%,
+                            #ffb0c9 100%
+                    );
+
+            color: white;
+        }
+
+
+        .owner-visual::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 520px;
+
+            height: 520px;
+
+            top: -180px;
+
+            left: -170px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,255,255,.13);
+
+            filter:
+                    blur(2px);
+
+            animation:
+                    floatCircle 8s ease-in-out infinite;
+        }
+
+
+        .owner-visual::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 420px;
+
+            height: 420px;
+
+            right: -170px;
+
+            bottom: -160px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,255,255,.11);
+
+            animation:
+                    floatCircleReverse 9s ease-in-out infinite;
+        }
+
+
+        .visual-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+
+            max-width: 570px;
+
+            animation:
+                    visualReveal .9s ease both;
+        }
+
+
+        .visual-brand {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 80px;
+
+            color: white;
+
+            text-decoration: none;
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+            letter-spacing: -.05em;
+        }
+
+
+        .brand-mark {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                    rgba(255,255,255,.2);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.25);
+
+            backdrop-filter:
+                    blur(10px);
+
+            font-size: 17px;
+        }
+
+
+        .visual-content h2 {
+
+            margin: 0 0 22px;
+
+            max-width: 560px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(48px, 5vw, 72px);
+
+            line-height: .98;
+
+            letter-spacing: -.055em;
+        }
+
+
+        .visual-content h2 span {
+
+            opacity: .75;
+        }
+
+
+        .visual-description {
+
+            max-width: 500px;
+
+            margin: 0;
+
+            color:
+                    rgba(255,255,255,.82);
+
+            font-size: 15px;
+
+            line-height: 1.8;
+        }
+
+
+        /* =========================================================
+           BENEFITS
+        ========================================================= */
+
+        .host-benefits {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap: 12px;
+
+            margin-top: 55px;
+        }
+
+
+        .benefit {
+
+            padding: 18px;
+
+            min-height: 130px;
+
+            border-radius: 20px;
+
+            background:
+                    rgba(255,255,255,.12);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.18);
+
+            backdrop-filter:
+                    blur(12px);
+
+            transition:
+                    transform .3s ease,
+                    background .3s ease;
+        }
+
+
+        .benefit:hover {
+
+            transform:
+                    translateY(-7px);
+
+            background:
+                    rgba(255,255,255,.18);
+        }
+
+
+        .benefit-icon {
+
+            width: 34px;
+
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            margin-bottom: 14px;
+
+            border-radius: 10px;
+
+            background:
+                    rgba(255,255,255,.18);
+
+            font-size: 15px;
+        }
+
+
+        .benefit strong {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            font-size: 12px;
+        }
+
+
+        .benefit span {
+
+            color:
+                    rgba(255,255,255,.72);
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           FLOATING DECORATION
+        ========================================================= */
+
+        .floating-card {
+
+            position: absolute;
+
+            z-index: 3;
+
+            padding:
+                    15px 18px;
+
+            border-radius: 16px;
+
+            background:
+                    rgba(255,255,255,.17);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.22);
+
+            backdrop-filter:
+                    blur(15px);
+
+            box-shadow:
+                    0 20px 50px
+                    rgba(120,20,60,.12);
+
+            color: white;
+
+            animation:
+                    floating 5s ease-in-out infinite;
+        }
+
+
+        .floating-card.top {
+
+            top: 16%;
+
+            right: 9%;
+        }
+
+
+        .floating-card.bottom {
+
+            right: 13%;
+
+            bottom: 12%;
+
+            animation-delay:
+                    -2s;
+        }
+
+
+        .floating-title {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            font-size: 10px;
+
+            opacity: .7;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .1em;
+        }
+
+
+        .floating-value {
+
+            font-size: 15px;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================================
+           RIGHT SIDE
+        ========================================================= */
+
+        .owner-form-side {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 45px;
+
+            background:
+                    rgba(255,255,255,.72);
+
+            backdrop-filter:
+                    blur(18px);
+        }
+
+
+        .owner-form-wrap {
+
+            width: 100%;
+
+            max-width: 500px;
+
+            animation:
+                    formReveal .8s .1s ease both;
+        }
+
+
+        /* =========================================================
+           MOBILE BRAND
+        ========================================================= */
+
+        .mobile-brand {
+
+            display: none;
+
+            margin-bottom: 35px;
+
+            color:
+                    var(--text);
+
+            text-decoration: none;
+
+            font-size: 22px;
+
+            font-weight: 900;
+
+            letter-spacing: -.05em;
+        }
+
+
+        /* =========================================================
+           FORM HEADER
+        ========================================================= */
+
+        .form-eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                    7px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    rgba(255,79,139,.09);
+
+            color:
+                    var(--pink-dark);
+
+            font-size: 10px;
+
+            font-weight: 800;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .12em;
+        }
+
+
+        .form-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--pink);
+
+            box-shadow:
+                    0 0 0 5px
+                    rgba(255,79,139,.08);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        .owner-form-wrap h1 {
+
+            margin:
+                    18px 0 9px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(38px, 4vw, 52px);
+
+            line-height: 1;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .form-subtitle {
+
+            margin: 0 0 28px;
+
+            max-width: 450px;
+
+            color:
+                    var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           FORM CARD
+        ========================================================= */
+
+        .owner-form-card {
+
+            padding:
+                    28px;
+
+            border-radius:
+                    25px;
+
+            background:
+                    rgba(255,255,255,.88);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    0 20px 60px
+                    rgba(0,0,0,.07);
+
+            backdrop-filter:
+                    blur(15px);
+        }
+
+
+        /* =========================================================
+           FORM GRID
+        ========================================================= */
+
+        .owner-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(2, minmax(0,1fr));
+
+            gap: 18px;
+        }
+
+
+        .owner-field {
+
+            position: relative;
+        }
+
+
+        .owner-field.full {
+
+            grid-column:
+                    1 / -1;
+        }
+
+
+        .owner-field label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color:
+                    #27272a;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            letter-spacing: .01em;
+        }
+
+
+        .owner-field input {
+
+            width: 100%;
+
+            height: 50px;
+
+            padding:
+                    0 15px;
+
+            border:
+                    1px solid #e4e4e7;
+
+            border-radius:
+                    13px;
+
+            outline: none;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            color:
+                    var(--text);
+
+            font-size: 13px;
+
+            transition:
+                    border-color .25s ease,
+                    box-shadow .25s ease,
+                    transform .25s ease;
+        }
+
+
+        .owner-field input:hover {
+
+            border-color:
+                    #d4d4d8;
+        }
+
+
+        .owner-field input:focus {
+
+            border-color:
+                    var(--pink);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(255,79,139,.09);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        .owner-field input::placeholder {
+
+            color:
+                    #a1a1aa;
+        }
+
+
+        /* =========================================================
+           PASSWORD
+        ========================================================= */
+
+        .password-wrap {
+
+            position: relative;
+        }
+
+
+        .password-wrap input {
+
+            padding-right:
+                    48px;
+        }
+
+
+        .password-toggle {
+
+            position: absolute;
+
+            right: 13px;
+
+            top: 50%;
+
+            transform:
+                    translateY(-50%);
+
+            width: 30px;
+
+            height: 30px;
+
+            display: grid;
+
+            place-items: center;
+
+            border: none;
+
+            background:
+                    transparent;
+
+            color:
+                    #71717a;
+
+            cursor: pointer;
+
+            border-radius: 8px;
+
+            font-size: 14px;
+        }
+
+
+        .password-toggle:hover {
+
+            background:
+                    #f4f4f5;
+
+            color:
+                    var(--pink-dark);
+        }
+
+
+        /* =========================================================
+           PASSWORD STRENGTH
+        ========================================================= */
+
+        .password-strength {
+
+            display: none;
+
+            margin-top: 9px;
+        }
+
+
+        .strength-track {
+
+            height: 4px;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background:
+                    #f4f4f5;
+        }
+
+
+        .strength-bar {
+
+            width: 0;
+
+            height: 100%;
+
+            border-radius: 20px;
+
+            transition:
+                    width .3s ease,
+                    background .3s ease;
+        }
+
+
+        .strength-text {
+
+            display: block;
+
+            margin-top: 5px;
+
+            color:
+                    #a1a1aa;
+
+            font-size: 9px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           ERROR
+        ========================================================= */
+
+        .alert-error {
+
+            margin-bottom:
+                    18px;
+
+            border-radius:
+                    13px;
+
+            animation:
+                    shake .4s ease both;
+        }
+
+
+        /* =========================================================
+           TERMS
+        ========================================================= */
+
+        .terms {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 9px;
+
+            margin-top: 18px;
+
+            color:
+                    #71717a;
+
+            font-size: 10px;
+
+            line-height: 1.55;
+        }
+
+
+        .terms input {
+
+            width: 14px;
+
+            height: 14px;
+
+            margin-top: 1px;
+
+            accent-color:
+                    var(--pink);
+
+            flex-shrink: 0;
+        }
+
+
+        /* =========================================================
+           BUTTON
+        ========================================================= */
+
+        .create-btn {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 52px;
+
+            margin-top: 21px;
+
+            border: none;
+
+            border-radius: 14px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff719f
+                    );
+
+            color:
+                    white;
+
+            font-size: 13px;
+
+            font-weight: 800;
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+            box-shadow:
+                    0 12px 30px
+                    rgba(255,79,139,.22);
+
+            transition:
+                    transform .25s ease,
+                    box-shadow .25s ease;
+        }
+
+
+        .create-btn::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: -100%;
+
+            width: 70%;
+
+            height: 100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,.35),
+                            transparent
+                    );
+
+            transform:
+                    skewX(-20deg);
+
+            transition:
+                    left .7s ease;
+        }
+
+
+        .create-btn:hover {
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 17px 35px
+                    rgba(255,79,139,.28);
+        }
+
+
+        .create-btn:hover::before {
+
+            left: 140%;
+        }
+
+
+        .create-btn.loading {
+
+            pointer-events: none;
+
+            opacity: .75;
+        }
+
+
+        .create-btn.loading .button-text {
+
+            opacity: 0;
+        }
+
+
+        .create-btn.loading::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 17px;
+
+            height: 17px;
+
+            border-radius: 50%;
+
+            border:
+                    2px solid
+                    rgba(255,255,255,.45);
+
+            border-top-color:
+                    white;
+
+            animation:
+                    spin .7s linear infinite;
+        }
+
+
+        /* =========================================================
+           LOGIN LINK
+        ========================================================= */
+
+        .auth-link {
+
+            margin-top:
+                    20px;
+
+            text-align:
+                    center;
+
+            color:
+                    #71717a;
+
+            font-size:
+                    11px;
+        }
+
+
+        .auth-link a {
+
+            color:
+                    var(--pink-dark);
+
+            font-weight:
+                    800;
+
+            text-decoration:
+                    none;
+        }
+
+
+        .auth-link a:hover {
+
+            text-decoration:
+                    underline;
+        }
+
+
+        /* =========================================================
+           FOOT NOTE
+        ========================================================= */
+
+        .secure-note {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 6px;
+
+            margin-top:
+                    17px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    9px;
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes visualReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateX(0);
+            }
+        }
+
+
+        @keyframes formReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateX(30px)
+                        translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateX(0)
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes floating {
+
+            0%, 100% {
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+                transform:
+                        translateY(-10px);
+            }
+        }
+
+
+        @keyframes floatCircle {
+
+            0%, 100% {
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+                transform:
+                        translate(35px,25px);
+            }
+        }
+
+
+        @keyframes floatCircleReverse {
+
+            0%, 100% {
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+                transform:
+                        translate(-25px,-30px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,100% {
+                transform:
+                        scale(1);
+
+                opacity:
+                        1;
+            }
+
+            50% {
+                transform:
+                        scale(.7);
+
+                opacity:
+                        .6;
+            }
+        }
+
+
+        @keyframes spin {
+
+            to {
+                transform:
+                        rotate(360deg);
+            }
+        }
+
+
+        @keyframes shake {
+
+            0%,100% {
+                transform:
+                        translateX(0);
+            }
+
+            25% {
+                transform:
+                        translateX(-5px);
+            }
+
+            75% {
+                transform:
+                        translateX(5px);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .owner-register-page {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .owner-visual {
+
+                min-height:
+                        440px;
+
+                padding:
+                        45px 35px;
+
+                align-items:
+                        flex-end;
+            }
+
+
+            .visual-brand {
+
+                margin-bottom:
+                        50px;
+            }
+
+
+            .visual-content h2 {
+
+                font-size:
+                        55px;
+            }
+
+
+            .floating-card {
+
+                display:
+                        none;
+            }
+
+
+            .owner-form-side {
+
+                padding:
+                        45px 25px;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .owner-visual {
+
+                min-height:
+                        360px;
+
+                padding:
+                        35px 22px;
+            }
+
+
+            .visual-brand {
+
+                margin-bottom:
+                        35px;
+            }
+
+
+            .visual-content h2 {
+
+                font-size:
+                        42px;
+            }
+
+
+            .visual-description {
+
+                font-size:
+                        13px;
+            }
+
+
+            .host-benefits {
+
+                grid-template-columns:
+                        1fr 1fr;
+
+                margin-top:
+                        30px;
+            }
+
+
+            .benefit:last-child {
+
+                display:
+                        none;
+            }
+
+
+            .owner-form-side {
+
+                padding:
+                        35px 16px;
+            }
+
+
+            .owner-form-card {
+
+                padding:
+                        20px;
+
+                border-radius:
+                        20px;
+            }
+
+
+            .owner-form-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .owner-field.full {
+
+                grid-column:
+                        auto;
+            }
+
+
+            .owner-form-wrap h1 {
+
+                font-size:
+                        40px;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .owner-visual {
+
+                min-height:
+                        330px;
+            }
+
+
+            .visual-content h2 {
+
+                font-size:
+                        36px;
+            }
+
+
+            .host-benefits {
+
+                display:
+                        none;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="owner-register-page">
+
+
+    <!-- =========================================================
+         LEFT VISUAL SECTION
+    ========================================================= -->
+
+    <section class="owner-visual">
+
+
+        <div class="visual-content">
+
+
+            <!-- BRAND -->
+
+            <a class="visual-brand"
+               th:href="@{/}">
+
+                <span class="brand-mark">
+                    ✦
+                </span>
+
+                <span>
+                    SheStay
+                </span>
+
+            </a>
+
+
+            <!-- HERO -->
+
+            <h2>
+
+                Turn your space
+                <span>into a stay.</span>
+
+            </h2>
+
+
+            <p class="visual-description">
+
+                Bring your hostel or PG to SheStay and make it easier
+                for women to discover a comfortable, safe and suitable
+                place to stay.
+
+            </p>
+
+
+            <!-- BENEFITS -->
+
+            <div class="host-benefits">
+
+
+                <div class="benefit">
+
+                    <div class="benefit-icon">
+                        ✦
+                    </div>
+
+                    <strong>
+                        Reach guests
+                    </strong>
+
+                    <span>
+                        Showcase your accommodation to people looking
+                        for a place to stay.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit">
+
+                    <div class="benefit-icon">
+                        ◈
+                    </div>
+
+                    <strong>
+                        Manage rooms
+                    </strong>
+
+                    <span>
+                        Add rooms, prices and availability from one place.
+                    </span>
+
+                </div>
+
+
+                <div class="benefit">
+
+                    <div class="benefit-icon">
+                        ✓
+                    </div>
+
+                    <strong>
+                        Handle requests
+                    </strong>
+
+                    <span>
+                        Review and manage booking requests easily.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- FLOATING CARDS -->
+
+        <div class="floating-card top">
+
+            <span class="floating-title">
+                SheStay host
+            </span>
+
+            <span class="floating-value">
+                Your property, your control.
+            </span>
+
+        </div>
+
+
+        <div class="floating-card bottom">
+
+            <span class="floating-title">
+                Simple management
+            </span>
+
+            <span class="floating-value">
+                Rooms · Guests · Requests
+            </span>
+
+        </div>
+
+
+    </section>
+
+
+    <!-- =========================================================
+         FORM SIDE
+    ========================================================= -->
+
+    <section class="owner-form-side">
+
+
+        <div class="owner-form-wrap">
+
+
+            <!-- MOBILE BRAND -->
+
+            <a class="mobile-brand"
+               th:href="@{/}">
+
+                ✦ SheStay
+
+            </a>
+
+
+            <!-- HEADER -->
+
+            <span class="form-eyebrow">
+
+                <span class="form-dot"></span>
+
+                Owner registration
+
+            </span>
+
+
+            <h1>
+                Become a host.
+            </h1>
+
+
+            <p class="form-subtitle">
+
+                Register your hostel or PG business and start
+                managing your property through SheStay.
+
+            </p>
+
+
+            <!-- FORM CARD -->
+
+            <div class="owner-form-card">
+
+
+                <!-- ERROR -->
+
+                <div class="alert alert-error"
+                     th:if="${error}"
+                     th:text="${error}">
+                </div>
+
+
+                <!-- FORM -->
+
+                <form
+                        id="ownerRegisterForm"
+                        th:action="@{/owner/register}"
+                        th:object="${user}"
+                        method="post">
+
+
+                    <div class="owner-form-grid">
+
+
+                        <!-- OWNER NAME -->
+
+                        <div class="owner-field">
+
+                            <label for="name">
+                                Owner name
+                            </label>
+
+                            <input
+                                    id="name"
+                                    th:field="*{name}"
+                                    placeholder="Your full name"
+                                    autocomplete="name"
+                                    required>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+
+                        <div class="owner-field">
+
+                            <label for="phone">
+                                Phone
+                            </label>
+
+                            <input
+                                    id="phone"
+                                    th:field="*{phone}"
+                                    placeholder="10-digit mobile"
+                                    autocomplete="tel"
+                                    inputmode="tel"
+                                    maxlength="10"
+                                    required>
+
+                        </div>
+
+
+                        <!-- EMAIL -->
+
+                        <div class="owner-field full">
+
+                            <label for="email">
+                                Email address
+                            </label>
+
+                            <input
+                                    id="email"
+                                    type="email"
+                                    th:field="*{email}"
+                                    placeholder="you@example.com"
+                                    autocomplete="email"
+                                    required>
+
+                        </div>
+
+
+                        <!-- PASSWORD -->
+
+                        <div class="owner-field full">
+
+                            <label for="password">
+                                Password
+                            </label>
+
+                            <div class="password-wrap">
+
+                                <input
+                                        id="password"
+                                        type="password"
+                                        th:field="*{password}"
+                                        placeholder="Create a secure password"
+                                        autocomplete="new-password"
+                                        minlength="6"
+                                        required>
+
+                                <button
+                                        type="button"
+                                        id="passwordToggle"
+                                        class="password-toggle"
+                                        aria-label="Show password">
+
+                                    ◉
+
+                                </button>
+
+                            </div>
+
+
+                            <!-- PASSWORD STRENGTH -->
+
+                            <div
+                                    id="passwordStrength"
+                                    class="password-strength">
+
+                                <div class="strength-track">
+
+                                    <div
+                                            id="strengthBar"
+                                            class="strength-bar">
+                                    </div>
+
+                                </div>
+
+                                <span
+                                        id="strengthText"
+                                        class="strength-text">
+
+                                    Enter a password
+
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TERMS -->
+
+                    <label class="terms">
+
+                        <input
+                                id="terms"
+                                type="checkbox"
+                                required>
+
+                        <span>
+                            I confirm that the information provided is
+                            accurate and I agree to use SheStay for
+                            managing my hostel or PG property.
+                        </span>
+
+                    </label>
+
+
+                    <!-- BUTTON -->
+
+                    <button
+                            id="createButton"
+                            class="create-btn"
+                            type="submit">
+
+                        <span class="button-text">
+                            Create owner account
+                        </span>
+
+                    </button>
+
+
+                </form>
+
+
+                <!-- LOGIN -->
+
+                <div class="auth-link">
+
+                    Already registered?
+
+                    <a th:href="@{/login}">
+                        Sign in
+                    </a>
+
+                </div>
+
+
+                <!-- SECURITY -->
+
+                <div class="secure-note">
+
+                    <span>🔒</span>
+
+                    <span>
+                        Your registration information is securely submitted.
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            /* =================================================
+               ELEMENTS
+            ================================================= */
+
+            const form =
+                document.getElementById(
+                    "ownerRegisterForm"
+                );
+
+            const password =
+                document.getElementById(
+                    "password"
+                );
+
+            const passwordToggle =
+                document.getElementById(
+                    "passwordToggle"
+                );
+
+            const strengthBox =
+                document.getElementById(
+                    "passwordStrength"
+                );
+
+            const strengthBar =
+                document.getElementById(
+                    "strengthBar"
+                );
+
+            const strengthText =
+                document.getElementById(
+                    "strengthText"
+                );
+
+            const createButton =
+                document.getElementById(
+                    "createButton"
+                );
+
+            const phone =
+                document.getElementById(
+                    "phone"
+                );
+
+
+            /* =================================================
+               PASSWORD VISIBILITY
+            ================================================= */
+
+            if (passwordToggle && password) {
+
+                passwordToggle.addEventListener(
+                    "click",
+                    function () {
+
+                        const isPassword =
+                            password.type === "password";
+
+
+                        password.type =
+                            isPassword
+                                ? "text"
+                                : "password";
+
+
+                        passwordToggle.textContent =
+                            isPassword
+                                ? "◉"
+                                : "◌";
+
+
+                        passwordToggle.setAttribute(
+                            "aria-label",
+                            isPassword
+                                ? "Hide password"
+                                : "Show password"
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =================================================
+               PASSWORD STRENGTH
+            ================================================= */
+
+            function checkPasswordStrength() {
+
+                if (!password ||
+                    !strengthBox ||
+                    !strengthBar ||
+                    !strengthText) {
+
+                    return;
+                }
+
+
+                const value =
+                    password.value;
+
+
+                if (!value) {
+
+                    strengthBox.style.display =
+                        "none";
+
+                    strengthBar.style.width =
+                        "0";
+
+                    return;
+                }
+
+
+                strengthBox.style.display =
+                    "block";
+
+
+                let score = 0;
+
+
+                if (value.length >= 6) {
+                    score++;
+                }
+
+                if (value.length >= 10) {
+                    score++;
+                }
+
+                if (/[A-Z]/.test(value)) {
+                    score++;
+                }
+
+                if (/[0-9]/.test(value)) {
+                    score++;
+                }
+
+                if (/[^A-Za-z0-9]/.test(value)) {
+                    score++;
+                }
+
+
+                if (score <= 1) {
+
+                    strengthBar.style.width =
+                        "25%";
+
+                    strengthBar.style.background =
+                        "#ef4444";
+
+                    strengthText.textContent =
+                        "Weak password";
+
+                    strengthText.style.color =
+                        "#ef4444";
+
+                } else if (score <= 3) {
+
+                    strengthBar.style.width =
+                        "60%";
+
+                    strengthBar.style.background =
+                        "#f59e0b";
+
+                    strengthText.textContent =
+                        "Moderate password";
+
+                    strengthText.style.color =
+                        "#d97706";
+
+                } else {
+
+                    strengthBar.style.width =
+                        "100%";
+
+                    strengthBar.style.background =
+                        "#22c55e";
+
+                    strengthText.textContent =
+                        "Strong password";
+
+                    strengthText.style.color =
+                        "#16a34a";
+                }
+
+            }
+
+
+            if (password) {
+
+                password.addEventListener(
+                    "input",
+                    checkPasswordStrength
+                );
+
+            }
+
+
+            /* =================================================
+               PHONE INPUT
+            ================================================= */
+
+            if (phone) {
+
+                phone.addEventListener(
+                    "input",
+                    function () {
+
+                        this.value =
+                            this.value
+                                .replace(/\D/g, "")
+                                .slice(0, 10);
+
+                    }
+                );
+
+            }
+
+
+            /* =================================================
+               FORM SUBMIT
+            ================================================= */
+
+            if (form && createButton) {
+
+                form.addEventListener(
+                    "submit",
+                    function (event) {
+
+
+                        const phoneValue =
+                            phone
+                                ? phone.value.trim()
+                                : "";
+
+
+                        if (
+                            phoneValue &&
+                            !/^[0-9]{10}$/.test(
+                                phoneValue
+                            )
+                        ) {
+
+                            event.preventDefault();
+
+                            phone.focus();
+
+                            phone.setCustomValidity(
+                                "Please enter a valid 10-digit phone number."
+                            );
+
+                            phone.reportValidity();
+
+                            return;
+
+                        }
+
+
+                        if (phone) {
+
+                            phone.setCustomValidity(
+                                ""
+                            );
+
+                        }
+
+
+                        createButton.classList.add(
+                            "loading"
+                        );
+
+                    }
+                );
+
+            }
+
+
+            /* =================================================
+               PHONE VALIDITY RESET
+            ================================================= */
+
+            if (phone) {
+
+                phone.addEventListener(
+                    "input",
+                    function () {
+
+                        this.setCustomValidity(
+                            ""
+                        );
+
+                    }
+                );
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

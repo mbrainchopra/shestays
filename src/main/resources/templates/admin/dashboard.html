@@ -1,0 +1,4264 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+
+            --admin-pink: #ff4f8b;
+            --admin-pink-dark: #e83c78;
+            --admin-pink-light: #fff1f6;
+
+            --admin-purple: #8b5cf6;
+            --admin-blue: #3b82f6;
+            --admin-green: #22c55e;
+            --admin-orange: #f59e0b;
+            --admin-red: #ef4444;
+
+            --admin-bg: #f7f7f9;
+            --admin-sidebar: #111113;
+
+            --admin-text: #18181b;
+            --admin-muted: #71717a;
+
+            --admin-border: rgba(24,24,27,.08);
+
+            --admin-card:
+                    rgba(255,255,255,.88);
+
+            --admin-shadow:
+                    0 18px 55px rgba(0,0,0,.055);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background:
+                    radial-gradient(
+                            circle at 15% 10%,
+                            rgba(255,79,139,.07),
+                            transparent 25%
+                    ),
+                    radial-gradient(
+                            circle at 90% 15%,
+                            rgba(139,92,246,.05),
+                            transparent 23%
+                    ),
+                    var(--admin-bg);
+
+            color:
+                    var(--admin-text);
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .admin-sidebar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            z-index: 1200;
+
+            width: 255px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #151517 0%,
+                            #101012 100%
+                    );
+
+            color: white;
+
+            box-shadow:
+                    15px 0 45px rgba(0,0,0,.08);
+
+            transition:
+                    transform .35s ease;
+        }
+
+
+        /* =========================================================
+           SIDEBAR BRAND
+        ========================================================= */
+
+        .admin-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    5px 10px 25px;
+
+            text-decoration: none;
+
+            color: white;
+        }
+
+
+        .admin-brand-icon {
+
+            width: 38px;
+
+            height: 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--admin-pink),
+                            #ff82aa
+                    );
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(255,79,139,.25);
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-brand-text {
+
+            font-size: 19px;
+
+            font-weight: 850;
+
+            letter-spacing:
+                    -.045em;
+        }
+
+
+        .admin-brand-sub {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .12em;
+        }
+
+
+        /* =========================================================
+           SIDEBAR SECTION
+        ========================================================= */
+
+        .sidebar-section-title {
+
+            padding:
+                    12px 12px 8px;
+
+            color:
+                    rgba(255,255,255,.3);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .13em;
+        }
+
+
+        /* =========================================================
+           SIDEBAR NAV
+        ========================================================= */
+
+        .sidebar-nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+
+        .sidebar-link {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                    11px 12px;
+
+            border-radius: 11px;
+
+            color:
+                    rgba(255,255,255,.62);
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                    color .25s ease,
+                    background .25s ease,
+                    transform .25s ease;
+        }
+
+
+        .sidebar-link:hover {
+
+            color: white;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            transform:
+                    translateX(3px);
+        }
+
+
+        .sidebar-link.active {
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            rgba(255,79,139,.18),
+                            rgba(255,79,139,.06)
+                    );
+        }
+
+
+        .sidebar-link.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 50%;
+
+            width: 3px;
+
+            height: 21px;
+
+            border-radius:
+                    0 5px 5px 0;
+
+            background:
+                    var(--admin-pink);
+
+            transform:
+                    translateY(-50%);
+        }
+
+
+        .sidebar-icon {
+
+            width: 28px;
+
+            height: 28px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background:
+                    rgba(255,255,255,.05);
+
+            font-size: 12px;
+        }
+
+
+        .sidebar-link.active
+        .sidebar-icon {
+
+            background:
+                    rgba(255,79,139,.15);
+        }
+
+
+        .sidebar-label {
+            flex: 1;
+        }
+
+
+        .sidebar-count {
+
+            min-width: 20px;
+
+            height: 20px;
+
+            display: grid;
+
+            place-items: center;
+
+            padding: 0 5px;
+
+            border-radius: 999px;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            color:
+                    rgba(255,255,255,.5);
+
+            font-size: 8px;
+
+            font-weight: 800;
+        }
+
+
+        .sidebar-count.pending {
+
+            background:
+                    rgba(255,79,139,.18);
+
+            color:
+                    #ff8fb0;
+        }
+
+
+        /* =========================================================
+           SIDEBAR BOTTOM
+        ========================================================= */
+
+        .sidebar-bottom {
+
+            margin-top: auto;
+        }
+
+
+        .admin-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                    13px 10px;
+
+            margin-bottom: 8px;
+
+            border-radius: 13px;
+
+            background:
+                    rgba(255,255,255,.045);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.05);
+        }
+
+
+        .admin-avatar {
+
+            width: 34px;
+
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--admin-pink),
+                            #ff9abc
+                    );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-profile-name {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        .admin-profile-role {
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+        }
+
+
+        .logout-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    10px 12px;
+
+            border-radius: 10px;
+
+            color:
+                    rgba(255,255,255,.45);
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition:
+                    background .2s ease,
+                    color .2s ease;
+        }
+
+
+        .logout-link:hover {
+
+            color:
+                    #ff7fa4;
+
+            background:
+                    rgba(255,79,139,.08);
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .admin-main {
+
+            min-height: 100vh;
+
+            margin-left: 255px;
+
+            padding:
+                    28px 32px 70px;
+        }
+
+
+        .admin-container {
+
+            max-width: 1450px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TOPBAR
+        ========================================================= */
+
+        .admin-topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+
+            animation:
+                    fadeDown .6s ease both;
+        }
+
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 40px;
+
+            height: 40px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background:
+                    white;
+
+            box-shadow:
+                    0 8px 25px rgba(0,0,0,.06);
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .topbar-date {
+
+            color:
+                    #a1a1aa;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        .topbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .topbar-pill {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    8px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    rgba(255,255,255,.8);
+
+            border:
+                    1px solid
+                    var(--admin-border);
+
+            color:
+                    #52525b;
+
+            font-size: 9px;
+
+            font-weight: 800;
+        }
+
+
+        .online-dot {
+
+            width: 6px;
+
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    #22c55e;
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(34,197,94,.1);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+
+        .dashboard-hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 30px;
+
+            padding:
+                    31px 34px;
+
+            margin-bottom: 25px;
+
+            border-radius:
+                    25px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #18181b 0%,
+                            #242428 60%,
+                            #351724 100%
+                    );
+
+            color: white;
+
+            box-shadow:
+                    0 20px 55px rgba(0,0,0,.12);
+
+            animation:
+                    heroReveal .75s ease both;
+        }
+
+
+        .dashboard-hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+
+            height: 300px;
+
+            right: -80px;
+
+            top: -150px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,79,139,.18);
+
+            filter:
+                    blur(10px);
+
+            animation:
+                    heroOrb 8s ease-in-out infinite;
+        }
+
+
+        .dashboard-hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 180px;
+
+            height: 180px;
+
+            right: 25%;
+
+            bottom: -120px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(139,92,246,.12);
+
+            filter:
+                    blur(5px);
+        }
+
+
+        .hero-copy {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .hero-eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 12px;
+
+            color:
+                    #ff86a9;
+
+            font-size: 9px;
+
+            font-weight: 850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .13em;
+        }
+
+
+        .hero-eyebrow::before {
+
+            content: "";
+
+            width: 6px;
+
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--admin-pink);
+        }
+
+
+        .hero-copy h1 {
+
+            margin:
+                    0 0 8px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(32px, 4vw, 48px);
+
+            line-height:
+                    1;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .hero-copy p {
+
+            margin: 0;
+
+            color:
+                    rgba(255,255,255,.55);
+
+            font-size:
+                    12px;
+
+            line-height:
+                    1.6;
+        }
+
+
+        .hero-copy strong {
+
+            color:
+                    white;
+        }
+
+
+        .hero-actions {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            gap: 9px;
+        }
+
+
+        .hero-action {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    10px 13px;
+
+            border-radius:
+                    10px;
+
+            color:
+                    white;
+
+            text-decoration:
+                    none;
+
+            background:
+                    rgba(255,255,255,.08);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.1);
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+
+            backdrop-filter:
+                    blur(10px);
+
+            transition:
+                    transform .25s ease,
+                    background .25s ease;
+        }
+
+
+        .hero-action:hover {
+
+            transform:
+                    translateY(-3px);
+
+            background:
+                    rgba(255,255,255,.14);
+        }
+
+
+        /* =========================================================
+           STAT GRID
+        ========================================================= */
+
+        .stat-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(5, 1fr);
+
+            gap: 14px;
+
+            margin-bottom: 25px;
+        }
+
+
+        .stat-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height:
+                    145px;
+
+            padding:
+                    19px;
+
+            border-radius:
+                    19px;
+
+            background:
+                    var(--admin-card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--admin-shadow);
+
+            animation:
+                    statReveal .65s ease both;
+
+            transition:
+                    transform .3s ease,
+                    box-shadow .3s ease;
+        }
+
+
+        .stat-card:nth-child(2) {
+            animation-delay: .05s;
+        }
+
+
+        .stat-card:nth-child(3) {
+            animation-delay: .1s;
+        }
+
+
+        .stat-card:nth-child(4) {
+            animation-delay: .15s;
+        }
+
+
+        .stat-card:nth-child(5) {
+            animation-delay: .2s;
+        }
+
+
+        .stat-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            box-shadow:
+                    0 25px 55px rgba(0,0,0,.09);
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+
+            height: 90px;
+
+            right: -38px;
+
+            bottom: -40px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--stat-glow,
+                    rgba(255,79,139,.08));
+        }
+
+
+        .stat-card.users {
+            --stat-glow:
+                    rgba(255,79,139,.1);
+        }
+
+
+        .stat-card.owners {
+            --stat-glow:
+                    rgba(139,92,246,.1);
+        }
+
+
+        .stat-card.properties {
+            --stat-glow:
+                    rgba(59,130,246,.1);
+        }
+
+
+        .stat-card.rooms {
+            --stat-glow:
+                    rgba(34,197,94,.1);
+        }
+
+
+        .stat-card.bookings {
+            --stat-glow:
+                    rgba(245,158,11,.1);
+        }
+
+
+        .stat-icon {
+
+            width:
+                    36px;
+
+            height:
+                    36px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    15px;
+
+            border-radius:
+                    11px;
+
+            background:
+                    var(--icon-bg,
+                    var(--admin-pink-light));
+
+            color:
+                    var(--icon-color,
+                    var(--admin-pink-dark));
+
+            font-size:
+                    14px;
+        }
+
+
+        .users .stat-icon {
+            --icon-bg: #fff0f5;
+            --icon-color: #e83c78;
+        }
+
+
+        .owners .stat-icon {
+            --icon-bg: #f3efff;
+            --icon-color: #7c3aed;
+        }
+
+
+        .properties .stat-icon {
+            --icon-bg: #eff6ff;
+            --icon-color: #2563eb;
+        }
+
+
+        .rooms .stat-icon {
+            --icon-bg: #ecfdf3;
+            --icon-color: #16a34a;
+        }
+
+
+        .bookings .stat-icon {
+            --icon-bg: #fffbeb;
+            --icon-color: #d97706;
+        }
+
+
+        .stat-label {
+
+            display: block;
+
+            margin-bottom: 5px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .1em;
+        }
+
+
+        .stat-number {
+
+            display: block;
+
+            font-size:
+                    28px;
+
+            line-height:
+                    1;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .stat-footer {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    5px;
+
+            margin-top:
+                    9px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        .stat-arrow {
+
+            color:
+                    #22c55e;
+
+            font-weight:
+                    900;
+        }
+
+
+        /* =========================================================
+           CONTENT GRID
+        ========================================================= */
+
+        .dashboard-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    minmax(0, 1.45fr)
+                    minmax(300px, .75fr);
+
+            gap: 18px;
+
+            margin-bottom: 22px;
+        }
+
+
+        .panel {
+
+            overflow:
+                    hidden;
+
+            border-radius:
+                    21px;
+
+            background:
+                    var(--admin-card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--admin-shadow);
+
+            animation:
+                    panelReveal .75s .2s ease both;
+        }
+
+
+        .panel-header {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    15px;
+
+            padding:
+                    20px 21px;
+
+            border-bottom:
+                    1px solid #f0f0f1;
+        }
+
+
+        .panel-header h2 {
+
+            margin:
+                    0 0 4px;
+
+            font-size:
+                    15px;
+
+            letter-spacing:
+                    -.025em;
+        }
+
+
+        .panel-header p {
+
+            margin:
+                    0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    9px;
+        }
+
+
+        .panel-link {
+
+            color:
+                    var(--admin-pink-dark);
+
+            text-decoration:
+                    none;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .panel-link:hover {
+            text-decoration:
+                    underline;
+        }
+
+
+        /* =========================================================
+           BAR CHART
+        ========================================================= */
+
+        .chart-area {
+
+            position:
+                    relative;
+
+            height:
+                    285px;
+
+            padding:
+                    25px 24px 18px;
+        }
+
+
+        .chart-grid-lines {
+
+            position:
+                    absolute;
+
+            left:
+                    55px;
+
+            right:
+                    22px;
+
+            top:
+                    25px;
+
+            bottom:
+                    42px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            justify-content:
+                    space-between;
+        }
+
+
+        .grid-line {
+
+            width:
+                    100%;
+
+            height:
+                    1px;
+
+            background:
+                    #f0f0f1;
+        }
+
+
+        .chart-bars {
+
+            position:
+                    absolute;
+
+            left:
+                    55px;
+
+            right:
+                    22px;
+
+            top:
+                    25px;
+
+            bottom:
+                    42px;
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-end;
+
+            justify-content:
+                    space-around;
+
+            gap:
+                    15px;
+        }
+
+
+        .chart-column {
+
+            height:
+                    100%;
+
+            flex:
+                    1;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    flex-end;
+
+            gap:
+                    7px;
+        }
+
+
+        .bar-value {
+
+            color:
+                    #71717a;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .bar-track {
+
+            width:
+                    min(42px, 65%);
+
+            height:
+                    85%;
+
+            display:
+                    flex;
+
+            align-items:
+                    flex-end;
+
+            border-radius:
+                    9px 9px 4px 4px;
+
+            background:
+                    #f7f7f8;
+
+            overflow:
+                    hidden;
+        }
+
+
+        .bar {
+
+            width:
+                    100%;
+
+            height:
+                    0;
+
+            border-radius:
+                    8px 8px 3px 3px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #ff6b9b,
+                            #ff4f8b
+                    );
+
+            animation:
+                    chartGrow 1s .35s ease forwards;
+
+            transform-origin:
+                    bottom;
+        }
+
+
+        .chart-column:nth-child(2)
+        .bar {
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #a78bfa,
+                            #8b5cf6
+                    );
+
+            animation-delay:
+                    .45s;
+        }
+
+
+        .chart-column:nth-child(3)
+        .bar {
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #60a5fa,
+                            #3b82f6
+                    );
+
+            animation-delay:
+                    .55s;
+        }
+
+
+        .chart-column:nth-child(4)
+        .bar {
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #4ade80,
+                            #22c55e
+                    );
+
+            animation-delay:
+                    .65s;
+        }
+
+
+        .chart-column:nth-child(5)
+        .bar {
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #fbbf24,
+                            #f59e0b
+                    );
+
+            animation-delay:
+                    .75s;
+        }
+
+
+        .chart-label {
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .chart-y-labels {
+
+            position:
+                    absolute;
+
+            left:
+                    20px;
+
+            top:
+                    21px;
+
+            bottom:
+                    39px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            justify-content:
+                    space-between;
+
+            color:
+                    #c4c4c8;
+
+            font-size:
+                    7px;
+
+            font-weight:
+                    700;
+        }
+
+
+        /* =========================================================
+           DISTRIBUTION
+        ========================================================= */
+
+        .distribution-body {
+
+            padding:
+                    22px;
+        }
+
+
+        .donut-wrap {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            padding:
+                    10px 0 22px;
+        }
+
+
+        .donut {
+
+            position:
+                    relative;
+
+            width:
+                    155px;
+
+            height:
+                    155px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    conic-gradient(
+                            var(--admin-pink) 0 35%,
+                            var(--admin-purple) 35% 58%,
+                            var(--admin-blue) 58% 76%,
+                            var(--admin-green) 76% 100%
+                    );
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(0,0,0,.07);
+
+            animation:
+                    donutReveal 1s ease both;
+        }
+
+
+        .donut::before {
+
+            content: "";
+
+            position:
+                    absolute;
+
+            inset:
+                    28px;
+
+            border-radius:
+                    50%;
+
+            background:
+                    white;
+
+            box-shadow:
+                    inset 0 0 15px
+                    rgba(0,0,0,.03);
+        }
+
+
+        .donut-center {
+
+            position:
+                    absolute;
+
+            inset:
+                    0;
+
+            z-index:
+                    2;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+        }
+
+
+        .donut-center strong {
+
+            font-size:
+                    22px;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .donut-center span {
+
+            margin-top:
+                    3px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .legend {
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            gap:
+                    10px;
+        }
+
+
+        .legend-item {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    9px;
+        }
+
+
+        .legend-dot {
+
+            width:
+                    8px;
+
+            height:
+                    8px;
+
+            flex-shrink:
+                    0;
+
+            border-radius:
+                    50%;
+        }
+
+
+        .legend-name {
+
+            flex:
+                    1;
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .legend-value {
+
+            color:
+                    #18181b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    850;
+        }
+
+
+        /* =========================================================
+           QUICK MANAGEMENT
+        ========================================================= */
+
+        .management-panel {
+
+            margin-bottom:
+                    22px;
+        }
+
+
+        .management-grid {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    repeat(5, 1fr);
+
+            gap:
+                    10px;
+
+            padding:
+                    18px;
+        }
+
+
+        .management-card {
+
+            position:
+                    relative;
+
+            overflow:
+                    hidden;
+
+            min-height:
+                    125px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            justify-content:
+                    flex-end;
+
+            padding:
+                    17px;
+
+            border-radius:
+                    15px;
+
+            background:
+                    #fafafa;
+
+            border:
+                    1px solid #eeeeef;
+
+            text-decoration:
+                    none;
+
+            color:
+                    var(--admin-text);
+
+            transition:
+                    transform .3s ease,
+                    background .3s ease,
+                    border-color .3s ease,
+                    box-shadow .3s ease;
+        }
+
+
+        .management-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            background:
+                    white;
+
+            border-color:
+                    rgba(255,79,139,.18);
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(0,0,0,.07);
+        }
+
+
+        .management-icon {
+
+            position:
+                    absolute;
+
+            top:
+                    15px;
+
+            right:
+                    15px;
+
+            width:
+                    34px;
+
+            height:
+                    34px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            border-radius:
+                    10px;
+
+            background:
+                    var(--management-bg);
+
+            color:
+                    var(--management-color);
+
+            font-size:
+                    14px;
+        }
+
+
+        .management-number {
+
+            margin-bottom:
+                    5px;
+
+            font-size:
+                    21px;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.04em;
+        }
+
+
+        .management-title {
+
+            margin-bottom:
+                    4px;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .management-desc {
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            line-height:
+                    1.4;
+        }
+
+
+        /* =========================================================
+           BOTTOM GRID
+        ========================================================= */
+
+        .bottom-grid {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    1fr 1fr;
+
+            gap:
+                    18px;
+        }
+
+
+        /* =========================================================
+           PENDING CARD
+        ========================================================= */
+
+        .pending-body {
+
+            padding:
+                    21px;
+        }
+
+
+        .pending-number {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    14px;
+
+            margin-bottom:
+                    18px;
+        }
+
+
+        .pending-circle {
+
+            width:
+                    60px;
+
+            height:
+                    60px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            border-radius:
+                    50%;
+
+            background:
+                    #fff7e6;
+
+            color:
+                    #d97706;
+
+            font-size:
+                    19px;
+
+            font-weight:
+                    900;
+
+            box-shadow:
+                    0 0 0 8px
+                    rgba(245,158,11,.06);
+        }
+
+
+        .pending-copy strong {
+
+            display:
+                    block;
+
+            margin-bottom:
+                    3px;
+
+            font-size:
+                    18px;
+        }
+
+
+        .pending-copy span {
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    9px;
+        }
+
+
+        .pending-action {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            gap:
+                    10px;
+
+            padding:
+                    12px 13px;
+
+            border-radius:
+                    12px;
+
+            background:
+                    #fafafa;
+
+            border:
+                    1px solid #eeeeef;
+        }
+
+
+        .pending-action span {
+
+            color:
+                    #71717a;
+
+            font-size:
+                    9px;
+
+            line-height:
+                    1.5;
+        }
+
+
+        .pending-action a {
+
+            flex-shrink:
+                    0;
+
+            color:
+                    var(--admin-pink-dark);
+
+            text-decoration:
+                    none;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    850;
+        }
+
+
+        /* =========================================================
+           PLATFORM HEALTH
+        ========================================================= */
+
+        .health-body {
+
+            padding:
+                    21px;
+        }
+
+
+        .health-item {
+
+            margin-bottom:
+                    16px;
+        }
+
+
+        .health-item:last-child {
+
+            margin-bottom:
+                    0;
+        }
+
+
+        .health-top {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    space-between;
+
+            margin-bottom:
+                    7px;
+        }
+
+
+        .health-name {
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    700;
+        }
+
+
+        .health-value {
+
+            color:
+                    #18181b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .health-track {
+
+            height:
+                    6px;
+
+            overflow:
+                    hidden;
+
+            border-radius:
+                    20px;
+
+            background:
+                    #f1f1f2;
+        }
+
+
+        .health-fill {
+
+            height:
+                    100%;
+
+            border-radius:
+                    inherit;
+
+            transform-origin:
+                    left;
+
+            animation:
+                    healthGrow .9s ease both;
+        }
+
+
+        .health-fill.pink {
+            background:
+                    var(--admin-pink);
+        }
+
+
+        .health-fill.purple {
+            background:
+                    var(--admin-purple);
+        }
+
+
+        .health-fill.blue {
+            background:
+                    var(--admin-blue);
+        }
+
+
+        .health-fill.green {
+            background:
+                    var(--admin-green);
+        }
+
+
+        /* =========================================================
+           MOBILE OVERLAY
+        ========================================================= */
+
+        .sidebar-overlay {
+
+            display:
+                    none;
+
+            position:
+                    fixed;
+
+            inset:
+                    0;
+
+            z-index:
+                    1100;
+
+            background:
+                    rgba(0,0,0,.4);
+
+            backdrop-filter:
+                    blur(3px);
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeDown {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes heroReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px)
+                        scale(.99);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        @keyframes statReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes panelReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes heroOrb {
+
+            0%,100% {
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+                transform:
+                        translate(-35px,30px);
+            }
+        }
+
+
+        @keyframes chartGrow {
+
+            from {
+                height: 0;
+            }
+
+            to {
+                height: var(--bar-height);
+            }
+        }
+
+
+        @keyframes donutReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        scale(.75)
+                        rotate(-35deg);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        scale(1)
+                        rotate(0);
+            }
+        }
+
+
+        @keyframes healthGrow {
+
+            from {
+                transform:
+                        scaleX(0);
+            }
+
+            to {
+                transform:
+                        scaleX(1);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,100% {
+                transform:
+                        scale(1);
+
+                opacity:
+                        1;
+            }
+
+            50% {
+                transform:
+                        scale(.7);
+
+                opacity:
+                        .6;
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1200px) {
+
+            .stat-grid {
+
+                grid-template-columns:
+                        repeat(3, 1fr);
+            }
+
+
+            .management-grid {
+
+                grid-template-columns:
+                        repeat(3, 1fr);
+            }
+        }
+
+
+        @media (max-width: 950px) {
+
+            .admin-sidebar {
+
+                transform:
+                        translateX(-100%);
+            }
+
+
+            .admin-sidebar.open {
+
+                transform:
+                        translateX(0);
+            }
+
+
+            .sidebar-overlay.open {
+
+                display:
+                        block;
+            }
+
+
+            .admin-main {
+
+                margin-left:
+                        0;
+
+                padding:
+                        22px 20px 60px;
+            }
+
+
+            .mobile-menu {
+
+                display:
+                        grid;
+
+                place-items:
+                        center;
+            }
+
+
+            .dashboard-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .bottom-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .admin-main {
+
+                padding:
+                        18px 14px 50px;
+            }
+
+
+            .admin-topbar {
+
+                margin-bottom:
+                        20px;
+            }
+
+
+            .topbar-date {
+
+                display:
+                        none;
+            }
+
+
+            .topbar-pill {
+
+                display:
+                        none;
+            }
+
+
+            .dashboard-hero {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+
+                padding:
+                        25px 22px;
+            }
+
+
+            .hero-actions {
+
+                width:
+                        100%;
+            }
+
+
+            .hero-action {
+
+                flex:
+                        1;
+
+                justify-content:
+                        center;
+            }
+
+
+            .stat-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+
+
+            .management-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 450px) {
+
+            .stat-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .management-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .dashboard-hero {
+
+                border-radius:
+                        18px;
+            }
+
+
+            .hero-copy h1 {
+
+                font-size:
+                        34px;
+            }
+
+
+            .chart-area {
+
+                height:
+                        250px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     SIDEBAR OVERLAY
+========================================================= -->
+
+<div
+        id="sidebarOverlay"
+        class="sidebar-overlay">
+</div>
+
+
+<!-- =========================================================
+     ADMIN SIDEBAR
+========================================================= -->
+
+<aside
+        id="adminSidebar"
+        class="admin-sidebar">
+
+
+    <!-- BRAND -->
+
+    <a
+            class="admin-brand"
+            th:href="@{/admin/dashboard}">
+
+        <div class="admin-brand-icon">
+            ✦
+        </div>
+
+        <div>
+
+            <div class="admin-brand-text">
+                SheStay
+            </div>
+
+            <span class="admin-brand-sub">
+                Admin Console
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- MAIN -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link active"
+                th:href="@{/admin/dashboard}">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span class="sidebar-label">
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/users}">
+
+            <span class="sidebar-icon">
+                👩
+            </span>
+
+            <span class="sidebar-label">
+                Women Users
+            </span>
+
+            <span
+                    class="sidebar-count"
+                    th:text="${totalUsers}">
+                0
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/owners}">
+
+            <span class="sidebar-icon">
+                ♙
+            </span>
+
+            <span class="sidebar-label">
+                Owners
+            </span>
+
+            <span
+                    class="sidebar-count"
+                    th:text="${totalOwners}">
+                0
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/properties}">
+
+            <span class="sidebar-icon">
+                ▦
+            </span>
+
+            <span class="sidebar-label">
+                Properties
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/rooms}">
+
+            <span class="sidebar-icon">
+                🛏
+            </span>
+
+            <span class="sidebar-label">
+                Rooms
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings}">
+
+            <span class="sidebar-icon">
+                ▣
+            </span>
+
+            <span class="sidebar-label">
+                Bookings
+            </span>
+
+            <span
+                    class="sidebar-count pending"
+                    th:text="${pendingBookings}">
+                0
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- MANAGEMENT -->
+
+    <div class="sidebar-section-title">
+        Management
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings?status=REQUESTED}">
+
+            <span class="sidebar-icon">
+                ⏳
+            </span>
+
+            <span class="sidebar-label">
+                Pending Requests
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings?status=APPROVED}">
+
+            <span class="sidebar-icon">
+                ✓
+            </span>
+
+            <span class="sidebar-label">
+                Approved
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- BOTTOM -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+
+                <span
+                        th:text="${adminName != null && !adminName.isEmpty()
+                        ? #strings.substring(adminName,0,1).toUpperCase()
+                        : 'A'}">
+                    A
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <div
+                        class="admin-profile-name"
+                        th:text="${adminName}">
+                    Admin
+                </div>
+
+                <div class="admin-profile-role">
+                    Platform Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <a
+                class="logout-link"
+                th:href="@{/logout}">
+
+            <span>
+                ↪
+            </span>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+
+        <!-- =====================================================
+             TOPBAR
+        ===================================================== -->
+
+        <div class="admin-topbar">
+
+
+            <div class="topbar-left">
+
+                <button
+                        id="menuButton"
+                        class="mobile-menu"
+                        aria-label="Open menu">
+
+                    ☰
+
+                </button>
+
+
+                <span class="topbar-date">
+                    SheStay administration
+                </span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <span class="topbar-pill">
+
+                    <span class="online-dot"></span>
+
+                    System active
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             HERO
+        ===================================================== -->
+
+        <section class="dashboard-hero">
+
+
+            <div class="hero-copy">
+
+                <div class="hero-eyebrow">
+                    Admin overview
+                </div>
+
+
+                <h1>
+                    Good to see you.
+                </h1>
+
+
+                <p>
+
+                    Welcome,
+                    <strong th:text="${adminName}">
+                        Admin
+                    </strong>.
+
+                    Monitor and manage your SheStay platform
+                    from one place.
+
+                </p>
+
+            </div>
+
+
+            <div class="hero-actions">
+
+                <a
+                        class="hero-action"
+                        th:href="@{/admin/users}">
+
+                    👩
+                    Manage users
+
+                </a>
+
+
+                <a
+                        class="hero-action"
+                        th:href="@{/admin/bookings}">
+
+                    ▣
+                    View bookings
+
+                </a>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             STAT CARDS
+        ===================================================== -->
+
+        <section class="stat-grid">
+
+
+            <!-- USERS -->
+
+            <div class="stat-card users">
+
+                <div class="stat-icon">
+                    👩
+                </div>
+
+                <span class="stat-label">
+                    Women users
+                </span>
+
+                <span
+                        class="stat-number counter"
+                        th:text="${totalUsers}"
+                        th:attr="data-value=${totalUsers}">
+                    0
+                </span>
+
+                <div class="stat-footer">
+
+                    <span class="stat-arrow">
+                        ↑
+                    </span>
+
+                    Registered accounts
+
+                </div>
+
+            </div>
+
+
+            <!-- OWNERS -->
+
+            <div class="stat-card owners">
+
+                <div class="stat-icon">
+                    ♙
+                </div>
+
+                <span class="stat-label">
+                    Owners
+                </span>
+
+                <span
+                        class="stat-number counter"
+                        th:text="${totalOwners}"
+                        th:attr="data-value=${totalOwners}">
+                    0
+                </span>
+
+                <div class="stat-footer">
+
+                    <span class="stat-arrow">
+                        ↑
+                    </span>
+
+                    Property owners
+
+                </div>
+
+            </div>
+
+
+            <!-- PROPERTIES -->
+
+            <div class="stat-card properties">
+
+                <div class="stat-icon">
+                    ▦
+                </div>
+
+                <span class="stat-label">
+                    Properties
+                </span>
+
+                <span
+                        class="stat-number counter"
+                        th:text="${totalProperties}"
+                        th:attr="data-value=${totalProperties}">
+                    0
+                </span>
+
+                <div class="stat-footer">
+
+                    <span class="stat-arrow">
+                        ↑
+                    </span>
+
+                    Active listings
+
+                </div>
+
+            </div>
+
+
+            <!-- ROOMS -->
+
+            <div class="stat-card rooms">
+
+                <div class="stat-icon">
+                    🛏
+                </div>
+
+                <span class="stat-label">
+                    Rooms
+                </span>
+
+                <span
+                        class="stat-number counter"
+                        th:text="${totalRooms}"
+                        th:attr="data-value=${totalRooms}">
+                    0
+                </span>
+
+                <div class="stat-footer">
+
+                    <span class="stat-arrow">
+                        ↑
+                    </span>
+
+                    Room inventory
+
+                </div>
+
+            </div>
+
+
+            <!-- BOOKINGS -->
+
+            <div class="stat-card bookings">
+
+                <div class="stat-icon">
+                    ▣
+                </div>
+
+                <span class="stat-label">
+                    Bookings
+                </span>
+
+                <span
+                        class="stat-number counter"
+                        th:text="${totalBookings}"
+                        th:attr="data-value=${totalBookings}">
+                    0
+                </span>
+
+                <div class="stat-footer">
+
+                    <span class="stat-arrow">
+                        ↑
+                    </span>
+
+                    Total requests
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             CHART GRID
+        ===================================================== -->
+
+        <section class="dashboard-grid">
+
+
+            <!-- =================================================
+                 PLATFORM OVERVIEW CHART
+            ================================================= -->
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Platform overview
+                        </h2>
+
+                        <p>
+                            Current platform entities
+                        </p>
+
+                    </div>
+
+
+                    <span
+                            class="panel-link">
+                        Live data
+                    </span>
+
+                </div>
+
+
+                <div class="chart-area">
+
+
+                    <!-- GRID -->
+
+                    <div class="chart-grid-lines">
+
+                        <div class="grid-line"></div>
+                        <div class="grid-line"></div>
+                        <div class="grid-line"></div>
+                        <div class="grid-line"></div>
+                        <div class="grid-line"></div>
+
+                    </div>
+
+
+                    <!-- Y LABELS -->
+
+                    <div class="chart-y-labels">
+
+                        <span>100%</span>
+                        <span>75%</span>
+                        <span>50%</span>
+                        <span>25%</span>
+                        <span>0</span>
+
+                    </div>
+
+
+                    <!-- BARS -->
+
+                    <div class="chart-bars">
+
+
+                        <div class="chart-column">
+
+                            <span class="bar-value"
+                                  th:text="${totalUsers}">
+                                0
+                            </span>
+
+                            <div class="bar-track">
+
+                                <div
+                                        class="bar"
+                                        th:style="'--bar-height:' +
+                                        (${totalUsers} > 0 ? '90%' : '5%')">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-label">
+                                Users
+                            </span>
+
+                        </div>
+
+
+                        <div class="chart-column">
+
+                            <span class="bar-value"
+                                  th:text="${totalOwners}">
+                                0
+                            </span>
+
+                            <div class="bar-track">
+
+                                <div
+                                        class="bar"
+                                        th:style="'--bar-height:' +
+                                        (${totalOwners} > 0 ? '65%' : '5%')">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-label">
+                                Owners
+                            </span>
+
+                        </div>
+
+
+                        <div class="chart-column">
+
+                            <span class="bar-value"
+                                  th:text="${totalProperties}">
+                                0
+                            </span>
+
+                            <div class="bar-track">
+
+                                <div
+                                        class="bar"
+                                        th:style="'--bar-height:' +
+                                        (${totalProperties} > 0 ? '50%' : '5%')">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-label">
+                                Properties
+                            </span>
+
+                        </div>
+
+
+                        <div class="chart-column">
+
+                            <span class="bar-value"
+                                  th:text="${totalRooms}">
+                                0
+                            </span>
+
+                            <div class="bar-track">
+
+                                <div
+                                        class="bar"
+                                        th:style="'--bar-height:' +
+                                        (${totalRooms} > 0 ? '75%' : '5%')">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-label">
+                                Rooms
+                            </span>
+
+                        </div>
+
+
+                        <div class="chart-column">
+
+                            <span class="bar-value"
+                                  th:text="${totalBookings}">
+                                0
+                            </span>
+
+                            <div class="bar-track">
+
+                                <div
+                                        class="bar"
+                                        th:style="'--bar-height:' +
+                                        (${totalBookings} > 0 ? '58%' : '5%')">
+                                </div>
+
+                            </div>
+
+                            <span class="chart-label">
+                                Bookings
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 DISTRIBUTION
+            ================================================= -->
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Platform distribution
+                        </h2>
+
+                        <p>
+                            Current entity mix
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="distribution-body">
+
+
+                    <div class="donut-wrap">
+
+                        <div class="donut">
+
+                            <div class="donut-center">
+
+                                <strong>
+                                    SheStay
+                                </strong>
+
+                                <span>
+                                    Platform
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="legend">
+
+
+                        <div class="legend-item">
+
+                            <span
+                                    class="legend-dot"
+                                    style="background:#ff4f8b">
+                            </span>
+
+                            <span class="legend-name">
+                                Women users
+                            </span>
+
+                            <span
+                                    class="legend-value"
+                                    th:text="${totalUsers}">
+                                0
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span
+                                    class="legend-dot"
+                                    style="background:#8b5cf6">
+                            </span>
+
+                            <span class="legend-name">
+                                Owners
+                            </span>
+
+                            <span
+                                    class="legend-value"
+                                    th:text="${totalOwners}">
+                                0
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span
+                                    class="legend-dot"
+                                    style="background:#3b82f6">
+                            </span>
+
+                            <span class="legend-name">
+                                Properties
+                            </span>
+
+                            <span
+                                    class="legend-value"
+                                    th:text="${totalProperties}">
+                                0
+                            </span>
+
+                        </div>
+
+
+                        <div class="legend-item">
+
+                            <span
+                                    class="legend-dot"
+                                    style="background:#22c55e">
+                            </span>
+
+                            <span class="legend-name">
+                                Rooms
+                            </span>
+
+                            <span
+                                    class="legend-value"
+                                    th:text="${totalRooms}">
+                                0
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             MANAGEMENT
+        ===================================================== -->
+
+        <section class="panel management-panel">
+
+
+            <div class="panel-header">
+
+                <div>
+
+                    <h2>
+                        Quick management
+                    </h2>
+
+                    <p>
+                        Access your most important admin modules.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="management-grid">
+
+
+                <!-- USERS -->
+
+                <a
+                        class="management-card"
+                        th:href="@{/admin/users}"
+                        style="--management-bg:#fff0f5;--management-color:#e83c78">
+
+                    <div class="management-icon">
+                        👩
+                    </div>
+
+                    <div
+                            class="management-number"
+                            th:text="${totalUsers}">
+                        0
+                    </div>
+
+                    <div class="management-title">
+                        Women Users
+                    </div>
+
+                    <div class="management-desc">
+                        Manage registered accounts.
+                    </div>
+
+                </a>
+
+
+                <!-- OWNERS -->
+
+                <a
+                        class="management-card"
+                        th:href="@{/admin/owners}"
+                        style="--management-bg:#f3efff;--management-color:#7c3aed">
+
+                    <div class="management-icon">
+                        ♙
+                    </div>
+
+                    <div
+                            class="management-number"
+                            th:text="${totalOwners}">
+                        0
+                    </div>
+
+                    <div class="management-title">
+                        Owners
+                    </div>
+
+                    <div class="management-desc">
+                        Review owner accounts.
+                    </div>
+
+                </a>
+
+
+                <!-- PROPERTIES -->
+
+                <a
+                        class="management-card"
+                        th:href="@{/admin/properties}"
+                        style="--management-bg:#eff6ff;--management-color:#2563eb">
+
+                    <div class="management-icon">
+                        ▦
+                    </div>
+
+                    <div
+                            class="management-number"
+                            th:text="${totalProperties}">
+                        0
+                    </div>
+
+                    <div class="management-title">
+                        Properties
+                    </div>
+
+                    <div class="management-desc">
+                        Manage platform listings.
+                    </div>
+
+                </a>
+
+
+                <!-- ROOMS -->
+
+                <a
+                        class="management-card"
+                        th:href="@{/admin/rooms}"
+                        style="--management-bg:#ecfdf3;--management-color:#16a34a">
+
+                    <div class="management-icon">
+                        🛏
+                    </div>
+
+                    <div
+                            class="management-number"
+                            th:text="${totalRooms}">
+                        0
+                    </div>
+
+                    <div class="management-title">
+                        Rooms
+                    </div>
+
+                    <div class="management-desc">
+                        Monitor room inventory.
+                    </div>
+
+                </a>
+
+
+                <!-- BOOKINGS -->
+
+                <a
+                        class="management-card"
+                        th:href="@{/admin/bookings}"
+                        style="--management-bg:#fffbeb;--management-color:#d97706">
+
+                    <div class="management-icon">
+                        ▣
+                    </div>
+
+                    <div
+                            class="management-number"
+                            th:text="${totalBookings}">
+                        0
+                    </div>
+
+                    <div class="management-title">
+                        Bookings
+                    </div>
+
+                    <div class="management-desc">
+                        Review all booking requests.
+                    </div>
+
+                </a>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             BOTTOM GRID
+        ===================================================== -->
+
+        <section class="bottom-grid">
+
+
+            <!-- =================================================
+                 PENDING BOOKINGS
+            ================================================= -->
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Booking attention
+                        </h2>
+
+                        <p>
+                            Requests that may need review
+                        </p>
+
+                    </div>
+
+
+                    <a
+                            class="panel-link"
+                            th:href="@{/admin/bookings?status=REQUESTED}">
+
+                        View pending
+
+                    </a>
+
+                </div>
+
+
+                <div class="pending-body">
+
+
+                    <div class="pending-number">
+
+
+                        <div class="pending-circle">
+
+                            <span
+                                    th:text="${pendingBookings}">
+                                0
+                            </span>
+
+                        </div>
+
+
+                        <div class="pending-copy">
+
+                            <strong
+                                    th:text="${pendingBookings}">
+                                0
+                            </strong>
+
+                            <span>
+                                booking requests awaiting review
+                            </span>
+
+                        </div>
+
+
+                    </div>
+
+
+                    <div class="pending-action">
+
+                        <span>
+                            Review requested bookings and
+                            keep platform activity organized.
+                        </span>
+
+                        <a
+                                th:href="@{/admin/bookings?status=REQUESTED}">
+
+                            Review →
+
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 PLATFORM HEALTH
+            ================================================= -->
+
+            <div class="panel">
+
+
+                <div class="panel-header">
+
+                    <div>
+
+                        <h2>
+                            Platform snapshot
+                        </h2>
+
+                        <p>
+                            Relative platform activity
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="health-body">
+
+
+                    <div class="health-item">
+
+                        <div class="health-top">
+
+                            <span class="health-name">
+                                Users
+                            </span>
+
+                            <span
+                                    class="health-value"
+                                    th:text="${totalUsers}">
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="health-track">
+
+                            <div
+                                    class="health-fill pink"
+                                    th:style="'width:' +
+                                    (${totalUsers} > 0 ? '86%' : '3%')">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="health-item">
+
+                        <div class="health-top">
+
+                            <span class="health-name">
+                                Owners
+                            </span>
+
+                            <span
+                                    class="health-value"
+                                    th:text="${totalOwners}">
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="health-track">
+
+                            <div
+                                    class="health-fill purple"
+                                    th:style="'width:' +
+                                    (${totalOwners} > 0 ? '68%' : '3%')">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="health-item">
+
+                        <div class="health-top">
+
+                            <span class="health-name">
+                                Properties
+                            </span>
+
+                            <span
+                                    class="health-value"
+                                    th:text="${totalProperties}">
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="health-track">
+
+                            <div
+                                    class="health-fill blue"
+                                    th:style="'width:' +
+                                    (${totalProperties} > 0 ? '58%' : '3%')">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="health-item">
+
+                        <div class="health-top">
+
+                            <span class="health-name">
+                                Rooms
+                            </span>
+
+                            <span
+                                    class="health-value"
+                                    th:text="${totalRooms}">
+                                0
+                            </span>
+
+                        </div>
+
+                        <div class="health-track">
+
+                            <div
+                                    class="health-fill green"
+                                    th:style="'width:' +
+                                    (${totalRooms} > 0 ? '74%' : '3%')">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            /* =================================================
+               SIDEBAR
+            ================================================= */
+
+            const sidebar =
+                document.getElementById(
+                    "adminSidebar"
+                );
+
+            const overlay =
+                document.getElementById(
+                    "sidebarOverlay"
+                );
+
+            const menuButton =
+                document.getElementById(
+                    "menuButton"
+                );
+
+
+            function openSidebar() {
+
+                sidebar.classList.add(
+                    "open"
+                );
+
+                overlay.classList.add(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+            }
+
+
+            function closeSidebar() {
+
+                sidebar.classList.remove(
+                    "open"
+                );
+
+                overlay.classList.remove(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "";
+            }
+
+
+            if (menuButton) {
+
+                menuButton.addEventListener(
+                    "click",
+                    openSidebar
+                );
+
+            }
+
+
+            if (overlay) {
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+
+
+            /* =================================================
+               CLOSE MOBILE SIDEBAR ON LINK CLICK
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".sidebar-link, .logout-link"
+                )
+                .forEach(function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            if (
+                                window.innerWidth <= 950
+                            ) {
+
+                                closeSidebar();
+
+                            }
+
+                        }
+                    );
+
+                });
+
+
+            /* =================================================
+               ANIMATED COUNTERS
+            ================================================= */
+
+            const counters =
+                document.querySelectorAll(
+                    ".counter"
+                );
+
+
+            counters.forEach(
+                function (counter) {
+
+
+                    const target =
+                        Number(
+                            counter.dataset.value || 0
+                        );
+
+
+                    let current = 0;
+
+
+                    const duration = 900;
+
+
+                    const startTime =
+                        performance.now();
+
+
+                    function animateCounter(
+                        currentTime
+                    ) {
+
+
+                        const elapsed =
+                            currentTime -
+                            startTime;
+
+
+                        const progress =
+                            Math.min(
+                                elapsed / duration,
+                                1
+                            );
+
+
+                        const eased =
+                            1 -
+                            Math.pow(
+                                1 - progress,
+                                3
+                            );
+
+
+                        current =
+                            Math.round(
+                                target * eased
+                            );
+
+
+                        counter.textContent =
+                            current.toLocaleString();
+
+
+                        if (progress < 1) {
+
+                            requestAnimationFrame(
+                                animateCounter
+                            );
+
+                        }
+
+                    }
+
+
+                    requestAnimationFrame(
+                        animateCounter
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               NAVBAR / PAGE SCROLL
+            ================================================= */
+
+            const sidebarLinks =
+                document.querySelectorAll(
+                    ".sidebar-link"
+                );
+
+
+            sidebarLinks.forEach(
+                function (link) {
+
+                    link.addEventListener(
+                        "mouseenter",
+                        function () {
+
+                            this.style.transition =
+                                "all .2s ease";
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               3D CARD EFFECT
+            ================================================= */
+
+            const cards =
+                document.querySelectorAll(
+                    ".stat-card, .management-card"
+                );
+
+
+            cards.forEach(
+                function (card) {
+
+                    card.addEventListener(
+                        "mousemove",
+                        function (event) {
+
+
+                            if (
+                                window.innerWidth < 950
+                            ) {
+                                return;
+                            }
+
+
+                            const rect =
+                                card.getBoundingClientRect();
+
+
+                            const x =
+                                event.clientX -
+                                rect.left;
+
+
+                            const y =
+                                event.clientY -
+                                rect.top;
+
+
+                            const centerX =
+                                rect.width / 2;
+
+
+                            const centerY =
+                                rect.height / 2;
+
+
+                            const rotateX =
+                                ((y - centerY) /
+                                    centerY) * -2;
+
+
+                            const rotateY =
+                                ((x - centerX) /
+                                    centerX) * 2;
+
+
+                            this.style.transform =
+                                `translateY(-5px)
+                                 perspective(700px)
+                                 rotateX(${rotateX}deg)
+                                 rotateY(${rotateY}deg)`;
+
+                        }
+                    );
+
+
+                    card.addEventListener(
+                        "mouseleave",
+                        function () {
+
+                            this.style.transform =
+                                "";
+
+                        }
+                    );
+
+                }
+            );
+
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

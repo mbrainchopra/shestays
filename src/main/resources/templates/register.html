@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay | Create Account</title>
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap"
+          rel="stylesheet">
+
+
+    <style>
+
+        /* =====================================================
+           VARIABLES
+        ===================================================== */
+
+        :root {
+
+            --primary: #d9467a;
+            --primary-dark: #b83263;
+            --primary-light: #fff0f5;
+
+            --text: #181416;
+            --text-soft: #686164;
+            --text-muted: #949093;
+
+            --white: #ffffff;
+
+            --border: #e9e4e6;
+
+            --background: #fff9fb;
+
+            --shadow:
+                    0 30px 80px
+                    rgba(40, 20, 30, 0.12);
+        }
+
+
+        /* =====================================================
+           RESET
+        ===================================================== */
+
+        * {
+
+            margin: 0;
+
+            padding: 0;
+
+            box-sizing: border-box;
+        }
+
+
+        html {
+
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                    "DM Sans",
+                    Arial,
+                    sans-serif;
+
+            color: var(--text);
+
+            background: var(--background);
+
+            overflow-x: hidden;
+        }
+
+
+        a {
+
+            text-decoration: none;
+
+            color: inherit;
+        }
+
+
+        input,
+        button {
+
+            font: inherit;
+        }
+
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
+
+        @keyframes pageEnter {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(30px)
+                        scale(0.97);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes float {
+
+            0%,
+            100% {
+
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+
+                transform:
+                        translateY(-12px);
+            }
+        }
+
+
+        @keyframes rotate {
+
+            from {
+
+                transform:
+                        rotate(0deg);
+            }
+
+            to {
+
+                transform:
+                        rotate(360deg);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217,70,122,0.30);
+            }
+
+            70% {
+
+                box-shadow:
+                        0 0 0 12px
+                        rgba(217,70,122,0);
+            }
+
+            100% {
+
+                box-shadow:
+                        0 0 0 0
+                        rgba(217,70,122,0);
+            }
+        }
+
+
+        @keyframes shimmer {
+
+            from {
+
+                left: -100%;
+            }
+
+            to {
+
+                left: 140%;
+            }
+        }
+
+
+        /* =====================================================
+           PAGE
+        ===================================================== */
+
+        .auth-page {
+
+            min-height: 100vh;
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 45px 20px;
+
+            overflow: hidden;
+
+            background:
+
+                    radial-gradient(
+                            circle at 12% 18%,
+                            rgba(245,164,194,0.28),
+                            transparent 28%
+                    ),
+
+                    radial-gradient(
+                            circle at 88% 80%,
+                            rgba(255,214,228,0.48),
+                            transparent 30%
+                    ),
+
+                    linear-gradient(
+                            135deg,
+                            #fff7fa,
+                            #ffffff 50%,
+                            #fff5f8
+                    );
+        }
+
+
+        /* =====================================================
+           BACKGROUND DECORATION
+        ===================================================== */
+
+        .auth-page::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 450px;
+
+            height: 450px;
+
+            top: -190px;
+
+            right: -140px;
+
+            border-radius: 50%;
+
+            border:
+                    1px solid
+                    rgba(217,70,122,0.13);
+
+            animation:
+                    rotate 30s linear infinite;
+        }
+
+
+        .auth-page::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 310px;
+
+            height: 310px;
+
+            bottom: -140px;
+
+            left: -120px;
+
+            border-radius: 50%;
+
+            border:
+                    1px solid
+                    rgba(217,70,122,0.10);
+
+            animation:
+                    float 7s ease-in-out infinite;
+        }
+
+
+        /* =====================================================
+           REGISTER CARD
+        ===================================================== */
+
+        .auth-card {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: min(
+                    100%,
+                    620px
+            );
+
+            padding: 48px;
+
+            border:
+                    1px solid
+                    rgba(232,225,228,0.95);
+
+            border-radius: 28px;
+
+            background:
+                    rgba(255,255,255,0.95);
+
+            box-shadow:
+                    var(--shadow);
+
+            backdrop-filter:
+                    blur(18px);
+
+            animation:
+                    pageEnter
+                    0.8s
+                    cubic-bezier(
+                            0.22,
+                            1,
+                            0.36,
+                            1
+                    )
+                    both;
+        }
+
+
+        /* =====================================================
+           BRAND
+        ===================================================== */
+
+        .auth-brand {
+
+            display: flex;
+
+            justify-content: center;
+
+            margin-bottom: 30px;
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.15s
+                    ease
+                    both;
+        }
+
+
+        .brand {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            letter-spacing: -0.5px;
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .brand:hover {
+
+            transform:
+                    translateY(-2px);
+        }
+
+
+        .brand::before {
+
+            content: "S";
+
+            width: 38px;
+
+            height: 38px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 11px;
+
+            background:
+                    var(--primary);
+
+            color: white;
+
+            font-family:
+                    "Playfair Display",
+                    serif;
+
+            font-size: 22px;
+
+            box-shadow:
+                    0 8px 20px
+                    rgba(217,70,122,0.20);
+
+            animation:
+                    pulse
+                    2.5s
+                    0.8s
+                    infinite;
+        }
+
+
+        /* =====================================================
+           HEADING
+        ===================================================== */
+
+        .auth-card h1 {
+
+            text-align: center;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size: 42px;
+
+            line-height: 1.1;
+
+            letter-spacing: -1.5px;
+
+            font-weight: 600;
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.25s
+                    ease
+                    both;
+        }
+
+
+        .sub {
+
+            max-width: 420px;
+
+            margin:
+                    12px auto
+                    30px;
+
+            text-align: center;
+
+            color:
+                    var(--text-soft);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.35s
+                    ease
+                    both;
+        }
+
+
+        /* =====================================================
+           ERROR
+        ===================================================== */
+
+        .alert {
+
+            padding:
+                    12px 14px;
+
+            margin-bottom: 20px;
+
+            border-radius: 11px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+
+            animation:
+                    fadeUp
+                    0.5s
+                    ease
+                    both;
+        }
+
+
+        .alert-error {
+
+            border:
+                    1px solid
+                    #f4c9d6;
+
+            background:
+                    #fff2f6;
+
+            color:
+                    #a52f58;
+        }
+
+
+        /* =====================================================
+           FORM
+        ===================================================== */
+
+        .register-form {
+
+            animation:
+                    fadeUp
+                    0.7s
+                    0.45s
+                    ease
+                    both;
+        }
+
+
+        .form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    1fr 1fr;
+
+            gap: 20px 16px;
+        }
+
+
+        .field {
+
+            min-width: 0;
+        }
+
+
+        .field.full {
+
+            grid-column:
+                    1 / -1;
+        }
+
+
+        .field label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color:
+                    #484245;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            letter-spacing: 0.3px;
+        }
+
+
+        .input-wrapper {
+
+            position: relative;
+        }
+
+
+        .input-icon {
+
+            position: absolute;
+
+            left: 15px;
+
+            top: 50%;
+
+            transform:
+                    translateY(-50%);
+
+            color:
+                    #aaa;
+
+            font-size: 15px;
+
+            pointer-events: none;
+
+            transition:
+                    color 0.25s ease;
+        }
+
+
+        .field input {
+
+            width: 100%;
+
+            height: 53px;
+
+            padding:
+                    0 15px 0 43px;
+
+            border:
+                    1px solid
+                    var(--border);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background:
+                    #fbfafb;
+
+            color:
+                    var(--text);
+
+            font-size: 14px;
+
+            transition:
+                    border-color 0.25s ease,
+                    background 0.25s ease,
+                    box-shadow 0.25s ease,
+                    transform 0.25s ease;
+        }
+
+
+        .field input::placeholder {
+
+            color:
+                    #aaa;
+        }
+
+
+        .field input:hover {
+
+            background:
+                    white;
+        }
+
+
+        .field input:focus {
+
+            border-color:
+                    var(--primary);
+
+            background:
+                    white;
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(217,70,122,0.08);
+
+            transform:
+                    translateY(-1px);
+        }
+
+
+        .field input:focus
+        + .input-icon {
+
+            color:
+                    var(--primary);
+        }
+
+
+        /* =====================================================
+           PASSWORD TOGGLE
+        ===================================================== */
+
+        .password-toggle {
+
+            position: absolute;
+
+            top: 50%;
+
+            right: 12px;
+
+            transform:
+                    translateY(-50%);
+
+            border: 0;
+
+            background:
+                    transparent;
+
+            color:
+                    #999;
+
+            cursor: pointer;
+
+            font-size: 16px;
+
+            padding: 5px;
+
+            transition:
+                    color 0.2s ease;
+        }
+
+
+        .password-toggle:hover {
+
+            color:
+                    var(--primary);
+        }
+
+
+        /* =====================================================
+           PASSWORD HINT
+        ===================================================== */
+
+        .password-hint {
+
+            margin-top: 7px;
+
+            color:
+                    var(--text-muted);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           SUBMIT BUTTON
+        ===================================================== */
+
+        .register-button {
+
+            position: relative;
+
+            width: 100%;
+
+            height: 53px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            margin-top: 25px;
+
+            border: 0;
+
+            border-radius: 12px;
+
+            background:
+                    var(--primary);
+
+            color: white;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            overflow: hidden;
+
+            box-shadow:
+                    0 12px 25px
+                    rgba(217,70,122,0.20);
+
+            transition:
+                    background 0.25s ease,
+                    transform 0.25s ease,
+                    box-shadow 0.25s ease;
+        }
+
+
+        .register-button::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: -100%;
+
+            width: 70%;
+
+            height: 100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,0.28),
+                            transparent
+                    );
+        }
+
+
+        .register-button:hover::before {
+
+            animation:
+                    shimmer
+                    0.7s
+                    ease;
+        }
+
+
+        .register-button:hover {
+
+            background:
+                    var(--primary-dark);
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 16px 32px
+                    rgba(217,70,122,0.27);
+        }
+
+
+        .register-button span {
+
+            transition:
+                    transform 0.25s ease;
+        }
+
+
+        .register-button:hover span {
+
+            transform:
+                    translateX(4px);
+        }
+
+
+        /* =====================================================
+           LOGIN LINK
+        ===================================================== */
+
+        .auth-link {
+
+            margin-top: 25px;
+
+            padding-top: 23px;
+
+            border-top:
+                    1px solid
+                    #eee9eb;
+
+            text-align: center;
+
+            color:
+                    var(--text-muted);
+
+            font-size: 12px;
+
+            line-height: 2;
+        }
+
+
+        .auth-link a {
+
+            color:
+                    var(--primary-dark);
+
+            font-weight: 600;
+
+            transition:
+                    color 0.2s ease;
+        }
+
+
+        .auth-link a:hover {
+
+            color:
+                    var(--primary);
+
+            text-decoration:
+                    underline;
+        }
+
+
+        .back-home {
+
+            display: block;
+
+            margin-top: 16px;
+
+            text-align: center;
+
+            color:
+                    #999;
+
+            font-size: 12px;
+
+            transition:
+                    color 0.2s ease;
+        }
+
+
+        .back-home:hover {
+
+            color:
+                    var(--primary);
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 650px) {
+
+            .auth-page {
+
+                padding:
+                        25px 15px;
+            }
+
+
+            .auth-card {
+
+                padding:
+                        35px 25px;
+
+                border-radius:
+                        22px;
+            }
+
+
+            .auth-card h1 {
+
+                font-size:
+                        36px;
+            }
+
+
+            .form-grid {
+
+                grid-template-columns:
+                        1fr;
+
+                gap: 18px;
+            }
+
+
+            .field.full {
+
+                grid-column:
+                        auto;
+            }
+        }
+
+
+        @media (max-width: 380px) {
+
+            .auth-card {
+
+                padding:
+                        30px 20px;
+            }
+
+
+            .auth-card h1 {
+
+                font-size:
+                        32px;
+            }
+
+
+            .sub {
+
+                font-size:
+                        13px;
+            }
+        }
+
+
+        /* =====================================================
+           REDUCED MOTION
+        ===================================================== */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        0.01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        0.01ms !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="auth-page">
+
+
+    <div class="auth-card">
+
+
+        <!-- =================================================
+             BRAND
+        ================================================= -->
+
+        <div class="auth-brand">
+
+            <a class="brand"
+               th:href="@{/}">
+
+                SheStay
+
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             HEADING
+        ================================================= -->
+
+        <h1>
+            Create your account.
+        </h1>
+
+
+        <p class="sub">
+
+            Join SheStay and start discovering
+            comfortable stays.
+
+        </p>
+
+
+        <!-- =================================================
+             ERROR
+        ================================================= -->
+
+        <div class="alert alert-error"
+             th:if="${error}"
+             th:text="${error}">
+        </div>
+
+
+        <!-- =================================================
+             REGISTER FORM
+        ================================================= -->
+
+        <form class="register-form"
+              th:action="@{/register}"
+              th:object="${user}"
+              method="post">
+
+
+            <div class="form-grid">
+
+
+                <!-- FULL NAME -->
+
+                <div class="field">
+
+                    <label for="name">
+                        Full name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                                id="name"
+                                type="text"
+                                th:field="*{name}"
+                                placeholder="Your full name"
+                                autocomplete="name"
+                                required>
+
+                        <span class="input-icon">
+                            ♙
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PHONE -->
+
+                <div class="field">
+
+                    <label for="phone">
+                        Phone number
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                                id="phone"
+                                type="tel"
+                                th:field="*{phone}"
+                                placeholder="10-digit mobile"
+                                autocomplete="tel"
+                                inputmode="numeric"
+                                pattern="[0-9]{10}"
+                                maxlength="10"
+                                required>
+
+                        <span class="input-icon">
+                            ☎
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- EMAIL -->
+
+                <div class="field full">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                                id="email"
+                                type="email"
+                                th:field="*{email}"
+                                placeholder="you@example.com"
+                                autocomplete="email"
+                                required>
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="field full">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <input
+                                id="password"
+                                type="password"
+                                th:field="*{password}"
+                                placeholder="Create a password"
+                                autocomplete="new-password"
+                                minlength="6"
+                                required>
+
+                        <span class="input-icon">
+                            ●
+                        </span>
+
+                        <button
+                                type="button"
+                                class="password-toggle"
+                                id="passwordToggle"
+                                aria-label="Show password">
+
+                            ◉
+
+                        </button>
+
+                    </div>
+
+                    <p class="password-hint">
+                        Use at least 6 characters.
+                    </p>
+
+                </div>
+
+
+            </div>
+
+
+            <!-- SUBMIT -->
+
+            <button
+                    class="register-button"
+                    type="submit">
+
+                <span>
+                    Create account
+                </span>
+
+                <span>
+                    →
+                </span>
+
+            </button>
+
+        </form>
+
+
+        <!-- =================================================
+             LOGIN
+        ================================================= -->
+
+        <div class="auth-link">
+
+            Already have an account?
+
+            <a th:href="@{/login}">
+                Sign in
+            </a>
+
+        </div>
+
+
+        <!-- =================================================
+             HOME
+        ================================================= -->
+
+        <a class="back-home"
+           th:href="@{/}">
+
+            ← Back to home
+
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+    /* =====================================================
+       PASSWORD SHOW / HIDE
+    ===================================================== */
+
+    const password =
+        document.getElementById(
+            "password"
+        );
+
+    const passwordToggle =
+        document.getElementById(
+            "passwordToggle"
+        );
+
+
+    if (password && passwordToggle) {
+
+        passwordToggle.addEventListener(
+            "click",
+            function () {
+
+                if (
+                    password.type ===
+                    "password"
+                ) {
+
+                    password.type =
+                        "text";
+
+                    passwordToggle.textContent =
+                        "◉";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Hide password"
+                    );
+
+                } else {
+
+                    password.type =
+                        "password";
+
+                    passwordToggle.textContent =
+                        "◉";
+
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Show password"
+                    );
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       PHONE NUMBER
+       Only allow numbers
+    ===================================================== */
+
+    const phone =
+        document.getElementById(
+            "phone"
+        );
+
+
+    if (phone) {
+
+        phone.addEventListener(
+            "input",
+            function () {
+
+                this.value =
+                    this.value
+                        .replace(/\D/g, "")
+                        .slice(0, 10);
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       INPUT FOCUS ICON
+    ===================================================== */
+
+    document
+        .querySelectorAll(
+            ".field input"
+        )
+        .forEach(
+            function (input) {
+
+                input.addEventListener(
+                    "focus",
+                    function () {
+
+                        const icon =
+                            this.parentElement
+                                .querySelector(
+                                    ".input-icon"
+                                );
+
+                        if (icon) {
+
+                            icon.style.color =
+                                "#d9467a";
+
+                        }
+
+                    }
+                );
+
+
+                input.addEventListener(
+                    "blur",
+                    function () {
+
+                        const icon =
+                            this.parentElement
+                                .querySelector(
+                                    ".input-icon"
+                                );
+
+                        if (
+                            icon &&
+                            !this.value
+                        ) {
+
+                            icon.style.color =
+                                "#aaa";
+
+                        }
+
+                    }
+                );
+
+            }
+        );
+
+
+    /* =====================================================
+       FORM SUBMIT BUTTON
+    ===================================================== */
+
+    const form =
+        document.querySelector(
+            ".register-form"
+        );
+
+    const submitButton =
+        document.querySelector(
+            ".register-button"
+        );
+
+
+    if (form && submitButton) {
+
+        form.addEventListener(
+            "submit",
+            function () {
+
+                submitButton.style.opacity =
+                    "0.85";
+
+                submitButton.style.pointerEvents =
+                    "none";
+
+                submitButton.innerHTML =
+                    `
+                    <span>Creating account...</span>
+                    <span>...</span>
+                    `;
+
+            }
+        );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,3341 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Manage Bookings</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+
+            --pink: #ff4f8b;
+            --pink-dark: #e83c78;
+            --pink-light: #fff1f6;
+
+            --purple: #8b5cf6;
+            --blue: #3b82f6;
+            --green: #22c55e;
+            --orange: #f59e0b;
+            --red: #ef4444;
+
+            --bg: #f7f7f9;
+
+            --sidebar: #111113;
+
+            --text: #18181b;
+            --muted: #71717a;
+
+            --border: rgba(24,24,27,.08);
+
+            --card: rgba(255,255,255,.9);
+
+            --shadow:
+                    0 18px 55px rgba(0,0,0,.055);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background:
+                    radial-gradient(
+                            circle at 10% 8%,
+                            rgba(255,79,139,.07),
+                            transparent 25%
+                    ),
+                    radial-gradient(
+                            circle at 90% 20%,
+                            rgba(139,92,246,.05),
+                            transparent 25%
+                    ),
+                    var(--bg);
+
+            color: var(--text);
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .admin-sidebar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            z-index: 1200;
+
+            width: 255px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #151517,
+                            #101012
+                    );
+
+            color: white;
+
+            box-shadow:
+                    15px 0 45px rgba(0,0,0,.08);
+
+            transition:
+                    transform .35s ease;
+        }
+
+
+        .admin-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    5px 10px 25px;
+
+            text-decoration: none;
+
+            color: white;
+        }
+
+
+        .admin-brand-icon {
+
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff82aa
+                    );
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(255,79,139,.25);
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-brand-text {
+
+            font-size: 19px;
+
+            font-weight: 850;
+
+            letter-spacing: -.045em;
+        }
+
+
+        .admin-brand-sub {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing: .12em;
+        }
+
+
+        .sidebar-section-title {
+
+            padding:
+                    12px 12px 8px;
+
+            color:
+                    rgba(255,255,255,.3);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: .13em;
+        }
+
+
+        .sidebar-nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+
+        .sidebar-link {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                    11px 12px;
+
+            border-radius: 11px;
+
+            color:
+                    rgba(255,255,255,.62);
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                    color .25s ease,
+                    background .25s ease,
+                    transform .25s ease;
+        }
+
+
+        .sidebar-link:hover {
+
+            color: white;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            transform:
+                    translateX(3px);
+        }
+
+
+        .sidebar-link.active {
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            rgba(255,79,139,.18),
+                            rgba(255,79,139,.06)
+                    );
+        }
+
+
+        .sidebar-link.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 50%;
+
+            width: 3px;
+
+            height: 21px;
+
+            border-radius:
+                    0 5px 5px 0;
+
+            background:
+                    var(--pink);
+
+            transform:
+                    translateY(-50%);
+        }
+
+
+        .sidebar-icon {
+
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background:
+                    rgba(255,255,255,.05);
+
+            font-size: 12px;
+        }
+
+
+        .sidebar-link.active
+        .sidebar-icon {
+
+            background:
+                    rgba(255,79,139,.15);
+        }
+
+
+        .sidebar-label {
+            flex: 1;
+        }
+
+
+        .sidebar-count {
+
+            min-width: 20px;
+
+            height: 20px;
+
+            display: grid;
+
+            place-items: center;
+
+            padding: 0 5px;
+
+            border-radius: 999px;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            color:
+                    rgba(255,255,255,.5);
+
+            font-size: 8px;
+
+            font-weight: 800;
+        }
+
+
+        .sidebar-count.pending {
+
+            background:
+                    rgba(255,79,139,.18);
+
+            color:
+                    #ff8fb0;
+        }
+
+
+        .sidebar-bottom {
+
+            margin-top: auto;
+        }
+
+
+        .admin-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                    13px 10px;
+
+            margin-bottom: 8px;
+
+            border-radius: 13px;
+
+            background:
+                    rgba(255,255,255,.045);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.05);
+        }
+
+
+        .admin-avatar {
+
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff9abc
+                    );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-profile-name {
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        .admin-profile-role {
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+        }
+
+
+        .logout-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    10px 12px;
+
+            border-radius: 10px;
+
+            color:
+                    rgba(255,255,255,.45);
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition:
+                    background .2s ease,
+                    color .2s ease;
+        }
+
+
+        .logout-link:hover {
+
+            color:
+                    #ff7fa4;
+
+            background:
+                    rgba(255,79,139,.08);
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .admin-main {
+
+            min-height: 100vh;
+
+            margin-left: 255px;
+
+            padding:
+                    28px 32px 70px;
+        }
+
+
+        .admin-container {
+
+            max-width: 1450px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TOPBAR
+        ========================================================= */
+
+        .topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+
+            animation:
+                    fadeDown .6s ease both;
+        }
+
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: white;
+
+            box-shadow:
+                    0 8px 25px rgba(0,0,0,.06);
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .topbar-title {
+
+            color:
+                    #71717a;
+
+            font-size: 10px;
+
+            font-weight: 750;
+        }
+
+
+        .topbar-right {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+        }
+
+
+        .system-pill {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    8px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    rgba(255,255,255,.8);
+
+            border:
+                    1px solid var(--border);
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .online-dot {
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    #22c55e;
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(34,197,94,.1);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        /* =========================================================
+           PAGE HEADER
+        ========================================================= */
+
+        .page-header {
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 25px;
+
+            padding:
+                    30px 32px;
+
+            margin-bottom: 20px;
+
+            border-radius:
+                    24px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #18181b,
+                            #252529 65%,
+                            #351724
+                    );
+
+            color: white;
+
+            box-shadow:
+                    0 20px 55px rgba(0,0,0,.11);
+
+            animation:
+                    heroReveal .7s ease both;
+        }
+
+
+        .page-header::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            right: -80px;
+            top: -180px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,79,139,.2);
+
+            filter:
+                    blur(8px);
+
+            animation:
+                    orbFloat 8s ease-in-out infinite;
+        }
+
+
+        .page-header-copy {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .page-eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 11px;
+
+            color:
+                    #ff86a9;
+
+            font-size: 9px;
+
+            font-weight: 850;
+
+            text-transform: uppercase;
+
+            letter-spacing: .13em;
+        }
+
+
+        .page-eyebrow::before {
+
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--pink);
+        }
+
+
+        .page-header h1 {
+
+            margin:
+                    0 0 7px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(34px, 4vw, 50px);
+
+            line-height: 1;
+
+            letter-spacing: -.055em;
+        }
+
+
+        .page-header p {
+
+            margin: 0;
+
+            color:
+                    rgba(255,255,255,.55);
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        .header-stat {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    12px 15px;
+
+            border-radius:
+                    13px;
+
+            background:
+                    rgba(255,255,255,.08);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.1);
+
+            backdrop-filter:
+                    blur(12px);
+        }
+
+
+        .header-stat-icon {
+
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 10px;
+
+            background:
+                    rgba(255,79,139,.18);
+
+            color:
+                    #ff8fb0;
+
+            font-size: 13px;
+        }
+
+
+        .header-stat strong {
+
+            display: block;
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .header-stat span {
+
+            color:
+                    rgba(255,255,255,.42);
+
+            font-size: 8px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           STAT CARDS
+        ========================================================= */
+
+        .stats-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(4, 1fr);
+
+            gap: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .stat-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height: 115px;
+
+            padding: 18px;
+
+            border-radius: 18px;
+
+            background:
+                    var(--card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    statReveal .6s ease both;
+
+            transition:
+                    transform .3s ease,
+                    box-shadow .3s ease;
+        }
+
+
+        .stat-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            box-shadow:
+                    0 25px 55px
+                    rgba(0,0,0,.09);
+        }
+
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 85px;
+            height: 85px;
+
+            right: -35px;
+            bottom: -40px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--glow);
+        }
+
+
+        .requested {
+            --glow: rgba(245,158,11,.1);
+        }
+
+
+        .approved {
+            --glow: rgba(34,197,94,.1);
+        }
+
+
+        .rejected {
+            --glow: rgba(239,68,68,.09);
+        }
+
+
+        .all-bookings {
+            --glow: rgba(59,130,246,.1);
+        }
+
+
+        .stat-icon {
+
+            width: 35px;
+            height: 35px;
+
+            display: grid;
+
+            place-items: center;
+
+            margin-bottom: 12px;
+
+            border-radius: 10px;
+
+            background:
+                    var(--icon-bg);
+
+            color:
+                    var(--icon-color);
+
+            font-size: 13px;
+        }
+
+
+        .requested .stat-icon {
+            --icon-bg: #fffbeb;
+            --icon-color: #d97706;
+        }
+
+
+        .approved .stat-icon {
+            --icon-bg: #ecfdf3;
+            --icon-color: #16a34a;
+        }
+
+
+        .rejected .stat-icon {
+            --icon-bg: #fef2f2;
+            --icon-color: #dc2626;
+        }
+
+
+        .all-bookings .stat-icon {
+            --icon-bg: #eff6ff;
+            --icon-color: #2563eb;
+        }
+
+
+        .stat-label {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            color:
+                    #a1a1aa;
+
+            font-size: 8px;
+
+            font-weight: 850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .1em;
+        }
+
+
+        .stat-number {
+
+            display: block;
+
+            font-size: 25px;
+
+            line-height: 1;
+
+            font-weight: 900;
+
+            letter-spacing: -.045em;
+        }
+
+
+        .stat-description {
+
+            display: block;
+
+            margin-top: 6px;
+
+            color:
+                    #a1a1aa;
+
+            font-size: 8px;
+        }
+
+
+        /* =========================================================
+           FILTER PANEL
+        ========================================================= */
+
+        .filter-panel {
+
+            padding:
+                    18px;
+
+            margin-bottom:
+                    18px;
+
+            border-radius:
+                    20px;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    panelReveal .7s .1s ease both;
+        }
+
+
+        .filter-top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            margin-bottom: 13px;
+        }
+
+
+        .filter-title h2 {
+
+            margin:
+                    0 0 3px;
+
+            font-size:
+                    13px;
+
+            letter-spacing:
+                    -.02em;
+        }
+
+
+        .filter-title p {
+
+            margin: 0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        .clear-filter {
+
+            color:
+                    var(--pink-dark);
+
+            text-decoration:
+                    none;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .filter-form {
+
+            display: grid;
+
+            grid-template-columns:
+                    minmax(220px, 1fr)
+                    auto;
+
+            gap: 10px;
+
+            align-items: end;
+        }
+
+
+        .filter-field label {
+
+            display: block;
+
+            margin-bottom: 7px;
+
+            color:
+                    #71717a;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .08em;
+        }
+
+
+        .filter-select {
+
+            width: 100%;
+
+            height: 43px;
+
+            padding:
+                    0 13px;
+
+            border:
+                    1px solid #e7e7e9;
+
+            border-radius:
+                    11px;
+
+            background:
+                    #fafafa;
+
+            color:
+                    #3f3f46;
+
+            font-family:
+                    inherit;
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    700;
+
+            outline: none;
+
+            cursor: pointer;
+
+            transition:
+                    border .2s ease,
+                    box-shadow .2s ease,
+                    background .2s ease;
+        }
+
+
+        .filter-select:focus {
+
+            background: white;
+
+            border-color:
+                    rgba(255,79,139,.5);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(255,79,139,.08);
+        }
+
+
+        .filter-button {
+
+            height: 43px;
+
+            padding:
+                    0 20px;
+
+            border: none;
+
+            border-radius:
+                    11px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff719f
+                    );
+
+            color: white;
+
+            font-family:
+                    inherit;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    850;
+
+            cursor: pointer;
+
+            box-shadow:
+                    0 9px 22px
+                    rgba(255,79,139,.2);
+
+            transition:
+                    transform .2s ease,
+                    box-shadow .2s ease;
+        }
+
+
+        .filter-button:hover {
+
+            transform:
+                    translateY(-2px);
+
+            box-shadow:
+                    0 13px 27px
+                    rgba(255,79,139,.26);
+        }
+
+
+        /* =========================================================
+           BOOKING TABLE
+        ========================================================= */
+
+        .table-panel {
+
+            overflow: hidden;
+
+            border-radius:
+                    21px;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    panelReveal .75s .2s ease both;
+        }
+
+
+        .table-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                    20px 21px;
+
+            border-bottom:
+                    1px solid #eeeeef;
+        }
+
+
+        .table-header h2 {
+
+            margin:
+                    0 0 4px;
+
+            font-size:
+                    14px;
+
+            letter-spacing:
+                    -.025em;
+        }
+
+
+        .table-header p {
+
+            margin: 0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        .current-filter {
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    var(--pink-light);
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .table-scroll {
+
+            overflow-x: auto;
+        }
+
+
+        .booking-table {
+
+            width: 100%;
+
+            min-width:
+                    850px;
+
+            border-collapse:
+                    collapse;
+        }
+
+
+        .booking-table th {
+
+            padding:
+                    13px 20px;
+
+            background:
+                    #fafafa;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-align:
+                    left;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .09em;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        .booking-table td {
+
+            padding:
+                    17px 20px;
+
+            border-top:
+                    1px solid #f1f1f2;
+
+            color:
+                    #52525b;
+
+            font-size:
+                    10px;
+
+            vertical-align:
+                    middle;
+        }
+
+
+        .booking-row {
+
+            opacity: 0;
+
+            transform:
+                    translateY(10px);
+
+            transition:
+                    background .25s ease,
+                    opacity .45s ease,
+                    transform .45s ease;
+        }
+
+
+        .booking-row.visible {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .booking-row:hover {
+
+            background:
+                    #fff9fb;
+        }
+
+
+        /* =========================================================
+           GUEST
+        ========================================================= */
+
+        .guest {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+        }
+
+
+        .guest-avatar {
+
+            width: 35px;
+            height: 35px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #ffe2ec
+                    );
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    11px;
+
+            font-weight:
+                    900;
+        }
+
+
+        .guest-name {
+
+            display: block;
+
+            margin-bottom: 3px;
+
+            color:
+                    #27272a;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .guest-email {
+
+            display: block;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           PROPERTY
+        ========================================================= */
+
+        .property-name {
+
+            display: block;
+
+            margin-bottom:
+                    4px;
+
+            color:
+                    #27272a;
+
+            font-size:
+                    10px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .property-label {
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           ROOM
+        ========================================================= */
+
+        .room-badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                    6px 8px;
+
+            border-radius:
+                    8px;
+
+            background:
+                    #f5f5f5;
+
+            color:
+                    #52525b;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    800;
+        }
+
+
+        /* =========================================================
+           DATE
+        ========================================================= */
+
+        .date-box {
+
+            display:
+                    flex;
+
+            align-items:
+                    center;
+
+            gap:
+                    8px;
+        }
+
+
+        .date-icon {
+
+            width:
+                    28px;
+
+            height:
+                    28px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            border-radius:
+                    8px;
+
+            background:
+                    #eff6ff;
+
+            color:
+                    #2563eb;
+
+            font-size:
+                    11px;
+        }
+
+
+        .date-value {
+
+            color:
+                    #3f3f46;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        /* =========================================================
+           STATUS
+        ========================================================= */
+
+        .booking-status {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                    7px 10px;
+
+            border-radius:
+                    999px;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            white-space:
+                    nowrap;
+        }
+
+
+        .booking-status::before {
+
+            content: "";
+
+            width: 5px;
+            height: 5px;
+
+            border-radius: 50%;
+        }
+
+
+        .status-requested {
+
+            background:
+                    #fffbeb;
+
+            color:
+                    #b45309;
+        }
+
+
+        .status-requested::before {
+
+            background:
+                    #f59e0b;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(245,158,11,.1);
+        }
+
+
+        .status-approved {
+
+            background:
+                    #ecfdf3;
+
+            color:
+                    #15803d;
+        }
+
+
+        .status-approved::before {
+
+            background:
+                    #22c55e;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(34,197,94,.1);
+        }
+
+
+        .status-rejected {
+
+            background:
+                    #fef2f2;
+
+            color:
+                    #dc2626;
+        }
+
+
+        .status-rejected::before {
+
+            background:
+                    #ef4444;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(239,68,68,.1);
+        }
+
+
+        .status-cancelled {
+
+            background:
+                    #f4f4f5;
+
+            color:
+                    #71717a;
+        }
+
+
+        .status-cancelled::before {
+
+            background:
+                    #a1a1aa;
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+
+            min-height:
+                    380px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            padding:
+                    40px 20px;
+
+            text-align:
+                    center;
+        }
+
+
+        .empty-icon {
+
+            width:
+                    72px;
+
+            height:
+                    72px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    18px;
+
+            border-radius:
+                    22px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #ffe4ed
+                    );
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    25px;
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(255,79,139,.12);
+
+            animation:
+                    emptyFloat 4s ease-in-out infinite;
+        }
+
+
+        .empty-state h3 {
+
+            margin:
+                    0 0 7px;
+
+            font-size:
+                    18px;
+        }
+
+
+        .empty-state p {
+
+            max-width:
+                    430px;
+
+            margin:
+                    0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    10px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeDown {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes heroReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px)
+                        scale(.99);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        @keyframes statReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes panelReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes orbFloat {
+
+            0%,100% {
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+                transform:
+                        translate(-30px,30px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,100% {
+                transform:
+                        scale(1);
+
+                opacity:
+                        1;
+            }
+
+            50% {
+                transform:
+                        scale(.7);
+
+                opacity:
+                        .6;
+            }
+        }
+
+
+        @keyframes emptyFloat {
+
+            0%,100% {
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+                transform:
+                        translateY(-8px);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 950px) {
+
+            .admin-sidebar {
+
+                transform:
+                        translateX(-100%);
+            }
+
+
+            .admin-sidebar.open {
+
+                transform:
+                        translateX(0);
+            }
+
+
+            .sidebar-overlay.open {
+
+                display:
+                        block;
+            }
+
+
+            .admin-main {
+
+                margin-left: 0;
+
+                padding:
+                        22px 20px 60px;
+            }
+
+
+            .mobile-menu {
+
+                display:
+                        grid;
+
+                place-items:
+                        center;
+            }
+
+
+            .page-header {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .header-stat {
+
+                width:
+                        100%;
+            }
+        }
+
+
+        @media (max-width: 650px) {
+
+            .admin-main {
+
+                padding:
+                        18px 14px 50px;
+            }
+
+
+            .topbar-title {
+
+                font-size:
+                        9px;
+            }
+
+
+            .system-pill {
+
+                display:
+                        none;
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns:
+                        1fr 1fr;
+
+                gap:
+                        10px;
+            }
+
+
+            .page-header {
+
+                padding:
+                        25px 21px;
+
+                border-radius:
+                        19px;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        38px;
+            }
+
+
+            .filter-form {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .filter-button {
+
+                width:
+                        100%;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .stats-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .page-header h1 {
+
+                font-size:
+                        34px;
+            }
+
+
+            .filter-panel {
+
+                padding:
+                        15px;
+            }
+
+
+            .table-header {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
+
+<div
+        id="sidebarOverlay"
+        class="sidebar-overlay">
+</div>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
+
+<aside
+        id="adminSidebar"
+        class="admin-sidebar">
+
+
+    <!-- BRAND -->
+
+    <a
+            class="admin-brand"
+            th:href="@{/admin/dashboard}">
+
+        <div class="admin-brand-icon">
+            ✦
+        </div>
+
+        <div>
+
+            <div class="admin-brand-text">
+                SheStay
+            </div>
+
+            <span class="admin-brand-sub">
+                Admin Console
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- MAIN -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/dashboard}">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span class="sidebar-label">
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/users}">
+
+            <span class="sidebar-icon">
+                👩
+            </span>
+
+            <span class="sidebar-label">
+                Women Users
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/owners}">
+
+            <span class="sidebar-icon">
+                ♙
+            </span>
+
+            <span class="sidebar-label">
+                Owners
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/properties}">
+
+            <span class="sidebar-icon">
+                ▦
+            </span>
+
+            <span class="sidebar-label">
+                Properties
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/rooms}">
+
+            <span class="sidebar-icon">
+                🛏
+            </span>
+
+            <span class="sidebar-label">
+                Rooms
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link active"
+                th:href="@{/admin/bookings}">
+
+            <span class="sidebar-icon">
+                ▣
+            </span>
+
+            <span class="sidebar-label">
+                Bookings
+            </span>
+
+            <span
+                    class="sidebar-count pending"
+                    th:text="${pendingBookings}">
+                0
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- MANAGEMENT -->
+
+    <div class="sidebar-section-title">
+        Booking filters
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings?status=REQUESTED}">
+
+            <span class="sidebar-icon">
+                ⏳
+            </span>
+
+            <span class="sidebar-label">
+                Requested
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings?status=APPROVED}">
+
+            <span class="sidebar-icon">
+                ✓
+            </span>
+
+            <span class="sidebar-label">
+                Approved
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings?status=REJECTED}">
+
+            <span class="sidebar-icon">
+                ×
+            </span>
+
+            <span class="sidebar-label">
+                Rejected
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- PROFILE -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+
+                <span
+                        th:text="${adminName != null && !adminName.isEmpty()
+                        ? #strings.substring(adminName,0,1).toUpperCase()
+                        : 'A'}">
+
+                    A
+
+                </span>
+
+            </div>
+
+
+            <div>
+
+                <div
+                        class="admin-profile-name"
+                        th:text="${adminName}">
+                    Admin
+                </div>
+
+                <div class="admin-profile-role">
+                    Platform Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <a
+                class="logout-link"
+                th:href="@{/logout}">
+
+            <span>
+                ↪
+            </span>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+
+        <!-- =====================================================
+             TOPBAR
+        ===================================================== -->
+
+        <div class="topbar">
+
+
+            <div class="topbar-left">
+
+                <button
+                        id="menuButton"
+                        class="mobile-menu"
+                        aria-label="Open admin menu">
+
+                    ☰
+
+                </button>
+
+
+                <span class="topbar-title">
+                    Booking management
+                </span>
+
+            </div>
+
+
+            <div class="topbar-right">
+
+                <span class="system-pill">
+
+                    <span class="online-dot"></span>
+
+                    System active
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             PAGE HEADER
+        ===================================================== -->
+
+        <section class="page-header">
+
+
+            <div class="page-header-copy">
+
+                <div class="page-eyebrow">
+                    Admin / Bookings
+                </div>
+
+
+                <h1>
+                    Bookings.
+                </h1>
+
+
+                <p>
+                    Review booking requests, guest details,
+                    room selections and booking outcomes.
+                </p>
+
+            </div>
+
+
+            <div class="header-stat">
+
+                <div class="header-stat-icon">
+                    ▣
+                </div>
+
+
+                <div>
+
+                    <strong
+                            th:text="${bookings != null
+                            ? #lists.size(bookings)
+                            : 0}">
+                        0
+                    </strong>
+
+                    <span>
+                        bookings displayed
+                    </span>
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             STATS
+        ===================================================== -->
+
+        <section class="stats-grid">
+
+
+            <!-- REQUESTED -->
+
+            <div class="stat-card requested">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <span class="stat-label">
+                    Requested
+                </span>
+
+                <span
+                        class="stat-number"
+                        th:text="${selectedStatus == 'REQUESTED'
+                        ? #lists.size(bookings)
+                        : '—'}">
+                    —
+                </span>
+
+                <span class="stat-description">
+                    Current filter
+                </span>
+
+            </div>
+
+
+            <!-- APPROVED -->
+
+            <div class="stat-card approved">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <span class="stat-label">
+                    Approved
+                </span>
+
+                <span
+                        class="stat-number"
+                        th:text="${selectedStatus == 'APPROVED'
+                        ? #lists.size(bookings)
+                        : '—'}">
+                    —
+                </span>
+
+                <span class="stat-description">
+                    Current filter
+                </span>
+
+            </div>
+
+
+            <!-- REJECTED -->
+
+            <div class="stat-card rejected">
+
+                <div class="stat-icon">
+                    ×
+                </div>
+
+                <span class="stat-label">
+                    Rejected
+                </span>
+
+                <span
+                        class="stat-number"
+                        th:text="${selectedStatus == 'REJECTED'
+                        ? #lists.size(bookings)
+                        : '—'}">
+                    —
+                </span>
+
+                <span class="stat-description">
+                    Current filter
+                </span>
+
+            </div>
+
+
+            <!-- ALL -->
+
+            <div class="stat-card all-bookings">
+
+                <div class="stat-icon">
+                    ▣
+                </div>
+
+                <span class="stat-label">
+                    Showing
+                </span>
+
+                <span
+                        class="stat-number"
+                        th:text="${bookings != null
+                        ? #lists.size(bookings)
+                        : 0}">
+                    0
+                </span>
+
+                <span class="stat-description">
+                    Results on this page
+                </span>
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             FILTER
+        ===================================================== -->
+
+        <section class="filter-panel">
+
+
+            <div class="filter-top">
+
+                <div class="filter-title">
+
+                    <h2>
+                        Filter bookings
+                    </h2>
+
+                    <p>
+                        Narrow the booking list by status.
+                    </p>
+
+                </div>
+
+
+                <a
+                        class="clear-filter"
+                        th:href="@{/admin/bookings}">
+
+                    Clear filter
+
+                </a>
+
+            </div>
+
+
+            <form
+                    class="filter-form"
+                    method="get"
+                    th:action="@{/admin/bookings}">
+
+
+                <div class="filter-field">
+
+                    <label>
+                        Booking status
+                    </label>
+
+
+                    <select
+                            class="filter-select"
+                            name="status">
+
+                        <option
+                                value="">
+                            All bookings
+                        </option>
+
+                        <option
+                                value="REQUESTED"
+                                th:selected="${selectedStatus == 'REQUESTED'}">
+                            Requested
+                        </option>
+
+                        <option
+                                value="APPROVED"
+                                th:selected="${selectedStatus == 'APPROVED'}">
+                            Approved
+                        </option>
+
+                        <option
+                                value="REJECTED"
+                                th:selected="${selectedStatus == 'REJECTED'}">
+                            Rejected
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <button
+                        class="filter-button"
+                        type="submit">
+
+                    Apply filter →
+
+                </button>
+
+
+            </form>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             TABLE
+        ===================================================== -->
+
+        <section class="table-panel">
+
+
+            <div class="table-header">
+
+
+                <div>
+
+                    <h2>
+                        Booking records
+                    </h2>
+
+                    <p>
+                        Guest and accommodation information
+                    </p>
+
+                </div>
+
+
+                <span
+                        class="current-filter"
+                        th:text="${selectedStatus != null
+                        && !selectedStatus.isEmpty()
+                        ? selectedStatus
+                        : 'ALL BOOKINGS'}">
+
+                    ALL BOOKINGS
+
+                </span>
+
+
+            </div>
+
+
+            <div
+                    class="table-scroll"
+                    th:if="${bookings != null && !bookings.isEmpty()}">
+
+
+                <table class="booking-table">
+
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            Guest
+                        </th>
+
+                        <th>
+                            Property
+                        </th>
+
+                        <th>
+                            Room
+                        </th>
+
+                        <th>
+                            Check-in
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+
+                    <tr
+                            class="booking-row"
+                            th:each="booking : ${bookings}">
+
+
+                        <!-- GUEST -->
+
+                        <td>
+
+                            <div class="guest">
+
+
+                                <div class="guest-avatar">
+
+                                    <span
+                                            th:text="${booking.user != null
+                                            && booking.user.name != null
+                                            && !booking.user.name.isEmpty()
+                                            ? #strings.substring(
+                                                booking.user.name,
+                                                0,
+                                                1
+                                              ).toUpperCase()
+                                            : 'G'}">
+
+                                        G
+
+                                    </span>
+
+                                </div>
+
+
+                                <div>
+
+                                    <span
+                                            class="guest-name"
+                                            th:text="${booking.user != null
+                                            ? booking.user.name
+                                            : 'N/A'}">
+
+                                        Guest
+
+                                    </span>
+
+
+                                    <span
+                                            class="guest-email"
+                                            th:text="${booking.user != null
+                                            ? booking.user.email
+                                            : ''}">
+
+                                        email
+
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- PROPERTY -->
+
+                        <td>
+
+                            <span
+                                    class="property-name"
+                                    th:text="${booking.property != null
+                                    ? booking.property.name
+                                    : 'N/A'}">
+
+                                Property
+
+                            </span>
+
+
+                            <span class="property-label">
+                                Accommodation
+                            </span>
+
+                        </td>
+
+
+                        <!-- ROOM -->
+
+                        <td>
+
+                            <span class="room-badge">
+
+                                🛏
+
+                                <span
+                                        th:text="${booking.room != null
+                                        ? booking.room.roomType
+                                        : 'N/A'}">
+
+                                    DOUBLE
+
+                                </span>
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- CHECK-IN -->
+
+                        <td>
+
+                            <div class="date-box">
+
+
+                                <div class="date-icon">
+                                    ◷
+                                </div>
+
+
+                                <span
+                                        class="date-value"
+                                        th:text="${booking.checkInDate}">
+
+                                    date
+
+                                </span>
+
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- STATUS -->
+
+                        <td>
+
+                            <span
+                                    class="booking-status"
+                                    th:classappend="${'status-' + booking.status}"
+                                    th:text="${booking.status}">
+
+                                REQUESTED
+
+                            </span>
+
+                        </td>
+
+
+                    </tr>
+
+
+                    </tbody>
+
+                </table>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================= -->
+
+            <div
+                    class="empty-state"
+                    th:if="${bookings == null || bookings.isEmpty()}">
+
+
+                <div class="empty-icon">
+                    ▣
+                </div>
+
+
+                <h3>
+                    No bookings found
+                </h3>
+
+
+                <p>
+                    There are no booking records matching
+                    the selected filter. Try viewing all
+                    bookings or selecting another status.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            /* =================================================
+               SIDEBAR
+            ================================================= */
+
+            const sidebar =
+                document.getElementById(
+                    "adminSidebar"
+                );
+
+
+            const overlay =
+                document.getElementById(
+                    "sidebarOverlay"
+                );
+
+
+            const menuButton =
+                document.getElementById(
+                    "menuButton"
+                );
+
+
+            function openSidebar() {
+
+                sidebar.classList.add(
+                    "open"
+                );
+
+                overlay.classList.add(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+            }
+
+
+            function closeSidebar() {
+
+                sidebar.classList.remove(
+                    "open"
+                );
+
+                overlay.classList.remove(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "";
+            }
+
+
+            if (menuButton) {
+
+                menuButton.addEventListener(
+                    "click",
+                    openSidebar
+                );
+
+            }
+
+
+            if (overlay) {
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+
+
+            /* =================================================
+               MOBILE LINK CLOSE
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".sidebar-link, .logout-link"
+                )
+                .forEach(function (link) {
+
+                    link.addEventListener(
+                        "click",
+                        function () {
+
+                            if (
+                                window.innerWidth <= 950
+                            ) {
+
+                                closeSidebar();
+
+                            }
+
+                        }
+                    );
+
+                });
+
+
+            /* =================================================
+               BOOKING ROW ANIMATION
+            ================================================= */
+
+            const rows =
+                document.querySelectorAll(
+                    ".booking-row"
+                );
+
+
+            rows.forEach(
+                function (row, index) {
+
+                    setTimeout(
+                        function () {
+
+                            row.classList.add(
+                                "visible"
+                            );
+
+                        },
+                        80 + index * 60
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               3D CARD EFFECT
+            ================================================= */
+
+            const cards =
+                document.querySelectorAll(
+                    ".stat-card"
+                );
+
+
+            cards.forEach(
+                function (card) {
+
+                    card.addEventListener(
+                        "mousemove",
+                        function (event) {
+
+
+                            if (
+                                window.innerWidth < 950
+                            ) {
+                                return;
+                            }
+
+
+                            const rect =
+                                card.getBoundingClientRect();
+
+
+                            const x =
+                                event.clientX -
+                                rect.left;
+
+
+                            const y =
+                                event.clientY -
+                                rect.top;
+
+
+                            const centerX =
+                                rect.width / 2;
+
+
+                            const centerY =
+                                rect.height / 2;
+
+
+                            const rotateX =
+                                ((y - centerY) /
+                                    centerY) * -2;
+
+
+                            const rotateY =
+                                ((x - centerX) /
+                                    centerX) * 2;
+
+
+                            this.style.transform =
+                                `translateY(-5px)
+                                 perspective(700px)
+                                 rotateX(${rotateX}deg)
+                                 rotateY(${rotateY}deg)`;
+
+                        }
+                    );
+
+
+                    card.addEventListener(
+                        "mouseleave",
+                        function () {
+
+                            this.style.transform =
+                                "";
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               FILTER LOADING
+            ================================================= */
+
+            const filterForm =
+                document.querySelector(
+                    ".filter-form"
+                );
+
+
+            const filterButton =
+                document.querySelector(
+                    ".filter-button"
+                );
+
+
+            if (
+                filterForm &&
+                filterButton
+            ) {
+
+                filterForm.addEventListener(
+                    "submit",
+                    function () {
+
+                        filterButton.textContent =
+                            "Loading...";
+
+                        filterButton.disabled =
+                            true;
+
+                    }
+                );
+
+            }
+
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

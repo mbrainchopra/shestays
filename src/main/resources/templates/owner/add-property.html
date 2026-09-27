@@ -1,0 +1,2043 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Add property</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+            --pink: #ff4f8b;
+            --pink-dark: #e83c78;
+            --pink-light: #fff1f6;
+
+            --text: #18181b;
+            --muted: #71717a;
+
+            --border: rgba(24, 24, 27, .09);
+
+            --card: rgba(255, 255, 255, .9);
+
+            --shadow:
+                    0 25px 80px rgba(0, 0, 0, .08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+
+            background:
+                    radial-gradient(
+                            circle at 8% 8%,
+                            rgba(255, 79, 139, .12),
+                            transparent 28%
+                    ),
+                    radial-gradient(
+                            circle at 94% 25%,
+                            rgba(255, 170, 200, .12),
+                            transparent 25%
+                    ),
+                    #fafafa;
+
+            color: var(--text);
+        }
+
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .site-nav {
+
+            position: sticky;
+
+            top: 0;
+
+            z-index: 1000;
+
+            background: rgba(255,255,255,.78);
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border-bottom:
+                    1px solid rgba(0,0,0,.06);
+
+            transition:
+                    background .3s ease,
+                    box-shadow .3s ease;
+        }
+
+        .brand {
+
+            font-weight: 800;
+
+            letter-spacing: -.04em;
+        }
+
+        .nav-links a {
+
+            position: relative;
+        }
+
+        .nav-links a::after {
+
+            content: "";
+
+            position: absolute;
+
+            left: 50%;
+
+            bottom: -7px;
+
+            width: 0;
+
+            height: 2px;
+
+            border-radius: 20px;
+
+            background: var(--pink);
+
+            transform: translateX(-50%);
+
+            transition: width .25s ease;
+        }
+
+        .nav-links a:hover::after {
+
+            width: 70%;
+        }
+
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        .property-page {
+
+            min-height:
+                    calc(100vh - 75px);
+
+            padding:
+                    50px 20px 80px;
+        }
+
+        .property-shell {
+
+            max-width: 1080px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           BACK BUTTON
+        ========================================================= */
+
+        .back-row {
+
+            margin-bottom: 28px;
+
+            animation:
+                    fadeDown .6s ease both;
+        }
+
+        .back-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                    10px 15px;
+
+            border-radius: 12px;
+
+            border:
+                    1px solid var(--border);
+
+            background:
+                    rgba(255,255,255,.85);
+
+            color: #3f3f46;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            transition:
+                    transform .25s ease,
+                    box-shadow .25s ease,
+                    border-color .25s ease;
+        }
+
+        .back-btn:hover {
+
+            transform:
+                    translateX(-4px);
+
+            border-color:
+                    rgba(255,79,139,.3);
+
+            box-shadow:
+                    0 10px 25px rgba(0,0,0,.07);
+        }
+
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .property-header {
+
+            margin-bottom: 30px;
+
+            animation:
+                    fadeUp .7s ease both;
+        }
+
+        .eyebrow {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            padding:
+                    7px 12px;
+
+            border-radius: 999px;
+
+            background:
+                    rgba(255,79,139,.09);
+
+            color:
+                    var(--pink-dark);
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing: .12em;
+        }
+
+        .eyebrow-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--pink);
+
+            box-shadow:
+                    0 0 0 5px
+                    rgba(255,79,139,.08);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+        .property-header h1 {
+
+            margin:
+                    17px 0 8px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(40px, 5vw, 60px);
+
+            line-height: 1;
+
+            letter-spacing: -.05em;
+        }
+
+        .property-header p {
+
+            margin: 0;
+
+            max-width: 650px;
+
+            color:
+                    var(--muted);
+
+            font-size: 15px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           FORM CARD
+        ========================================================= */
+
+        .property-form-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+                    clamp(25px, 5vw, 45px);
+
+            border-radius: 30px;
+
+            background:
+                    var(--card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.85);
+
+            box-shadow:
+                    var(--shadow);
+
+            backdrop-filter:
+                    blur(18px);
+
+            -webkit-backdrop-filter:
+                    blur(18px);
+
+            animation:
+                    formReveal .8s .12s ease both;
+        }
+
+        .property-form-card::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: 0;
+
+            right: 0;
+
+            height: 4px;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #ff4f8b,
+                            #ff9cba,
+                            #ff4f8b
+                    );
+
+            background-size:
+                    200% 100%;
+
+            animation:
+                    gradientMove 4s linear infinite;
+        }
+
+
+        /* =========================================================
+           FORM HEADER
+        ========================================================= */
+
+        .form-title {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 30px;
+        }
+
+        .form-title h2 {
+
+            margin: 0 0 7px;
+
+            font-size: 23px;
+
+            letter-spacing: -.03em;
+        }
+
+        .form-title p {
+
+            margin: 0;
+
+            color:
+                    var(--muted);
+
+            font-size: 13px;
+
+            line-height: 1.6;
+        }
+
+        .required-note {
+
+            flex-shrink: 0;
+
+            padding:
+                    7px 10px;
+
+            border-radius: 999px;
+
+            background:
+                    #f4f4f5;
+
+            color:
+                    #71717a;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================================
+           ERROR
+        ========================================================= */
+
+        .alert-error {
+
+            margin-bottom: 24px;
+
+            border-radius: 15px;
+
+            animation:
+                    shake .4s ease both;
+        }
+
+
+        /* =========================================================
+           FORM GRID
+        ========================================================= */
+
+        .property-form-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(2, minmax(0,1fr));
+
+            gap: 23px;
+        }
+
+        .property-field {
+
+            position: relative;
+        }
+
+        .property-field.full {
+
+            grid-column:
+                    1 / -1;
+        }
+
+        .property-field label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 5px;
+
+            margin-bottom: 9px;
+
+            color:
+                    #27272a;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: .01em;
+        }
+
+        .required {
+
+            color:
+                    var(--pink);
+        }
+
+        .optional {
+
+            color:
+                    #a1a1aa;
+
+            font-size: 10px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================================
+           INPUTS
+        ========================================================= */
+
+        .property-field input,
+        .property-field select,
+        .property-field textarea {
+
+            width: 100%;
+
+            border:
+                    1px solid #e4e4e7;
+
+            border-radius: 14px;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            color:
+                    #18181b;
+
+            font-size: 14px;
+
+            outline: none;
+
+            transition:
+                    border-color .25s ease,
+                    box-shadow .25s ease,
+                    transform .25s ease,
+                    background .25s ease;
+        }
+
+        .property-field input,
+        .property-field select {
+
+            height: 52px;
+
+            padding:
+                    0 16px;
+        }
+
+        .property-field textarea {
+
+            min-height: 145px;
+
+            padding:
+                    15px 16px;
+
+            resize: vertical;
+
+            line-height: 1.6;
+        }
+
+        .property-field input:hover,
+        .property-field select:hover,
+        .property-field textarea:hover {
+
+            border-color:
+                    #d4d4d8;
+
+            background:
+                    #fff;
+        }
+
+        .property-field input:focus,
+        .property-field select:focus,
+        .property-field textarea:focus {
+
+            border-color:
+                    var(--pink);
+
+            background:
+                    #fff;
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(255,79,139,.09),
+                    0 10px 25px
+                    rgba(255,79,139,.05);
+
+            transform:
+                    translateY(-1px);
+        }
+
+        .property-field input::placeholder,
+        .property-field textarea::placeholder {
+
+            color:
+                    #a1a1aa;
+        }
+
+
+        /* =========================================================
+           PROPERTY TYPE
+        ========================================================= */
+
+        .select-wrap {
+
+            position: relative;
+        }
+
+        .select-wrap::after {
+
+            content: "⌄";
+
+            position: absolute;
+
+            right: 16px;
+
+            top: 50%;
+
+            transform:
+                    translateY(-50%);
+
+            color:
+                    #71717a;
+
+            pointer-events: none;
+
+            font-size: 17px;
+        }
+
+        .select-wrap select {
+
+            appearance: none;
+
+            -webkit-appearance: none;
+
+            padding-right: 42px;
+        }
+
+
+        /* =========================================================
+           PRICE
+        ========================================================= */
+
+        .price-wrap {
+
+            position: relative;
+        }
+
+        .price-symbol {
+
+            position: absolute;
+
+            left: 16px;
+
+            top: 50%;
+
+            transform:
+                    translateY(-50%);
+
+            color:
+                    #71717a;
+
+            font-weight: 800;
+
+            pointer-events: none;
+
+            z-index: 2;
+        }
+
+        .price-wrap input {
+
+            padding-left: 34px;
+        }
+
+
+        /* =========================================================
+           URL FIELD
+        ========================================================= */
+
+        .url-wrap {
+
+            position: relative;
+        }
+
+        .url-prefix {
+
+            position: absolute;
+
+            left: 16px;
+
+            top: 50%;
+
+            transform:
+                    translateY(-50%);
+
+            color:
+                    #a1a1aa;
+
+            font-size: 12px;
+
+            pointer-events: none;
+        }
+
+        .url-wrap input {
+
+            padding-left: 58px;
+        }
+
+
+        /* =========================================================
+           HINT
+        ========================================================= */
+
+        .field-hint {
+
+            margin-top: 7px;
+
+            color:
+                    #a1a1aa;
+
+            font-size: 11px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           IMAGE PREVIEW
+        ========================================================= */
+
+        .image-preview {
+
+            display: none;
+
+            position: relative;
+
+            overflow: hidden;
+
+            margin-top: 13px;
+
+            height: 180px;
+
+            border-radius: 18px;
+
+            border:
+                    1px solid #eeeeef;
+
+            background:
+                    #f4f4f5;
+        }
+
+        .image-preview.visible {
+
+            display: block;
+
+            animation:
+                    previewIn .4s ease both;
+        }
+
+        .image-preview img {
+
+            width: 100%;
+
+            height: 100%;
+
+            object-fit: cover;
+
+            transition:
+                    transform .5s ease;
+        }
+
+        .image-preview:hover img {
+
+            transform:
+                    scale(1.04);
+        }
+
+        .preview-label {
+
+            position: absolute;
+
+            left: 12px;
+
+            bottom: 12px;
+
+            padding:
+                    7px 10px;
+
+            border-radius: 9px;
+
+            background:
+                    rgba(0,0,0,.55);
+
+            color:
+                    white;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            backdrop-filter:
+                    blur(8px);
+        }
+
+
+        /* =========================================================
+           FACILITIES
+        ========================================================= */
+
+        .facility-preview {
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            gap: 7px;
+
+            margin-top: 10px;
+        }
+
+        .facility-chip {
+
+            padding:
+                    6px 10px;
+
+            border-radius: 999px;
+
+            background:
+                    #f4f4f5;
+
+            color:
+                    #52525b;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            opacity: 0;
+
+            transform:
+                    translateY(5px);
+
+            transition:
+                    opacity .25s ease,
+                    transform .25s ease;
+        }
+
+        .facility-chip.show {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        /* =========================================================
+           DESCRIPTION COUNTER
+        ========================================================= */
+
+        .description-meta {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            margin-top: 6px;
+
+            color:
+                    #a1a1aa;
+
+            font-size: 10px;
+        }
+
+
+        /* =========================================================
+           INFO BOX
+        ========================================================= */
+
+        .property-info {
+
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 12px;
+
+            margin-top: 30px;
+
+            padding:
+                    16px 17px;
+
+            border-radius: 16px;
+
+            background:
+                    #fafafa;
+
+            border:
+                    1px solid #f0f0f1;
+        }
+
+        .info-icon {
+
+            width: 29px;
+
+            height: 29px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 9px;
+
+            background:
+                    rgba(255,79,139,.1);
+
+            color:
+                    var(--pink-dark);
+
+            font-size: 13px;
+
+            font-weight: 900;
+        }
+
+        .property-info strong {
+
+            display: block;
+
+            margin-bottom: 3px;
+
+            font-size: 12px;
+        }
+
+        .property-info span {
+
+            color:
+                    #71717a;
+
+            font-size: 11px;
+
+            line-height: 1.55;
+        }
+
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .form-actions {
+
+            display: flex;
+
+            justify-content: flex-end;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 32px;
+
+            padding-top: 25px;
+
+            border-top:
+                    1px solid #eeeeef;
+        }
+
+        .form-actions .btn {
+
+            min-width: 135px;
+
+            justify-content: center;
+        }
+
+        .publish-btn {
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .publish-btn::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+
+            left: -100%;
+
+            width: 70%;
+
+            height: 100%;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            transparent,
+                            rgba(255,255,255,.35),
+                            transparent
+                    );
+
+            transform:
+                    skewX(-20deg);
+
+            transition:
+                    left .7s ease;
+        }
+
+        .publish-btn:hover::before {
+
+            left: 140%;
+        }
+
+        .publish-btn.loading {
+
+            pointer-events: none;
+
+            opacity: .75;
+        }
+
+        .publish-btn.loading .publish-text {
+
+            opacity: 0;
+        }
+
+        .publish-btn.loading::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 17px;
+
+            height: 17px;
+
+            border-radius: 50%;
+
+            border:
+                    2px solid rgba(255,255,255,.45);
+
+            border-top-color:
+                    white;
+
+            animation:
+                    spin .7s linear infinite;
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeUp {
+
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeDown {
+
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes formReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(25px)
+                        scale(.985);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+        @keyframes previewIn {
+
+            from {
+                opacity: 0;
+                transform: scale(.97);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(.72);
+                opacity: .6;
+            }
+        }
+
+        @keyframes gradientMove {
+
+            0% {
+                background-position: 0 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @keyframes spin {
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes shake {
+
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 760px) {
+
+            .property-page {
+
+                padding:
+                        35px 16px 60px;
+            }
+
+            .property-form-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+            .property-field.full {
+
+                grid-column:
+                        auto;
+            }
+
+            .property-form-card {
+
+                padding:
+                        25px 20px;
+
+                border-radius:
+                        24px;
+            }
+
+            .property-header h1 {
+
+                font-size:
+                        42px;
+            }
+
+            .form-title {
+
+                flex-direction:
+                        column;
+            }
+
+            .required-note {
+
+                align-self:
+                        flex-start;
+            }
+
+            .form-actions {
+
+                flex-direction:
+                        column-reverse;
+
+                align-items:
+                        stretch;
+            }
+
+            .form-actions .btn {
+
+                width:
+                        100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .nav-links {
+
+                gap:
+                        10px;
+            }
+
+            .nav-links a {
+
+                font-size:
+                        11px;
+            }
+
+            .property-header h1 {
+
+                font-size:
+                        36px;
+            }
+
+            .property-form-card {
+
+                padding:
+                        22px 17px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="site-nav">
+
+    <a class="brand"
+       th:href="@{/owner/dashboard}">
+        SheStay
+    </a>
+
+    <div class="nav-links">
+
+        <a th:href="@{/owner/dashboard}">
+            Dashboard
+        </a>
+
+        <a th:href="@{/owner/properties}">
+            Properties
+        </a>
+
+        <a th:href="@{/owner/bookings}">
+            Requests
+        </a>
+
+        <a th:href="@{/logout}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="property-page">
+
+    <div class="property-shell">
+
+
+        <!-- BACK -->
+        <div class="back-row">
+
+            <a class="back-btn"
+               th:href="@{/owner/properties}">
+
+                <span>←</span>
+
+                <span>
+                    My properties
+                </span>
+
+            </a>
+
+        </div>
+
+
+        <!-- HEADER -->
+        <header class="property-header">
+
+            <span class="eyebrow">
+
+                <span class="eyebrow-dot"></span>
+
+                Property management
+
+            </span>
+
+            <h1>
+                Add a property.
+            </h1>
+
+            <p>
+                Create a polished accommodation listing that gives guests
+                the essential information they need before choosing a stay.
+            </p>
+
+        </header>
+
+
+        <!-- FORM CARD -->
+        <section class="property-form-card">
+
+
+            <!-- FORM HEADER -->
+            <div class="form-title">
+
+                <div>
+
+                    <h2>
+                        Property details
+                    </h2>
+
+                    <p>
+                        Add accurate information about your hostel or PG.
+                    </p>
+
+                </div>
+
+                <span class="required-note">
+                    * Required fields
+                </span>
+
+            </div>
+
+
+            <!-- ERROR -->
+            <div class="alert alert-error"
+                 th:if="${error}"
+                 th:text="${error}">
+            </div>
+
+
+            <!-- FORM -->
+            <form
+                    id="propertyForm"
+                    th:action="@{/owner/add-property}"
+                    th:object="${property}"
+                    method="post">
+
+
+                <div class="property-form-grid">
+
+
+                    <!-- PROPERTY NAME -->
+                    <div class="property-field full">
+
+                        <label for="name">
+
+                            Property name
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                                id="name"
+                                th:field="*{name}"
+                                placeholder="e.g. SheStay Premium PG"
+                                required>
+
+                        <div class="field-hint">
+                            Use a clear name guests can easily remember.
+                        </div>
+
+                    </div>
+
+
+                    <!-- PROPERTY TYPE -->
+                    <div class="property-field">
+
+                        <label for="propertyType">
+
+                            Property type
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <div class="select-wrap">
+
+                            <select
+                                    id="propertyType"
+                                    th:field="*{propertyType}"
+                                    required>
+
+                                <option value="">
+                                    Select type
+                                </option>
+
+                                <option value="HOSTEL">
+                                    HOSTEL
+                                </option>
+
+                                <option value="PG">
+                                    PG
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="field-hint">
+                            Choose the accommodation category.
+                        </div>
+
+                    </div>
+
+
+                    <!-- RENT -->
+                    <div class="property-field">
+
+                        <label for="rent">
+
+                            Starting rent / month
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <div class="price-wrap">
+
+                            <span class="price-symbol">
+                                ₹
+                            </span>
+
+                            <input
+                                    id="rent"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    th:field="*{rent}"
+                                    placeholder="e.g. 8500"
+                                    required>
+
+                        </div>
+
+                        <div class="field-hint">
+                            Starting monthly rent from the available rooms.
+                        </div>
+
+                    </div>
+
+
+                    <!-- LOCATION -->
+                    <div class="property-field">
+
+                        <label for="location">
+
+                            Location
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                                id="location"
+                                th:field="*{location}"
+                                placeholder="e.g. Trichy"
+                                required>
+
+                        <div class="field-hint">
+                            City or locality where the property is located.
+                        </div>
+
+                    </div>
+
+
+                    <!-- ADDRESS -->
+                    <div class="property-field">
+
+                        <label for="address">
+
+                            Address
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                                id="address"
+                                th:field="*{address}"
+                                placeholder="Full property address"
+                                required>
+
+                        <div class="field-hint">
+                            Provide enough detail for guests to identify the property.
+                        </div>
+
+                    </div>
+
+
+                    <!-- IMAGE URL -->
+                    <div class="property-field full">
+
+                        <label for="image">
+
+                            Image URL
+
+                            <span class="optional">
+                                Optional
+                            </span>
+
+                        </label>
+
+                        <div class="url-wrap">
+
+                            <span class="url-prefix">
+                                https://
+                            </span>
+
+                            <input
+                                    id="image"
+                                    th:field="*{image}"
+                                    placeholder="images.example.com/property.jpg">
+
+                        </div>
+
+                        <div class="field-hint">
+                            Add a public image URL to show the property on the listing.
+                        </div>
+
+
+                        <!-- IMAGE PREVIEW -->
+                        <div
+                                id="imagePreview"
+                                class="image-preview">
+
+                            <img
+                                    id="previewImage"
+                                    src=""
+                                    alt="Property preview">
+
+                            <span class="preview-label">
+                                Property image preview
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- FACILITIES -->
+                    <div class="property-field full">
+
+                        <label for="facilities">
+                            Facilities
+                        </label>
+
+                        <input
+                                id="facilities"
+                                th:field="*{facilities}"
+                                placeholder="WiFi, Food, CCTV, Laundry, Parking">
+
+                        <div class="field-hint">
+                            Separate facilities using commas.
+                        </div>
+
+                        <div
+                                id="facilityPreview"
+                                class="facility-preview">
+                        </div>
+
+                    </div>
+
+
+                    <!-- DESCRIPTION -->
+                    <div class="property-field full">
+
+                        <label for="description">
+                            Description
+                        </label>
+
+                        <textarea
+                                id="description"
+                                th:field="*{description}"
+                                maxlength="1000"
+                                placeholder="Describe the accommodation, nearby places, environment, safety features and what makes this property comfortable for guests..."></textarea>
+
+                        <div class="description-meta">
+
+                            <span id="descriptionCount">
+                                0 / 1000
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFO -->
+                <div class="property-info">
+
+                    <div class="info-icon">
+                        i
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Your property will start as active
+                        </strong>
+
+                        <span>
+                            Once published, the property will be available
+                            for guests to discover. You can manage rooms,
+                            availability and booking requests from your
+                            owner dashboard.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="form-actions">
+
+                    <a
+                            class="btn btn-outline"
+                            th:href="@{/owner/properties}">
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                            id="publishBtn"
+                            class="btn btn-primary publish-btn"
+                            type="submit">
+
+                        <span class="publish-text">
+                            Publish property
+                        </span>
+
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     SCROLL TOP
+========================================================= -->
+
+<button
+        class="scroll-top"
+        aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+
+        /* =====================================================
+           ELEMENTS
+        ===================================================== */
+
+        const form =
+            document.getElementById("propertyForm");
+
+        const publishBtn =
+            document.getElementById("publishBtn");
+
+        const imageInput =
+            document.getElementById("image");
+
+        const imagePreview =
+            document.getElementById("imagePreview");
+
+        const previewImage =
+            document.getElementById("previewImage");
+
+        const facilitiesInput =
+            document.getElementById("facilities");
+
+        const facilityPreview =
+            document.getElementById("facilityPreview");
+
+        const description =
+            document.getElementById("description");
+
+        const descriptionCount =
+            document.getElementById("descriptionCount");
+
+
+        /* =====================================================
+           IMAGE PREVIEW
+        ===================================================== */
+
+        function updateImagePreview() {
+
+            const url =
+                imageInput.value.trim();
+
+            if (!url) {
+
+                imagePreview.classList.remove(
+                    "visible"
+                );
+
+                previewImage.removeAttribute("src");
+
+                return;
+            }
+
+            previewImage.onload = function () {
+
+                imagePreview.classList.add(
+                    "visible"
+                );
+
+            };
+
+            previewImage.onerror = function () {
+
+                imagePreview.classList.remove(
+                    "visible"
+                );
+
+            };
+
+            previewImage.src = url;
+        }
+
+
+        if (imageInput) {
+
+            imageInput.addEventListener(
+                "input",
+                updateImagePreview
+            );
+
+            imageInput.addEventListener(
+                "blur",
+                updateImagePreview
+            );
+
+        }
+
+
+        /* =====================================================
+           FACILITIES PREVIEW
+        ===================================================== */
+
+        function updateFacilities() {
+
+            if (!facilitiesInput ||
+                !facilityPreview) {
+
+                return;
+            }
+
+            const value =
+                facilitiesInput.value.trim();
+
+            facilityPreview.innerHTML = "";
+
+            if (!value) {
+                return;
+            }
+
+            const facilities =
+                value
+                    .split(",")
+                    .map(item => item.trim())
+                    .filter(item => item.length > 0)
+                    .slice(0, 15);
+
+
+            facilities.forEach(function (
+                facility,
+                index
+            ) {
+
+                const chip =
+                    document.createElement("span");
+
+                chip.className =
+                    "facility-chip";
+
+                chip.textContent =
+                    facility;
+
+                facilityPreview.appendChild(
+                    chip
+                );
+
+                setTimeout(function () {
+
+                    chip.classList.add(
+                        "show"
+                    );
+
+                }, index * 45);
+
+            });
+
+        }
+
+
+        if (facilitiesInput) {
+
+            facilitiesInput.addEventListener(
+                "input",
+                updateFacilities
+            );
+
+            updateFacilities();
+
+        }
+
+
+        /* =====================================================
+           DESCRIPTION COUNTER
+        ===================================================== */
+
+        function updateDescriptionCount() {
+
+            if (!description ||
+                !descriptionCount) {
+
+                return;
+            }
+
+            const length =
+                description.value.length;
+
+            descriptionCount.textContent =
+                length + " / 1000";
+
+            if (length >= 900) {
+
+                descriptionCount.style.color =
+                    "#e83c78";
+
+                descriptionCount.style.fontWeight =
+                    "700";
+
+            } else {
+
+                descriptionCount.style.color =
+                    "#a1a1aa";
+
+                descriptionCount.style.fontWeight =
+                    "400";
+            }
+
+        }
+
+
+        if (description) {
+
+            description.addEventListener(
+                "input",
+                updateDescriptionCount
+            );
+
+            updateDescriptionCount();
+
+        }
+
+
+        /* =====================================================
+           NUMBER INPUT PROTECTION
+        ===================================================== */
+
+        const numericInputs =
+            document.querySelectorAll(
+                'input[type="number"]'
+            );
+
+        numericInputs.forEach(function (input) {
+
+            input.addEventListener(
+                "input",
+                function () {
+
+                    if (this.value === "") {
+                        return;
+                    }
+
+                    const value =
+                        Number(this.value);
+
+                    if (Number.isNaN(value)) {
+
+                        this.value = "";
+
+                        return;
+                    }
+
+                    if (
+                        this.min !== "" &&
+                        value < Number(this.min)
+                    ) {
+
+                        this.value =
+                            this.min;
+                    }
+
+                }
+            );
+
+        });
+
+
+        /* =====================================================
+           FORM SUBMIT
+        ===================================================== */
+
+        if (form && publishBtn) {
+
+            form.addEventListener(
+                "submit",
+                function () {
+
+                    publishBtn.classList.add(
+                        "loading"
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           NAVBAR SHADOW
+        ===================================================== */
+
+        const nav =
+            document.querySelector(
+                ".site-nav"
+            );
+
+        window.addEventListener(
+            "scroll",
+            function () {
+
+                if (!nav) {
+                    return;
+                }
+
+                if (window.scrollY > 15) {
+
+                    nav.style.boxShadow =
+                        "0 10px 30px rgba(0,0,0,.06)";
+
+                } else {
+
+                    nav.style.boxShadow =
+                        "none";
+                }
+
+            }
+        );
+
+    });
+
+</script>
+
+</body>
+</html>

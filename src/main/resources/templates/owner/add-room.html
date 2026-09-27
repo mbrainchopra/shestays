@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Add room</title>
+
+    <link rel="stylesheet" th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           PAGE
+        ========================================================= */
+
+        :root {
+            --room-pink: #ff4f8b;
+            --room-pink-dark: #e83c78;
+            --room-text: #18181b;
+            --room-muted: #71717a;
+            --room-border: rgba(24, 24, 27, 0.09);
+            --room-bg: #fafafa;
+            --room-card: rgba(255,255,255,0.88);
+            --room-shadow: 0 24px 70px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            background:
+                    radial-gradient(circle at 8% 10%, rgba(255,79,139,.11), transparent 28%),
+                    radial-gradient(circle at 92% 30%, rgba(255,166,196,.12), transparent 25%),
+                    #fafafa;
+            color: var(--room-text);
+        }
+
+        /* =========================================================
+           NAVBAR
+        ========================================================= */
+
+        .site-nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            background: rgba(255,255,255,.78);
+            border-bottom: 1px solid rgba(0,0,0,.06);
+
+            transition:
+                    box-shadow .3s ease,
+                    background .3s ease;
+        }
+
+        .site-nav:hover {
+            background: rgba(255,255,255,.9);
+        }
+
+        .brand {
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .nav-links a {
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: -7px;
+
+            width: 0;
+            height: 2px;
+
+            border-radius: 10px;
+            background: var(--room-pink);
+
+            transform: translateX(-50%);
+            transition: width .25s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 70%;
+        }
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .room-page {
+            min-height: calc(100vh - 80px);
+            padding: 55px 20px 80px;
+        }
+
+        .room-shell {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        /* =========================================================
+           TOP BACK LINK
+        ========================================================= */
+
+        .back-row {
+            margin-bottom: 28px;
+            animation: fadeDown .6s ease both;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 10px 15px;
+
+            border-radius: 12px;
+
+            background: rgba(255,255,255,.8);
+            border: 1px solid var(--room-border);
+
+            color: #3f3f46;
+            text-decoration: none;
+
+            font-size: 13px;
+            font-weight: 700;
+
+            transition:
+                    transform .25s ease,
+                    box-shadow .25s ease,
+                    border-color .25s ease;
+        }
+
+        .back-btn:hover {
+            transform: translateX(-4px);
+            border-color: rgba(255,79,139,.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,.07);
+        }
+
+        /* =========================================================
+           HEADER
+        ========================================================= */
+
+        .room-header {
+            margin-bottom: 30px;
+            animation: fadeUp .7s ease both;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+
+            padding: 7px 12px;
+
+            border-radius: 999px;
+
+            background: rgba(255,79,139,.09);
+            color: var(--room-pink-dark);
+
+            font-size: 11px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .eyebrow-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--room-pink);
+
+            box-shadow: 0 0 0 5px rgba(255,79,139,.08);
+
+            animation: pulse 2s infinite;
+        }
+
+        .room-header h1 {
+            margin: 17px 0 8px;
+
+            font-family: "Playfair Display", Georgia, serif;
+
+            font-size: clamp(38px, 5vw, 58px);
+            line-height: 1;
+            letter-spacing: -.045em;
+        }
+
+        .room-header p {
+            margin: 0;
+            max-width: 620px;
+
+            color: var(--room-muted);
+
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        /* =========================================================
+           PROPERTY INFO
+        ========================================================= */
+
+        .property-banner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+
+            padding: 20px 22px;
+            margin-bottom: 22px;
+
+            border-radius: 22px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            rgba(255,255,255,.96),
+                            rgba(255,247,250,.9)
+                    );
+
+            border: 1px solid rgba(255,79,139,.12);
+
+            box-shadow: 0 15px 45px rgba(0,0,0,.05);
+
+            animation: fadeUp .75s .1s ease both;
+        }
+
+        .property-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .property-icon {
+            width: 48px;
+            height: 48px;
+
+            display: grid;
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 15px;
+
+            background: linear-gradient(
+                    135deg,
+                    var(--room-pink),
+                    #ff8fb5
+            );
+
+            color: white;
+
+            font-size: 20px;
+
+            box-shadow: 0 10px 25px rgba(255,79,139,.25);
+        }
+
+        .property-label {
+            display: block;
+
+            margin-bottom: 3px;
+
+            color: #a1a1aa;
+
+            font-size: 10px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        .property-name {
+            font-size: 17px;
+            font-weight: 800;
+            letter-spacing: -.02em;
+        }
+
+        .property-badge {
+            padding: 8px 12px;
+
+            border-radius: 999px;
+
+            background: #f4f4f5;
+
+            color: #52525b;
+
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        /* =========================================================
+           FORM CARD
+        ========================================================= */
+
+        .room-form-card {
+            position: relative;
+
+            overflow: hidden;
+
+            padding: clamp(24px, 5vw, 44px);
+
+            border-radius: 30px;
+
+            background: var(--room-card);
+
+            border: 1px solid rgba(255,255,255,.85);
+
+            box-shadow: var(--room-shadow);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            animation: formReveal .8s .18s ease both;
+        }
+
+        .room-form-card::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: 0;
+            right: 0;
+
+            height: 4px;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            #ff4f8b,
+                            #ff9cba,
+                            #ff4f8b
+                    );
+
+            background-size: 200% 100%;
+
+            animation: gradientMove 4s linear infinite;
+        }
+
+        .form-title {
+            margin-bottom: 28px;
+        }
+
+        .form-title h2 {
+            margin: 0 0 7px;
+
+            font-size: 22px;
+            letter-spacing: -.025em;
+        }
+
+        .form-title p {
+            margin: 0;
+
+            color: var(--room-muted);
+
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        /* =========================================================
+           ERROR
+        ========================================================= */
+
+        .alert-error {
+            margin-bottom: 24px;
+
+            border-radius: 15px;
+
+            animation: shake .4s ease both;
+        }
+
+        /* =========================================================
+           FORM GRID
+        ========================================================= */
+
+        .room-form-grid {
+            display: grid;
+
+            grid-template-columns:
+                    repeat(2, minmax(0, 1fr));
+
+            gap: 22px;
+        }
+
+        .room-field {
+            position: relative;
+        }
+
+        .room-field.full {
+            grid-column: 1 / -1;
+        }
+
+        .room-field label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+
+            margin-bottom: 9px;
+
+            color: #27272a;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: .01em;
+        }
+
+        .required {
+            color: var(--room-pink);
+        }
+
+        .room-field input,
+        .room-field select {
+            width: 100%;
+
+            height: 52px;
+
+            padding: 0 16px;
+
+            border-radius: 14px;
+
+            border: 1px solid #e4e4e7;
+
+            background: rgba(255,255,255,.88);
+
+            color: #18181b;
+
+            font-size: 14px;
+
+            outline: none;
+
+            transition:
+                    border-color .25s ease,
+                    box-shadow .25s ease,
+                    transform .25s ease,
+                    background .25s ease;
+        }
+
+        .room-field input:hover,
+        .room-field select:hover {
+            border-color: #d4d4d8;
+            background: #fff;
+        }
+
+        .room-field input:focus,
+        .room-field select:focus {
+            border-color: var(--room-pink);
+
+            box-shadow:
+                    0 0 0 4px rgba(255,79,139,.09),
+                    0 10px 25px rgba(255,79,139,.05);
+
+            background: #fff;
+
+            transform: translateY(-1px);
+        }
+
+        .room-field input::placeholder {
+            color: #a1a1aa;
+        }
+
+        /* =========================================================
+           ROOM TYPE SELECT
+        ========================================================= */
+
+        .room-type-wrap {
+            position: relative;
+        }
+
+        .room-type-wrap::after {
+            content: "⌄";
+
+            position: absolute;
+
+            right: 16px;
+            bottom: 14px;
+
+            color: #71717a;
+
+            pointer-events: none;
+
+            font-size: 17px;
+        }
+
+        .room-type-wrap select {
+            appearance: none;
+            -webkit-appearance: none;
+
+            padding-right: 42px;
+        }
+
+        /* =========================================================
+           INPUT HINT
+        ========================================================= */
+
+        .field-hint {
+            margin-top: 7px;
+
+            color: #a1a1aa;
+
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        /* =========================================================
+           FACILITIES
+        ========================================================= */
+
+        .facility-preview {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 7px;
+
+            margin-top: 10px;
+        }
+
+        .facility-chip {
+            padding: 5px 9px;
+
+            border-radius: 999px;
+
+            background: #f4f4f5;
+
+            color: #52525b;
+
+            font-size: 10px;
+            font-weight: 700;
+
+            opacity: 0;
+
+            transform: translateY(4px);
+
+            transition:
+                    opacity .25s ease,
+                    transform .25s ease;
+        }
+
+        .facility-chip.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* =========================================================
+           PRICE INPUT
+        ========================================================= */
+
+        .price-wrap {
+            position: relative;
+        }
+
+        .price-symbol {
+            position: absolute;
+
+            left: 16px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            color: #71717a;
+
+            font-weight: 800;
+
+            pointer-events: none;
+        }
+
+        .price-wrap input {
+            padding-left: 32px;
+        }
+
+        /* =========================================================
+           INFO STRIP
+        ========================================================= */
+
+        .form-info {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+
+            margin-top: 28px;
+            padding: 15px 17px;
+
+            border-radius: 16px;
+
+            background: #fafafa;
+
+            border: 1px solid #f0f0f1;
+        }
+
+        .info-icon {
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 9px;
+
+            background: rgba(255,79,139,.1);
+
+            color: var(--room-pink-dark);
+
+            font-size: 13px;
+            font-weight: 900;
+        }
+
+        .form-info strong {
+            display: block;
+
+            margin-bottom: 3px;
+
+            font-size: 12px;
+        }
+
+        .form-info span {
+            color: #71717a;
+
+            font-size: 11px;
+            line-height: 1.55;
+        }
+
+        /* =========================================================
+           ACTIONS
+        ========================================================= */
+
+        .room-actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 32px;
+            padding-top: 25px;
+
+            border-top: 1px solid #eeeeef;
+        }
+
+        .room-actions .btn {
+            min-width: 120px;
+
+            justify-content: center;
+        }
+
+        .submit-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-btn::before {
+            content: "";
+
+            position: absolute;
+
+            top: 0;
+            left: -100%;
+
+            width: 70%;
+            height: 100%;
+
+            background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255,255,255,.35),
+                    transparent
+            );
+
+            transform: skewX(-20deg);
+
+            transition: left .7s ease;
+        }
+
+        .submit-btn:hover::before {
+            left: 140%;
+        }
+
+        .submit-btn.loading {
+            pointer-events: none;
+            opacity: .75;
+        }
+
+        .submit-btn.loading .submit-text {
+            opacity: 0;
+        }
+
+        .submit-btn.loading::after {
+            content: "";
+
+            position: absolute;
+
+            width: 17px;
+            height: 17px;
+
+            border-radius: 50%;
+
+            border: 2px solid rgba(255,255,255,.45);
+            border-top-color: white;
+
+            animation: spin .7s linear infinite;
+        }
+
+        /* =========================================================
+           SCROLL TOP
+        ========================================================= */
+
+        .scroll-top {
+            transition:
+                    opacity .25s ease,
+                    transform .25s ease;
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-4px);
+        }
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeDown {
+            from {
+                opacity: 0;
+                transform: translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes formReveal {
+            from {
+                opacity: 0;
+                transform: translateY(25px) scale(.985);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(.72);
+                opacity: .6;
+            }
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background-position: 0 50%;
+            }
+
+            100% {
+                background-position: 200% 50%;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-5px);
+            }
+
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 760px) {
+
+            .room-page {
+                padding: 35px 16px 60px;
+            }
+
+            .room-form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .room-field.full {
+                grid-column: auto;
+            }
+
+            .property-banner {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .property-badge {
+                align-self: flex-start;
+            }
+
+            .room-form-card {
+                padding: 25px 20px;
+                border-radius: 24px;
+            }
+
+            .room-header h1 {
+                font-size: 42px;
+            }
+
+            .room-actions {
+                flex-direction: column-reverse;
+                align-items: stretch;
+            }
+
+            .room-actions .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 520px) {
+
+            .nav-links {
+                gap: 10px;
+            }
+
+            .nav-links a {
+                font-size: 11px;
+            }
+
+            .room-header h1 {
+                font-size: 36px;
+            }
+
+            .property-banner {
+                padding: 17px;
+            }
+
+            .property-icon {
+                width: 43px;
+                height: 43px;
+            }
+        }
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- =========================================================
+     NAVBAR
+========================================================= -->
+
+<nav class="site-nav">
+
+    <a class="brand"
+       th:href="@{/owner/dashboard}">
+        SheStay
+    </a>
+
+    <div class="nav-links">
+
+        <a th:href="@{/owner/dashboard}">
+            Dashboard
+        </a>
+
+        <a th:href="@{/owner/properties}">
+            Properties
+        </a>
+
+        <a th:href="@{/owner/bookings}">
+            Requests
+        </a>
+
+        <a th:href="@{/logout}">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="room-page">
+
+    <div class="room-shell">
+
+        <!-- BACK -->
+        <div class="back-row">
+
+            <a class="back-btn"
+               th:href="@{/owner/property/{id}/rooms(id=${property.id})}">
+
+                <span>←</span>
+                <span>Back to rooms</span>
+
+            </a>
+
+        </div>
+
+
+        <!-- HEADER -->
+        <header class="room-header">
+
+            <span class="eyebrow">
+
+                <span class="eyebrow-dot"></span>
+
+                Room management
+
+            </span>
+
+            <h1>
+                Add a room.
+            </h1>
+
+            <p>
+                Create a comfortable room listing with clear capacity,
+                pricing and facility information for your guests.
+            </p>
+
+        </header>
+
+
+        <!-- PROPERTY -->
+        <section class="property-banner">
+
+            <div class="property-info">
+
+                <div class="property-icon">
+                    🏠
+                </div>
+
+                <div>
+
+                    <span class="property-label">
+                        Adding room to
+                    </span>
+
+                    <div class="property-name"
+                         th:text="${property.name}">
+                        Property
+                    </div>
+
+                </div>
+
+            </div>
+
+            <span class="property-badge">
+                New room
+            </span>
+
+        </section>
+
+
+        <!-- FORM CARD -->
+        <section class="room-form-card">
+
+            <div class="form-title">
+
+                <h2>
+                    Room details
+                </h2>
+
+                <p>
+                    Enter the information guests will use when comparing
+                    rooms at this property.
+                </p>
+
+            </div>
+
+
+            <!-- ERROR -->
+            <div class="alert alert-error"
+                 th:if="${error}"
+                 th:text="${error}">
+            </div>
+
+
+            <!-- FORM -->
+            <form
+                    id="roomForm"
+                    th:action="@{/owner/property/{id}/add-room(id=${property.id})}"
+                    th:object="${room}"
+                    method="post">
+
+                <div class="room-form-grid">
+
+
+                    <!-- ROOM TYPE -->
+                    <div class="room-field">
+
+                        <label for="roomType">
+
+                            Room type
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <div class="room-type-wrap">
+
+                            <select
+                                    id="roomType"
+                                    th:field="*{roomType}"
+                                    required>
+
+                                <option value="">
+                                    Select room type
+                                </option>
+
+                                <option value="SINGLE">
+                                    SINGLE — Private room
+                                </option>
+
+                                <option value="DOUBLE">
+                                    DOUBLE — 2 occupants
+                                </option>
+
+                                <option value="TRIPLE">
+                                    TRIPLE — 3 occupants
+                                </option>
+
+                                <option value="DORMITORY">
+                                    DORMITORY — Shared room
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="field-hint">
+                            Choose the room arrangement offered to guests.
+                        </div>
+
+                    </div>
+
+
+                    <!-- CAPACITY -->
+                    <div class="room-field">
+
+                        <label for="capacity">
+
+                            Capacity
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                                id="capacity"
+                                type="number"
+                                min="1"
+                                th:field="*{capacity}"
+                                placeholder="e.g. 2"
+                                required>
+
+                        <div class="field-hint">
+                            Maximum number of occupants for one room.
+                        </div>
+
+                    </div>
+
+
+                    <!-- TOTAL ROOMS -->
+                    <div class="room-field">
+
+                        <label for="totalRooms">
+
+                            Total rooms
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <input
+                                id="totalRooms"
+                                type="number"
+                                min="1"
+                                th:field="*{totalRooms}"
+                                placeholder="e.g. 10"
+                                required>
+
+                        <div class="field-hint">
+                            Number of rooms available under this room type.
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRICE -->
+                    <div class="room-field">
+
+                        <label for="price">
+
+                            Monthly price
+
+                            <span class="required">*</span>
+
+                        </label>
+
+                        <div class="price-wrap">
+
+                            <span class="price-symbol">
+                                ₹
+                            </span>
+
+                            <input
+                                    id="price"
+                                    type="number"
+                                    min="0"
+                                    step="0.01"
+                                    th:field="*{price}"
+                                    placeholder="e.g. 8500"
+                                    required>
+
+                        </div>
+
+                        <div class="field-hint">
+                            Monthly rent for one room.
+                        </div>
+
+                    </div>
+
+
+                    <!-- FACILITIES -->
+                    <div class="room-field full">
+
+                        <label for="facilities">
+                            Facilities
+                        </label>
+
+                        <input
+                                id="facilities"
+                                th:field="*{facilities}"
+                                placeholder="AC, WiFi, Attached bathroom, Wardrobe">
+
+                        <div class="field-hint">
+                            Separate facilities with commas.
+                        </div>
+
+                        <div
+                                id="facilityPreview"
+                                class="facility-preview">
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- INFO -->
+                <div class="form-info">
+
+                    <div class="info-icon">
+                        i
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Availability is handled automatically
+                        </strong>
+
+                        <span>
+                            When you add this room, the available room count
+                            will automatically start at the total room count.
+                            You can manage availability later from the Rooms page.
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ACTIONS -->
+                <div class="room-actions">
+
+                    <a
+                            class="btn btn-outline"
+                            th:href="@{/owner/property/{id}/rooms(id=${property.id})}">
+
+                        Cancel
+
+                    </a>
+
+                    <button
+                            id="submitBtn"
+                            class="btn btn-primary submit-btn"
+                            type="submit">
+
+                        <span class="submit-text">
+                            Add room
+                        </span>
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     SCROLL TOP
+========================================================= -->
+
+<button
+        class="scroll-top"
+        aria-label="Back to top">
+
+    ↑
+
+</button>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const form = document.getElementById("roomForm");
+        const submitBtn = document.getElementById("submitBtn");
+
+        const facilitiesInput =
+            document.getElementById("facilities");
+
+        const facilityPreview =
+            document.getElementById("facilityPreview");
+
+
+        /* =====================================================
+           FACILITY PREVIEW
+        ===================================================== */
+
+        function updateFacilities() {
+
+            if (!facilityPreview || !facilitiesInput) {
+                return;
+            }
+
+            const value = facilitiesInput.value.trim();
+
+            facilityPreview.innerHTML = "";
+
+            if (!value) {
+                return;
+            }
+
+            const facilities = value
+                .split(",")
+                .map(item => item.trim())
+                .filter(item => item.length > 0)
+                .slice(0, 10);
+
+            facilities.forEach(function (facility, index) {
+
+                const chip =
+                    document.createElement("span");
+
+                chip.className = "facility-chip";
+
+                chip.textContent = facility;
+
+                facilityPreview.appendChild(chip);
+
+                setTimeout(function () {
+                    chip.classList.add("show");
+                }, index * 45);
+
+            });
+        }
+
+
+        if (facilitiesInput) {
+
+            facilitiesInput.addEventListener(
+                "input",
+                updateFacilities
+            );
+
+            updateFacilities();
+        }
+
+
+        /* =====================================================
+           FORM SUBMIT
+        ===================================================== */
+
+        if (form && submitBtn) {
+
+            form.addEventListener("submit", function (event) {
+
+                const roomType =
+                    document.getElementById("roomType");
+
+                const capacity =
+                    document.getElementById("capacity");
+
+                const totalRooms =
+                    document.getElementById("totalRooms");
+
+                const price =
+                    document.getElementById("price");
+
+
+                if (
+                    !roomType.value ||
+                    !capacity.value ||
+                    !totalRooms.value ||
+                    !price.value
+                ) {
+
+                    return;
+                }
+
+
+                if (
+                    Number(capacity.value) < 1 ||
+                    Number(totalRooms.value) < 1 ||
+                    Number(price.value) < 0
+                ) {
+
+                    return;
+                }
+
+
+                submitBtn.classList.add("loading");
+
+            });
+
+        }
+
+
+        /* =====================================================
+           NUMBER INPUT PROTECTION
+        ===================================================== */
+
+        const numericInputs =
+            document.querySelectorAll(
+                'input[type="number"]'
+            );
+
+        numericInputs.forEach(function (input) {
+
+            input.addEventListener("input", function () {
+
+                if (this.value === "") {
+                    return;
+                }
+
+                const value = Number(this.value);
+
+                if (Number.isNaN(value)) {
+                    this.value = "";
+                }
+
+                if (
+                    this.min !== "" &&
+                    value < Number(this.min)
+                ) {
+                    this.value = this.min;
+                }
+
+            });
+
+        });
+
+
+        /* =====================================================
+           NAVBAR SHADOW
+        ===================================================== */
+
+        const nav =
+            document.querySelector(".site-nav");
+
+        window.addEventListener("scroll", function () {
+
+            if (!nav) {
+                return;
+            }
+
+            if (window.scrollY > 15) {
+
+                nav.style.boxShadow =
+                    "0 10px 30px rgba(0,0,0,.06)";
+
+            } else {
+
+                nav.style.boxShadow = "none";
+
+            }
+
+        });
+
+    });
+
+</script>
+
+</body>
+</html>

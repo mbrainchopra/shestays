@@ -1,0 +1,3134 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SheStay — Owner Properties</title>
+
+    <link rel="stylesheet"
+          th:href="@{/css/shestay.css}">
+
+    <style>
+
+        /* =========================================================
+           ROOT
+        ========================================================= */
+
+        :root {
+
+            --pink: #ff4f8b;
+            --pink-dark: #e83c78;
+            --pink-light: #fff1f6;
+
+            --purple: #8b5cf6;
+            --blue: #3b82f6;
+            --green: #22c55e;
+            --red: #ef4444;
+
+            --bg: #f7f7f9;
+            --sidebar: #111113;
+
+            --text: #18181b;
+            --muted: #71717a;
+
+            --border: rgba(24,24,27,.08);
+
+            --card:
+                    rgba(255,255,255,.9);
+
+            --shadow:
+                    0 18px 55px rgba(0,0,0,.055);
+        }
+
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            background:
+                    radial-gradient(
+                            circle at 10% 8%,
+                            rgba(255,79,139,.07),
+                            transparent 25%
+                    ),
+                    radial-gradient(
+                            circle at 90% 15%,
+                            rgba(139,92,246,.05),
+                            transparent 25%
+                    ),
+                    var(--bg);
+
+            color: var(--text);
+
+            overflow-x: hidden;
+        }
+
+
+        /* =========================================================
+           SIDEBAR
+        ========================================================= */
+
+        .admin-sidebar {
+
+            position: fixed;
+
+            top: 0;
+            left: 0;
+            bottom: 0;
+
+            z-index: 1200;
+
+            width: 255px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            padding: 22px 15px;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            #151517,
+                            #101012
+                    );
+
+            color: white;
+
+            box-shadow:
+                    15px 0 45px rgba(0,0,0,.08);
+
+            transition:
+                    transform .35s ease;
+        }
+
+
+        /* =========================================================
+           BRAND
+        ========================================================= */
+
+        .admin-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    5px 10px 25px;
+
+            color: white;
+
+            text-decoration: none;
+        }
+
+
+        .admin-brand-icon {
+
+            width: 38px;
+            height: 38px;
+
+            display: grid;
+
+            place-items: center;
+
+            border-radius: 12px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff82aa
+                    );
+
+            box-shadow:
+                    0 10px 25px
+                    rgba(255,79,139,.25);
+
+            font-size: 16px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-brand-text {
+
+            font-size: 19px;
+
+            font-weight: 850;
+
+            letter-spacing:
+                    -.045em;
+        }
+
+
+        .admin-brand-sub {
+
+            display: block;
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing:
+                    .12em;
+        }
+
+
+        /* =========================================================
+           SIDEBAR SECTIONS
+        ========================================================= */
+
+        .sidebar-section-title {
+
+            padding:
+                    12px 12px 8px;
+
+            color:
+                    rgba(255,255,255,.3);
+
+            font-size: 9px;
+
+            font-weight: 800;
+
+            text-transform: uppercase;
+
+            letter-spacing:
+                    .13em;
+        }
+
+
+        .sidebar-nav {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 4px;
+        }
+
+
+        .sidebar-link {
+
+            position: relative;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                    11px 12px;
+
+            border-radius: 11px;
+
+            color:
+                    rgba(255,255,255,.62);
+
+            text-decoration: none;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            transition:
+                    color .25s ease,
+                    background .25s ease,
+                    transform .25s ease;
+        }
+
+
+        .sidebar-link:hover {
+
+            color: white;
+
+            background:
+                    rgba(255,255,255,.07);
+
+            transform:
+                    translateX(3px);
+        }
+
+
+        .sidebar-link.active {
+
+            color: white;
+
+            background:
+                    linear-gradient(
+                            90deg,
+                            rgba(255,79,139,.18),
+                            rgba(255,79,139,.06)
+                    );
+        }
+
+
+        .sidebar-link.active::before {
+
+            content: "";
+
+            position: absolute;
+
+            left: 0;
+
+            top: 50%;
+
+            width: 3px;
+
+            height: 21px;
+
+            border-radius:
+                    0 5px 5px 0;
+
+            background:
+                    var(--pink);
+
+            transform:
+                    translateY(-50%);
+        }
+
+
+        .sidebar-icon {
+
+            width: 28px;
+            height: 28px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 8px;
+
+            background:
+                    rgba(255,255,255,.05);
+
+            font-size: 12px;
+        }
+
+
+        .sidebar-link.active
+        .sidebar-icon {
+
+            background:
+                    rgba(255,79,139,.15);
+        }
+
+
+        .sidebar-label {
+            flex: 1;
+        }
+
+
+        /* =========================================================
+           SIDEBAR BOTTOM
+        ========================================================= */
+
+        .sidebar-bottom {
+
+            margin-top: auto;
+        }
+
+
+        .admin-profile {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                    13px 10px;
+
+            margin-bottom: 8px;
+
+            border-radius: 13px;
+
+            background:
+                    rgba(255,255,255,.045);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.05);
+        }
+
+
+        .admin-avatar {
+
+            width: 34px;
+            height: 34px;
+
+            display: grid;
+
+            place-items: center;
+
+            flex-shrink: 0;
+
+            border-radius: 10px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            var(--pink),
+                            #ff9abc
+                    );
+
+            color: white;
+
+            font-size: 12px;
+
+            font-weight: 900;
+        }
+
+
+        .admin-profile-name {
+
+            color: white;
+
+            font-size: 10px;
+
+            font-weight: 800;
+        }
+
+
+        .admin-profile-role {
+
+            margin-top: 2px;
+
+            color:
+                    rgba(255,255,255,.35);
+
+            font-size: 8px;
+        }
+
+
+        .logout-link {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 11px;
+
+            padding:
+                    10px 12px;
+
+            border-radius: 10px;
+
+            color:
+                    rgba(255,255,255,.45);
+
+            text-decoration: none;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            transition:
+                    background .2s ease,
+                    color .2s ease;
+        }
+
+
+        .logout-link:hover {
+
+            color:
+                    #ff7fa4;
+
+            background:
+                    rgba(255,79,139,.08);
+        }
+
+
+        /* =========================================================
+           MAIN
+        ========================================================= */
+
+        .admin-main {
+
+            min-height: 100vh;
+
+            margin-left: 255px;
+
+            padding:
+                    28px 32px 70px;
+        }
+
+
+        .admin-container {
+
+            max-width: 1450px;
+
+            margin: 0 auto;
+        }
+
+
+        /* =========================================================
+           TOP BAR
+        ========================================================= */
+
+        .topbar {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 20px;
+
+            margin-bottom: 28px;
+
+            animation:
+                    fadeDown .6s ease both;
+        }
+
+
+        .topbar-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .mobile-menu {
+
+            display: none;
+
+            width: 40px;
+            height: 40px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            background: white;
+
+            box-shadow:
+                    0 8px 25px rgba(0,0,0,.06);
+
+            cursor: pointer;
+
+            font-size: 18px;
+        }
+
+
+        .topbar-title {
+
+            color:
+                    #71717a;
+
+            font-size: 10px;
+
+            font-weight: 750;
+        }
+
+
+        .system-pill {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    8px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    rgba(255,255,255,.8);
+
+            border:
+                    1px solid var(--border);
+
+            color:
+                    #52525b;
+
+            font-size:
+                    9px;
+
+            font-weight:
+                    800;
+        }
+
+
+        .online-dot {
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--green);
+
+            box-shadow:
+                    0 0 0 4px
+                    rgba(34,197,94,.1);
+
+            animation:
+                    pulse 2s infinite;
+        }
+
+
+        /* =========================================================
+           OWNER HERO
+        ========================================================= */
+
+        .owner-hero {
+
+            position: relative;
+
+            overflow: hidden;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 30px;
+
+            padding:
+                    30px 32px;
+
+            margin-bottom: 20px;
+
+            border-radius:
+                    24px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #18181b,
+                            #252529 65%,
+                            #351724
+                    );
+
+            color: white;
+
+            box-shadow:
+                    0 20px 55px rgba(0,0,0,.11);
+
+            animation:
+                    heroReveal .7s ease both;
+        }
+
+
+        .owner-hero::before {
+
+            content: "";
+
+            position: absolute;
+
+            width: 310px;
+            height: 310px;
+
+            right: -100px;
+            top: -180px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(255,79,139,.2);
+
+            filter:
+                    blur(8px);
+
+            animation:
+                    orbFloat 8s ease-in-out infinite;
+        }
+
+
+        .owner-hero::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 170px;
+            height: 170px;
+
+            right: 30%;
+            bottom: -130px;
+
+            border-radius: 50%;
+
+            background:
+                    rgba(139,92,246,.12);
+
+            filter:
+                    blur(10px);
+        }
+
+
+        .owner-copy {
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+
+        .breadcrumb {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            margin-bottom: 11px;
+
+            color:
+                    #ff86a9;
+
+            font-size: 8px;
+
+            font-weight: 850;
+
+            text-transform: uppercase;
+
+            letter-spacing:
+                    .12em;
+        }
+
+
+        .breadcrumb span {
+
+            color:
+                    rgba(255,255,255,.25);
+        }
+
+
+        .owner-copy h1 {
+
+            max-width:
+                    760px;
+
+            margin:
+                    0 0 9px;
+
+            font-family:
+                    "Playfair Display",
+                    Georgia,
+                    serif;
+
+            font-size:
+                    clamp(30px, 4vw, 47px);
+
+            line-height:
+                    1.02;
+
+            letter-spacing:
+                    -.055em;
+
+            word-break:
+                    break-word;
+        }
+
+
+        .owner-email {
+
+            margin: 0;
+
+            color:
+                    rgba(255,255,255,.5);
+
+            font-size:
+                    11px;
+        }
+
+
+        .owner-meta {
+
+            position: relative;
+
+            z-index: 2;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            flex-shrink: 0;
+        }
+
+
+        .owner-stat {
+
+            min-width:
+                    105px;
+
+            padding:
+                    14px;
+
+            border-radius:
+                    14px;
+
+            background:
+                    rgba(255,255,255,.08);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.1);
+
+            backdrop-filter:
+                    blur(12px);
+
+            text-align:
+                    center;
+        }
+
+
+        .owner-stat strong {
+
+            display: block;
+
+            margin-bottom: 4px;
+
+            font-size:
+                    23px;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.05em;
+        }
+
+
+        .owner-stat span {
+
+            color:
+                    rgba(255,255,255,.4);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    750;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .06em;
+        }
+
+
+        /* =========================================================
+           SUMMARY
+        ========================================================= */
+
+        .summary-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap: 13px;
+
+            margin-bottom: 20px;
+        }
+
+
+        .summary-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            min-height:
+                    115px;
+
+            padding:
+                    18px;
+
+            border-radius:
+                    18px;
+
+            background:
+                    var(--card);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    statReveal .6s ease both;
+
+            transition:
+                    transform .3s ease,
+                    box-shadow .3s ease;
+        }
+
+
+        .summary-card:hover {
+
+            transform:
+                    translateY(-5px);
+
+            box-shadow:
+                    0 25px 55px
+                    rgba(0,0,0,.09);
+        }
+
+
+        .summary-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 90px;
+            height: 90px;
+
+            right: -40px;
+            bottom: -45px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--summary-glow);
+        }
+
+
+        .summary-card.properties {
+
+            --summary-glow:
+                    rgba(255,79,139,.1);
+        }
+
+
+        .summary-card.location {
+
+            --summary-glow:
+                    rgba(59,130,246,.1);
+        }
+
+
+        .summary-card.status {
+
+            --summary-glow:
+                    rgba(34,197,94,.1);
+        }
+
+
+        .summary-icon {
+
+            width:
+                    35px;
+
+            height:
+                    35px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    12px;
+
+            border-radius:
+                    10px;
+
+            background:
+                    var(--summary-bg);
+
+            color:
+                    var(--summary-color);
+
+            font-size:
+                    13px;
+        }
+
+
+        .properties .summary-icon {
+
+            --summary-bg:
+                    #fff0f5;
+
+            --summary-color:
+                    #e83c78;
+        }
+
+
+        .location .summary-icon {
+
+            --summary-bg:
+                    #eff6ff;
+
+            --summary-color:
+                    #2563eb;
+        }
+
+
+        .status .summary-icon {
+
+            --summary-bg:
+                    #ecfdf3;
+
+            --summary-color:
+                    #16a34a;
+        }
+
+
+        .summary-label {
+
+            display: block;
+
+            margin-bottom:
+                    4px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .1em;
+        }
+
+
+        .summary-value {
+
+            display: block;
+
+            color:
+                    #18181b;
+
+            font-size:
+                    18px;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.04em;
+        }
+
+
+        .summary-description {
+
+            display: block;
+
+            margin-top:
+                    5px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        /* =========================================================
+           PROPERTY HEADER
+        ========================================================= */
+
+        .listing-panel {
+
+            overflow: hidden;
+
+            border-radius:
+                    21px;
+
+            background:
+                    rgba(255,255,255,.9);
+
+            border:
+                    1px solid
+                    rgba(255,255,255,.9);
+
+            box-shadow:
+                    var(--shadow);
+
+            animation:
+                    panelReveal .75s .15s ease both;
+        }
+
+
+        .listing-header {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                    20px 21px;
+
+            border-bottom:
+                    1px solid #eeeeef;
+        }
+
+
+        .listing-title h2 {
+
+            margin:
+                    0 0 4px;
+
+            font-size:
+                    15px;
+
+            letter-spacing:
+                    -.025em;
+        }
+
+
+        .listing-title p {
+
+            margin: 0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+        }
+
+
+        .property-count {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding:
+                    8px 11px;
+
+            border-radius:
+                    999px;
+
+            background:
+                    var(--pink-light);
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+        }
+
+
+        .property-count-dot {
+
+            width: 5px;
+            height: 5px;
+
+            border-radius: 50%;
+
+            background:
+                    var(--pink);
+        }
+
+
+        /* =========================================================
+           PROPERTY GRID
+        ========================================================= */
+
+        .property-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                    repeat(3, 1fr);
+
+            gap:
+                    15px;
+
+            padding:
+                    18px;
+        }
+
+
+        .property-card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            border-radius:
+                    17px;
+
+            background:
+                    #fff;
+
+            border:
+                    1px solid #eeeeef;
+
+            box-shadow:
+                    0 8px 25px rgba(0,0,0,.035);
+
+            opacity: 0;
+
+            transform:
+                    translateY(20px);
+
+            transition:
+                    transform .35s ease,
+                    box-shadow .35s ease,
+                    border-color .35s ease;
+        }
+
+
+        .property-card.visible {
+
+            opacity: 1;
+
+            transform:
+                    translateY(0);
+        }
+
+
+        .property-card:hover {
+
+            transform:
+                    translateY(-7px);
+
+            border-color:
+                    rgba(255,79,139,.16);
+
+            box-shadow:
+                    0 25px 55px
+                    rgba(0,0,0,.09);
+        }
+
+
+        /* =========================================================
+           PROPERTY IMAGE
+        ========================================================= */
+
+        .property-image {
+
+            position: relative;
+
+            height:
+                    210px;
+
+            overflow: hidden;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fdf0f5,
+                            #f3edf8
+                    );
+        }
+
+
+        .property-image img {
+
+            width: 100%;
+
+            height: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+            transition:
+                    transform .6s ease;
+        }
+
+
+        .property-card:hover
+        .property-image img {
+
+            transform:
+                    scale(1.07);
+        }
+
+
+        .image-placeholder {
+
+            width: 100%;
+            height: 100%;
+
+            display: grid;
+
+            place-items: center;
+
+            color:
+                    rgba(232,60,120,.35);
+
+            font-size:
+                    43px;
+
+            background:
+                    radial-gradient(
+                            circle at 30% 25%,
+                            rgba(255,255,255,.8),
+                            transparent 25%
+                    ),
+                    linear-gradient(
+                            135deg,
+                            #fff1f6,
+                            #f2eafa
+                    );
+        }
+
+
+        /* =========================================================
+           IMAGE OVERLAY
+        ========================================================= */
+
+        .property-image::after {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                    linear-gradient(
+                            180deg,
+                            transparent 55%,
+                            rgba(0,0,0,.22)
+                    );
+
+            pointer-events: none;
+        }
+
+
+        .property-status {
+
+            position: absolute;
+
+            top: 12px;
+            left: 12px;
+
+            z-index: 3;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                    7px 9px;
+
+            border-radius:
+                    999px;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            backdrop-filter:
+                    blur(10px);
+        }
+
+
+        .property-status::before {
+
+            content: "";
+
+            width:
+                    5px;
+
+            height:
+                    5px;
+
+            border-radius:
+                    50%;
+        }
+
+
+        .property-status.active {
+
+            background:
+                    rgba(236,253,243,.94);
+
+            color:
+                    #15803d;
+        }
+
+
+        .property-status.active::before {
+
+            background:
+                    #22c55e;
+
+            box-shadow:
+                    0 0 0 3px
+                    rgba(34,197,94,.12);
+        }
+
+
+        .property-status.inactive {
+
+            background:
+                    rgba(254,242,242,.94);
+
+            color:
+                    #dc2626;
+        }
+
+
+        .property-status.inactive::before {
+
+            background:
+                    #ef4444;
+        }
+
+
+        .property-status.default {
+
+            background:
+                    rgba(255,255,255,.92);
+
+            color:
+                    #52525b;
+        }
+
+
+        .property-status.default::before {
+
+            background:
+                    #a1a1aa;
+        }
+
+
+        /* =========================================================
+           PROPERTY BODY
+        ========================================================= */
+
+        .property-body {
+
+            padding:
+                    17px;
+        }
+
+
+        .property-type {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            padding:
+                    5px 8px;
+
+            margin-bottom:
+                    8px;
+
+            border-radius:
+                    7px;
+
+            background:
+                    #f5f5f5;
+
+            color:
+                    #71717a;
+
+            font-size:
+                    7px;
+
+            font-weight:
+                    850;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .08em;
+        }
+
+
+        .property-name {
+
+            margin:
+                    0 0 6px;
+
+            color:
+                    #18181b;
+
+            font-size:
+                    17px;
+
+            line-height:
+                    1.2;
+
+            font-weight:
+                    850;
+
+            letter-spacing:
+                    -.035em;
+
+            display:
+                    -webkit-box;
+
+            -webkit-line-clamp:
+                    2;
+
+            -webkit-box-orient:
+                    vertical;
+
+            overflow:
+                    hidden;
+        }
+
+
+        .property-location {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            margin-bottom:
+                    14px;
+
+            color:
+                    #8a8a91;
+
+            font-size:
+                    9px;
+
+            line-height:
+                    1.4;
+        }
+
+
+        .location-icon {
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    11px;
+        }
+
+
+        /* =========================================================
+           PRICE
+        ========================================================= */
+
+        .property-bottom {
+
+            display: flex;
+
+            align-items: flex-end;
+
+            justify-content: space-between;
+
+            gap: 12px;
+
+            padding-top:
+                    13px;
+
+            border-top:
+                    1px solid #f0f0f1;
+        }
+
+
+        .price-label {
+
+            display: block;
+
+            margin-bottom:
+                    3px;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    7px;
+
+            font-weight:
+                    700;
+
+            text-transform:
+                    uppercase;
+
+            letter-spacing:
+                    .06em;
+        }
+
+
+        .price {
+
+            color:
+                    #18181b;
+
+            font-size:
+                    19px;
+
+            line-height:
+                    1;
+
+            font-weight:
+                    900;
+
+            letter-spacing:
+                    -.04em;
+        }
+
+
+        .price-currency {
+
+            margin-right:
+                    1px;
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    13px;
+        }
+
+
+        .price-period {
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    600;
+        }
+
+
+        /* =========================================================
+           PREVIEW BUTTON
+        ========================================================= */
+
+        .preview-btn {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding:
+                    9px 12px;
+
+            border-radius:
+                    9px;
+
+            background:
+                    #18181b;
+
+            color: white;
+
+            text-decoration:
+                    none;
+
+            font-size:
+                    8px;
+
+            font-weight:
+                    850;
+
+            transition:
+                    transform .2s ease,
+                    background .2s ease;
+        }
+
+
+        .preview-btn:hover {
+
+            transform:
+                    translateY(-2px);
+
+            background:
+                    var(--pink-dark);
+        }
+
+
+        /* =========================================================
+           EMPTY STATE
+        ========================================================= */
+
+        .empty-state {
+
+            min-height:
+                    390px;
+
+            display:
+                    flex;
+
+            flex-direction:
+                    column;
+
+            align-items:
+                    center;
+
+            justify-content:
+                    center;
+
+            padding:
+                    45px 20px;
+
+            text-align:
+                    center;
+        }
+
+
+        .empty-icon {
+
+            width:
+                    76px;
+
+            height:
+                    76px;
+
+            display:
+                    grid;
+
+            place-items:
+                    center;
+
+            margin-bottom:
+                    18px;
+
+            border-radius:
+                    23px;
+
+            background:
+                    linear-gradient(
+                            135deg,
+                            #fff0f5,
+                            #ffe4ed
+                    );
+
+            color:
+                    var(--pink-dark);
+
+            font-size:
+                    28px;
+
+            box-shadow:
+                    0 15px 35px
+                    rgba(255,79,139,.12);
+
+            animation:
+                    emptyFloat 4s ease-in-out infinite;
+        }
+
+
+        .empty-state h3 {
+
+            margin:
+                    0 0 7px;
+
+            font-size:
+                    18px;
+        }
+
+
+        .empty-state p {
+
+            max-width:
+                    430px;
+
+            margin:
+                    0;
+
+            color:
+                    #a1a1aa;
+
+            font-size:
+                    10px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /* =========================================================
+           ANIMATIONS
+        ========================================================= */
+
+        @keyframes fadeDown {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(-12px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes heroReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px)
+                        scale(.99);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0)
+                        scale(1);
+            }
+        }
+
+
+        @keyframes statReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes panelReveal {
+
+            from {
+                opacity: 0;
+                transform:
+                        translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform:
+                        translateY(0);
+            }
+        }
+
+
+        @keyframes orbFloat {
+
+            0%, 100% {
+                transform:
+                        translate(0,0);
+            }
+
+            50% {
+                transform:
+                        translate(-35px,30px);
+            }
+        }
+
+
+        @keyframes pulse {
+
+            0%,100% {
+                transform:
+                        scale(1);
+
+                opacity:
+                        1;
+            }
+
+            50% {
+                transform:
+                        scale(.7);
+
+                opacity:
+                        .6;
+            }
+        }
+
+
+        @keyframes emptyFloat {
+
+            0%,100% {
+                transform:
+                        translateY(0);
+            }
+
+            50% {
+                transform:
+                        translateY(-8px);
+            }
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1100px) {
+
+            .property-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 950px) {
+
+            .admin-sidebar {
+
+                transform:
+                        translateX(-100%);
+            }
+
+
+            .admin-sidebar.open {
+
+                transform:
+                        translateX(0);
+            }
+
+
+            .sidebar-overlay {
+
+                display:
+                        none;
+
+                position:
+                        fixed;
+
+                inset: 0;
+
+                z-index:
+                        1100;
+
+                background:
+                        rgba(0,0,0,.4);
+
+                backdrop-filter:
+                        blur(3px);
+            }
+
+
+            .sidebar-overlay.open {
+
+                display:
+                        block;
+            }
+
+
+            .admin-main {
+
+                margin-left:
+                        0;
+
+                padding:
+                        22px 20px 60px;
+            }
+
+
+            .mobile-menu {
+
+                display:
+                        grid;
+
+                place-items:
+                        center;
+            }
+
+
+            .owner-hero {
+
+                align-items:
+                        flex-start;
+
+                flex-direction:
+                        column;
+            }
+
+
+            .owner-meta {
+
+                width:
+                        100%;
+            }
+
+
+            .owner-stat {
+
+                flex:
+                        1;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .admin-main {
+
+                padding:
+                        18px 14px 50px;
+            }
+
+
+            .system-pill {
+
+                display:
+                        none;
+            }
+
+
+            .summary-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+
+
+            .property-grid {
+
+                grid-template-columns:
+                        1fr;
+
+                padding:
+                        14px;
+            }
+
+
+            .property-image {
+
+                height:
+                        225px;
+            }
+
+
+            .owner-hero {
+
+                padding:
+                        25px 21px;
+
+                border-radius:
+                        19px;
+            }
+
+
+            .owner-copy h1 {
+
+                font-size:
+                        35px;
+            }
+        }
+
+
+        @media (max-width: 430px) {
+
+            .owner-meta {
+
+                flex-direction:
+                        column;
+            }
+
+
+            .owner-stat {
+
+                width:
+                        100%;
+            }
+
+
+            .property-image {
+
+                height:
+                        210px;
+            }
+        }
+
+
+        /* =========================================================
+           REDUCED MOTION
+        ========================================================= */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+
+                animation-duration:
+                        .01ms !important;
+
+                animation-iteration-count:
+                        1 !important;
+
+                transition-duration:
+                        .01ms !important;
+
+                scroll-behavior:
+                        auto !important;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================================
+     MOBILE OVERLAY
+========================================================= -->
+
+<div
+        id="sidebarOverlay"
+        class="sidebar-overlay">
+</div>
+
+
+<!-- =========================================================
+     ADMIN SIDEBAR
+========================================================= -->
+
+<aside
+        id="adminSidebar"
+        class="admin-sidebar">
+
+
+    <!-- BRAND -->
+
+    <a
+            class="admin-brand"
+            th:href="@{/admin/dashboard}">
+
+        <div class="admin-brand-icon">
+            ✦
+        </div>
+
+        <div>
+
+            <div class="admin-brand-text">
+                SheStay
+            </div>
+
+            <span class="admin-brand-sub">
+                Admin Console
+            </span>
+
+        </div>
+
+    </a>
+
+
+    <!-- MAIN -->
+
+    <div class="sidebar-section-title">
+        Main
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/dashboard}">
+
+            <span class="sidebar-icon">
+                ⌂
+            </span>
+
+            <span class="sidebar-label">
+                Dashboard
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/users}">
+
+            <span class="sidebar-icon">
+                👩
+            </span>
+
+            <span class="sidebar-label">
+                Women Users
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/owners}">
+
+            <span class="sidebar-icon">
+                ♙
+            </span>
+
+            <span class="sidebar-label">
+                Owners
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link active"
+                th:href="@{/admin/properties}">
+
+            <span class="sidebar-icon">
+                ▦
+            </span>
+
+            <span class="sidebar-label">
+                Properties
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/rooms}">
+
+            <span class="sidebar-icon">
+                🛏
+            </span>
+
+            <span class="sidebar-label">
+                Rooms
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/bookings}">
+
+            <span class="sidebar-icon">
+                ▣
+            </span>
+
+            <span class="sidebar-label">
+                Bookings
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- OWNER CONTEXT -->
+
+    <div class="sidebar-section-title">
+        Owner context
+    </div>
+
+
+    <nav class="sidebar-nav">
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/owners}">
+
+            <span class="sidebar-icon">
+                ←
+            </span>
+
+            <span class="sidebar-label">
+                Back to owners
+            </span>
+
+        </a>
+
+
+        <a
+                class="sidebar-link"
+                th:href="@{/admin/properties}">
+
+            <span class="sidebar-icon">
+                ⊞
+            </span>
+
+            <span class="sidebar-label">
+                All properties
+            </span>
+
+        </a>
+
+
+    </nav>
+
+
+    <!-- PROFILE -->
+
+    <div class="sidebar-bottom">
+
+
+        <div class="admin-profile">
+
+            <div class="admin-avatar">
+                A
+            </div>
+
+            <div>
+
+                <div class="admin-profile-name">
+                    SheStay Admin
+                </div>
+
+                <div class="admin-profile-role">
+                    Platform Administrator
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <a
+                class="logout-link"
+                th:href="@{/logout}">
+
+            <span>
+                ↪
+            </span>
+
+            Logout
+
+        </a>
+
+
+    </div>
+
+
+</aside>
+
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
+<main class="admin-main">
+
+    <div class="admin-container">
+
+
+        <!-- =====================================================
+             TOPBAR
+        ===================================================== -->
+
+        <div class="topbar">
+
+
+            <div class="topbar-left">
+
+                <button
+                        id="menuButton"
+                        class="mobile-menu"
+                        aria-label="Open admin menu">
+
+                    ☰
+
+                </button>
+
+
+                <span class="topbar-title">
+                    Owner property management
+                </span>
+
+            </div>
+
+
+            <span class="system-pill">
+
+                <span class="online-dot"></span>
+
+                System active
+
+            </span>
+
+
+        </div>
+
+
+        <!-- =====================================================
+             OWNER HERO
+        ===================================================== -->
+
+        <section class="owner-hero">
+
+
+            <div class="owner-copy">
+
+
+                <div class="breadcrumb">
+
+                    Admin
+
+                    <span> / </span>
+
+                    Owners
+
+                    <span> / </span>
+
+                    Properties
+
+                </div>
+
+
+                <h1
+                        th:text="${owner.name + ' · Properties'}">
+
+                    Owner Properties
+
+                </h1>
+
+
+                <p
+                        class="owner-email"
+                        th:text="${owner.email}">
+
+                    owner@email.com
+
+                </p>
+
+
+            </div>
+
+
+            <div class="owner-meta">
+
+
+                <div class="owner-stat">
+
+                    <strong
+                            th:text="${properties != null
+                            ? #lists.size(properties)
+                            : 0}">
+
+                        0
+
+                    </strong>
+
+                    <span>
+                        Properties
+                    </span>
+
+                </div>
+
+
+                <div class="owner-stat">
+
+                    <strong>
+                        ✓
+                    </strong>
+
+                    <span>
+                        Owner
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             SUMMARY
+        ===================================================== -->
+
+        <section class="summary-grid">
+
+
+            <div class="summary-card properties">
+
+
+                <div class="summary-icon">
+                    ▦
+                </div>
+
+
+                <span class="summary-label">
+                    Total listings
+                </span>
+
+
+                <span
+                        class="summary-value"
+                        th:text="${properties != null
+                        ? #lists.size(properties)
+                        : 0}">
+
+                    0
+
+                </span>
+
+
+                <span class="summary-description">
+                    Properties owned by this account
+                </span>
+
+
+            </div>
+
+
+            <div class="summary-card location">
+
+
+                <div class="summary-icon">
+                    ⌖
+                </div>
+
+
+                <span class="summary-label">
+                    Owner email
+                </span>
+
+
+                <span
+                        class="summary-value"
+                        style="
+                            font-size:13px;
+                            word-break:break-word;
+                        "
+                        th:text="${owner.email}">
+
+                    owner@email.com
+
+                </span>
+
+
+                <span class="summary-description">
+                    Registered owner contact
+                </span>
+
+
+            </div>
+
+
+            <div class="summary-card status">
+
+
+                <div class="summary-icon">
+                    ✓
+                </div>
+
+
+                <span class="summary-label">
+                    Management
+                </span>
+
+
+                <span class="summary-value">
+                    Active
+                </span>
+
+
+                <span class="summary-description">
+                    Admin property overview
+                </span>
+
+
+            </div>
+
+
+        </section>
+
+
+        <!-- =====================================================
+             PROPERTY LISTING
+        ===================================================== -->
+
+        <section class="listing-panel">
+
+
+            <div class="listing-header">
+
+
+                <div class="listing-title">
+
+                    <h2>
+                        Property listings
+                    </h2>
+
+                    <p>
+                        All accommodations registered by this owner.
+                    </p>
+
+                </div>
+
+
+                <div class="property-count">
+
+                    <span class="property-count-dot"></span>
+
+                    <span
+                            th:text="${properties != null
+                            ? #lists.size(properties)
+                            : 0}">
+
+                        0
+
+                    </span>
+
+                    listings
+
+                </div>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 PROPERTY GRID
+            ================================================= -->
+
+            <div
+                    class="property-grid"
+                    th:if="${properties != null
+                    && !properties.isEmpty()}">
+
+
+                <article
+                        class="property-card"
+                        th:each="property : ${properties}">
+
+
+                    <!-- IMAGE -->
+
+                    <div class="property-image">
+
+
+                        <img
+                                th:if="${property.image != null
+                                && !property.image.isBlank()}"
+                                th:src="${property.image}"
+                                th:alt="${property.name}"
+                                onerror="this.style.display='none'; this.nextElementSibling.style.display='grid';">
+
+
+                        <div
+                                class="image-placeholder"
+                                th:style="${property.image != null
+                                && !property.image.isBlank()
+                                ? 'display:none'
+                                : 'display:grid'}">
+
+                            ⌂
+
+                        </div>
+
+
+                        <!-- STATUS -->
+
+                        <span
+                                class="property-status"
+                                th:classappend="${property.status != null
+                                && property.status.equalsIgnoreCase('ACTIVE')
+                                ? ' active'
+                                : (property.status != null
+                                && property.status.equalsIgnoreCase('INACTIVE')
+                                ? ' inactive'
+                                : ' default')}">
+
+
+                            <span
+                                    th:text="${property.status != null
+                                    ? property.status
+                                    : 'UNKNOWN'}">
+
+                                ACTIVE
+
+                            </span>
+
+
+                        </span>
+
+
+                    </div>
+
+
+                    <!-- BODY -->
+
+                    <div class="property-body">
+
+
+                        <span
+                                class="property-type"
+                                th:text="${property.propertyType != null
+                                ? property.propertyType
+                                : 'PROPERTY'}">
+
+                            HOSTEL
+
+                        </span>
+
+
+                        <h3
+                                class="property-name"
+                                th:text="${property.name}">
+
+                            Property
+
+                        </h3>
+
+
+                        <div class="property-location">
+
+                            <span class="location-icon">
+                                ⌖
+                            </span>
+
+                            <span
+                                    th:text="${property.location != null
+                                    ? property.location
+                                    : 'Location not available'}">
+
+                                Location
+
+                            </span>
+
+                        </div>
+
+
+                        <!-- BOTTOM -->
+
+                        <div class="property-bottom">
+
+
+                            <div>
+
+
+                                <span class="price-label">
+                                    Starting rent
+                                </span>
+
+
+                                <div class="price">
+
+                                    <span
+                                            class="price-currency">
+                                        ₹
+                                    </span>
+
+
+                                    <span
+                                            th:text="${property.rent != null
+                                            ? property.rent
+                                            : 0}">
+
+                                        7500
+
+                                    </span>
+
+
+                                    <span
+                                            class="price-period">
+                                        / month
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+
+                            <a
+                                    class="preview-btn"
+                                    th:href="@{/properties/{id}(id=${property.id})}">
+
+                                Preview
+
+                                <span>
+                                    →
+                                </span>
+
+                            </a>
+
+
+                        </div>
+
+
+                    </div>
+
+
+                </article>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 EMPTY STATE
+            ================================================= -->
+
+            <div
+                    class="empty-state"
+                    th:if="${properties == null
+                    || properties.isEmpty()}">
+
+
+                <div class="empty-icon">
+                    ▦
+                </div>
+
+
+                <h3>
+                    No properties found
+                </h3>
+
+
+                <p>
+                    This owner has not added any properties
+                    to the SheStay platform yet.
+                </p>
+
+
+            </div>
+
+
+        </section>
+
+
+    </div>
+
+</main>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
+<script th:src="@{/js/shestay.js}"></script>
+
+
+<script>
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+
+            /* =================================================
+               SIDEBAR
+            ================================================= */
+
+            const sidebar =
+                document.getElementById(
+                    "adminSidebar"
+                );
+
+
+            const overlay =
+                document.getElementById(
+                    "sidebarOverlay"
+                );
+
+
+            const menuButton =
+                document.getElementById(
+                    "menuButton"
+                );
+
+
+            function openSidebar() {
+
+                sidebar.classList.add(
+                    "open"
+                );
+
+                overlay.classList.add(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "hidden";
+            }
+
+
+            function closeSidebar() {
+
+                sidebar.classList.remove(
+                    "open"
+                );
+
+                overlay.classList.remove(
+                    "open"
+                );
+
+                document.body.style.overflow =
+                    "";
+            }
+
+
+            if (menuButton) {
+
+                menuButton.addEventListener(
+                    "click",
+                    openSidebar
+                );
+
+            }
+
+
+            if (overlay) {
+
+                overlay.addEventListener(
+                    "click",
+                    closeSidebar
+                );
+
+            }
+
+
+            /* =================================================
+               MOBILE SIDEBAR CLOSE
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".sidebar-link, .logout-link"
+                )
+                .forEach(
+                    function (link) {
+
+                        link.addEventListener(
+                            "click",
+                            function () {
+
+                                if (
+                                    window.innerWidth <= 950
+                                ) {
+
+                                    closeSidebar();
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+            /* =================================================
+               PROPERTY CARD REVEAL
+            ================================================= */
+
+            const cards =
+                document.querySelectorAll(
+                    ".property-card"
+                );
+
+
+            cards.forEach(
+                function (card, index) {
+
+                    setTimeout(
+                        function () {
+
+                            card.classList.add(
+                                "visible"
+                            );
+
+                        },
+                        100 + (index * 90)
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               3D CARD EFFECT
+            ================================================= */
+
+            cards.forEach(
+                function (card) {
+
+
+                    card.addEventListener(
+                        "mousemove",
+                        function (event) {
+
+
+                            if (
+                                window.innerWidth < 950
+                            ) {
+
+                                return;
+
+                            }
+
+
+                            const rect =
+                                card.getBoundingClientRect();
+
+
+                            const x =
+                                event.clientX -
+                                rect.left;
+
+
+                            const y =
+                                event.clientY -
+                                rect.top;
+
+
+                            const centerX =
+                                rect.width / 2;
+
+
+                            const centerY =
+                                rect.height / 2;
+
+
+                            const rotateX =
+                                ((y - centerY) /
+                                    centerY) * -1.5;
+
+
+                            const rotateY =
+                                ((x - centerX) /
+                                    centerX) * 1.5;
+
+
+                            this.style.transform =
+                                `translateY(-7px)
+                                 perspective(900px)
+                                 rotateX(${rotateX}deg)
+                                 rotateY(${rotateY}deg)`;
+
+                        }
+                    );
+
+
+                    card.addEventListener(
+                        "mouseleave",
+                        function () {
+
+                            this.style.transform =
+                                "";
+
+                        }
+                    );
+
+                }
+            );
+
+
+            /* =================================================
+               IMAGE FALLBACK
+            ================================================= */
+
+            document
+                .querySelectorAll(
+                    ".property-image img"
+                )
+                .forEach(
+                    function (image) {
+
+                        image.addEventListener(
+                            "error",
+                            function () {
+
+                                this.style.display =
+                                    "none";
+
+                                const placeholder =
+                                    this.nextElementSibling;
+
+                                if (placeholder) {
+
+                                    placeholder.style.display =
+                                        "grid";
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
+
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
